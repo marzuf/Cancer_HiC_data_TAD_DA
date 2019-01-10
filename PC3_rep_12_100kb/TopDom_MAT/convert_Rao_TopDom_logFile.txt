@@ -1,0 +1,5 @@
+*** RETRIEVED FROM COMMAND LINE:
+...> inFile = PC3_rep_12_100kb/NORM_MAT/PC3_rep_12_chr1_KR_100kb.hic.matrix
+...> outFile = PC3_rep_12_100kb/TopDom_MAT/PC3_rep_12_chr1_KR_100kb.hic.TopDom.matrix
+...> binSizeBp = 100000
+... found matrix dim: 2493x2493
