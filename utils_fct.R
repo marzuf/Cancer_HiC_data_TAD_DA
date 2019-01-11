@@ -84,6 +84,55 @@ plot_multiDens <- function(size_list, plotTit="", legTxt=NULL, legPos="topright"
   legend(legPos, legend=legTxt, fill=1:length(dens), bty='n')
 }
 
+######################################################################################################################################################################################################
+###################################################################################################################################################################################################### plot_multiDens(function)
+######################################################################################################################################################################################################
+
+
+fill_sparseListDT <- function(sparseListDT) {
+  stopifnot(all(colnames(sparseListDT) == c("bin1", "bin2", "count")))
+  # just ensure that the format is truely sparse and not filled ! 
+  stopifnot(all(sparseListDT$bin1 <= sparseListDT$bin2))
+  colnames(sparseListDT) <- c("bin1", "bin2", "count")
+  rev_table <- sparseListDT[,c("bin2", "bin1", "count")]
+  # do not count twice the diagonal
+  # rev_table <- rev_table[rev_table$bin1 != rev_table$bin2,]
+  # NB: the previous line will work only if sparseListDT is a data.table object
+  rev_table <- rev_table[rev_table$bin1 != rev_table$bin2,]
+  colnames(rev_table) <-  c("bin1", "bin2", "count")
+  all_table <- rbind(sparseListDT, rev_table)
+  return(all_table)
+}
+
+rebin_sparseMatrix <- function(sparseCountDT, initBinSize, newBinSize, filled) {
+  stopifnot(inherits(sparseCountDT, "data.table"))
+  stopifnot(all(colnames(sparseCountDT) == c("binA", "binB", "count")))
+  stopifnot(is.numeric(initBinSize))
+  stopifnot(is.numeric(newBinSize))
+  stopifnot(is.logical(filled))
+  stopifnot(newBinSize > initBinSize)
+  if((newBinSize/initBinSize)%%1 != 0)
+    stop("(newBinSize/initBinSize)%%1 != 0 => the procedure won't be accurate !\n")
+  # need to fill in before -> because it will change for the diagonal bins (for those bins, need the upper part to aggregate !) ...
+  if(!filled) {
+    countDT <- fill_sparseListDT(sparseCountDT)
+  } else{
+    countDT <- sparseCountDT
+  }
+  # aggregate by summing
+  cat("... adjusting resolution ...\n")
+  countDT$bin1 <- floor(countDT$bin1 * initBinSize/newBinSize )
+  countDT$bin2 <- floor(countDT$bin2 * initBinSize/newBinSize )
+  # ... now can take only lower part
+  countDT <- countDT[countDT$bin1 <= countDT$bin2,]
+  rebinDT <- countDT[, sum(count), by = .(bin1, bin2)]
+  colnames(rebinDT) <- c("bin1", "bin2", "count")
+  
+  return(rebinDT)           
+  
+}
+
+
 
 
 ######################################################################################################################################################################################################

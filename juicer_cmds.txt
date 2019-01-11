@@ -1,0 +1,5 @@
+java -jar juicer_tools.jar dump observed None https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined.hic 1 1 BP 10000 combined_10Kb.txt
+
+
+
+java -Xms512m -Xmx2048m -jar /mnt/ed2/shared/TADcompare/Software/juicer/juicer_tools.jar dump observed None https://hicfiles.s3.amazonaws.com/external/barutcu/MCF-7.hic 1 1 BP 10000 barutcu_MCF-7_chr1_10kb.txt

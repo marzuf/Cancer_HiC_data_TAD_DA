@@ -91,3 +91,6 @@ cmp_auc_fcc_pipeline_tissue.R
 
 cmp_tissue_consensus_fam_TADs_otherFamFile.R
 
+
+compare_pipeline_results.R
+compare_pipeline_signif.R
