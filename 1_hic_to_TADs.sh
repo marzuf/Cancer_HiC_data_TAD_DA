@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 
-# ./1_hic_to_TAD.sh PC3_rep12 chr1
+# ./1_hic_to_TADs.sh PC3_rep12 chr1
+# ./1_hic_to_TADs.sh MC-7 chr15
+
 
 start_time=$(date -R)    
 set -e
@@ -39,15 +41,15 @@ function runCMD {
 
 # for all steps
 norm="KR"
-binSizeKb="50"
+binSizeKb="40"
 Rexec="Rscript"
 
 # step1:
 step1_outFolder="NORM_MAT"
 juicerExec="java -Xms512m -Xmx2048m -jar /mnt/ed2/shared/TADcompare/Software/juicer/juicer_tools.jar"
+step1_outFile="${clName}_${binSizeKb}kb/$step1_outFolder/${clName}_${chromo}_${norm}_${binSizeKb}kb.hic.matrix"
 hicFolder="/mnt/ndata/Yuanlong/2.Results/1.Juicer"
 hicFile="$hicFolder/mega_$clName/mega/aligned/inter_30.hic"
-step1_outFile="${clName}_${binSizeKb}kb/$step1_outFolder/${clName}_${chromo}_${norm}_${binSizeKb}kb.hic.matrix"
 
 # step2:
 step2_outFolder="TopDom_MAT"

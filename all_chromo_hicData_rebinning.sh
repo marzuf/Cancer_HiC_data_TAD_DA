@@ -25,12 +25,12 @@ mkdir -p $newFold
 for chromo in "${all_chromo[@]}"; do
 
 	
-#  Rscript prepFromHiC_aggregCounts.R -f MCF-7/RAW_10kb/MC-7_chr16_RAW_10kb.hic.counts -F MCF-7/RAW_40kb/MC-7_chr16_RAW_40kb.hic.counts -b 10000 -B 40000 > MCF-7/RAW_40kb/MC-7_chr16_RAW_40kb.hic.counts_aggregCounts.log
+#  Rscript prepFromHiC_aggregCounts.R -f MCF-7/RAW_10kb/MCF-7_chr16_RAW_10kb.hic.counts -F MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts -b 10000 -B 40000 > MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts_aggregCounts.log
 #  Rscript prepFromHiC_aggregCounts.R -f oldFile -F newFile -b oldBinSizeBp -B newBinSizeBp > logfile
 
 
-	oldCountFile="$oldFold/MC-7_${chromo}_RAW_${oldBinSizeKb}kb.hic.counts"
-	newCountFile="$newFold/MC-7_${chromo}_RAW_${newBinSizeKb}kb.hic.counts"
+	oldCountFile="$oldFold/MCF-7_${chromo}_RAW_${oldBinSizeKb}kb.hic.counts"
+	newCountFile="$newFold/MCF-7_${chromo}_RAW_${newBinSizeKb}kb.hic.counts"
 	
 	if [[ ! -f $oldCountFile ]]; then
 		echo "!!! oldCountFile: $oldCountFile does not exists !!!"
@@ -44,7 +44,7 @@ for chromo in "${all_chromo[@]}"; do
 	$cmd_rebin
 	
 	
-# Rscript cmp_rebinning_custom_HiTC.R MCF-7/RAW_10kb/MC-7_chr16_RAW_10kb.hic.counts MCF-7/RAW_40kb/MC-7_chr16_RAW_40kb.hic.counts 10000 40000 chr16 > MCF-7/RAW_40kb/MC-7_chr16_RAW_40kb.hic.counts_checkRebinning.log
+# Rscript cmp_rebinning_custom_HiTC.R MCF-7/RAW_10kb/MC-7_chr16_RAW_10kb.hic.counts MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts 10000 40000 chr16 > MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts_checkRebinning.log
 # Rscript cmp_rebinning_custom_HiTC.R inFile outFile oldBinBp newBinBp chromo > logfile
 
 	
