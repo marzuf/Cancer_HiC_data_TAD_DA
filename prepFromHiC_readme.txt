@@ -8,7 +8,11 @@
 
 1b) aggregate using HiTC and compare the result with cmp_rebinning_custom_HiTC.R
 
-2) prepare a pre.txt file from the rebinned data to create a hic file using prepFromHic_prepNewHic.R
+2) prepare a pre.txt file from the rebinned data to create a hic file using prepFromHic_prepFile.R
+
+3) juicer command to generate hic file from 40kb data
++ juicer command to add normalization
+
 I need the hic file for the 40 kb raw data then for the normalization using juicer
 
 3) KR normalization of the hic that contains 40 kb raw data 

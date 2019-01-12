@@ -14,6 +14,7 @@ oldBinSizeKb="10"
 newBinSizeKb="40"
 
 all_chromo=( "chr"{1..22} "chrX" )
+#all_chromo=( "chr21" )
 
 oldFold="MCF-7/RAW_${oldBinSizeKb}kb"
 
@@ -51,8 +52,6 @@ for chromo in "${all_chromo[@]}"; do
 	cmd_check="$rexec $script_check $oldCountFile $newCountFile ${oldBinSizeKb}000 ${newBinSizeKb}000 $chromo" #> ${newCountFile}_checkRebinning.log"
 	echo $cmd_check
 	$cmd_check
-
-	exit 0
 
 
 done

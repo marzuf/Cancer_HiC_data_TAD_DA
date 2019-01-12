@@ -73,7 +73,7 @@ outFile <- opt$outFile
 stopifnot(file.exists(inFile))
 
 
-logFile <- paste0(inFile, "_aggregCounts.log")
+logFile <- paste0(outFile, "_aggregCounts.log")
 if(!SSHFS) file.remove(logFile)
 
 
