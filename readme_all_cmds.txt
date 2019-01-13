@@ -24,15 +24,14 @@ PC3_rep_12_100kb/TopDom_FILES/PC3_rep_12_chr1_KR_100kb_final_domains.txt (step 4
 # SCRIPT 2: CONSENSUS TADs [optional]
 #**************************************************************************************
 
-Rscript find_consensusTADs.R  \
-astrocyte/cerebellum/GSE105194/ENCFF027IEO/TopDom GSE105194_ENCFF027IEO_40kb_chr.+final_domains.txt GSE105194_ENCFF027IEO_astroCerebellum \
-astrocyte/spinal_cord/GSE105957/ENCFF715HDW/TopDom GSE105957_ENCFF715HDW_40kb_chr.+final_domains.txt GSE105957_ENCFF715HDW_astroSpinal
+Rscript find_consensusTADs.R  MCF-7 T47D
 
 
 #**************************************************************************************
 # SCRIPT 3: ASSIGN GENES TO NEW TAD LIST
 #**************************************************************************************
-./3_all_chromo_assign_genes.sh
+
+./3_all_chromo_assign_genes.sh MCF-7
 
 
 #**************************************************************************************

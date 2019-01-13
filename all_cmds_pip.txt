@@ -1,0 +1,30 @@
+# download the MCF-7 data from AWS 10kb		=> done !
+./all_chromo_dwd_juicer_hic_MCF7.sh
+
+# rebin the MCF-7 data 10kb	to 40 kb
+./all_chromo_hicData_rebinning.sh
+
+# convert the aggreg count file to pre file for the MCF-7 40 kb
+./all_chromo_prepFile.sh
+
+# convert the pre 40kb -> hic -> dump 40 kb (output then equivalent to step1 of all_chromo_hic_to_TADs.sh
+./all_chromo_pre2hic2matrix.sh
+
+# hic to TADs for MCF-7 (set STEP1=0 !!!)
+./1_all_chromo_hic_to_TADs.sh MCF-7
+
+# hic to TADs for ENCSR549MGQ_T47D
+./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D
+
+# consensus between breast cancer cell lines
+Rscript find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 
+
+# assign genes to TADs for MCF-7
+# ./3_assign_genes.sh MCF-7
+
+# assign genes to TADs for MCF-7
+# ./3_assign_genes.sh ENCSR549MGQ_T47D
+
+# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D
+
+# ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D

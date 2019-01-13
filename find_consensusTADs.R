@@ -6,7 +6,7 @@ library(foreach)
 startTime <- Sys.time()
 
 cat("> START find_consensusTADs.R\n")
-# Rscript find_consensusTADs.R  MCF-7_40kb Caki2_40kb
+# Rscript find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb
 
 SSHFS <- FALSE
 
@@ -34,6 +34,8 @@ source("../Dixon2018_integrative_data/wsm_TADconsensus_withCoverage_version2_fct
 # Rscript find_consensusTADs.R cl1_40kb cl2_40kb cl3_40kb ...
 
 all_inFolders <- c("MCF-7_40kb", "Caki2_40kb")
+all_inFolders <- c("MCF-7_40kb", "ENCSR549MGQ_T47D_40kb")
+
 
 all_inFolders <- commandArgs(trailingOnly = TRUE)
 stopifnot(file.exists(all_inFolders))
@@ -69,7 +71,7 @@ printAndLog(txt, logFile)
 set_tolRad <- 80000
 set_conservThresh <- ifelse(length(all_inFolders) == 3, 2/3, 
                             ifelse(length(all_inFolders) == 2, 1, NA))
-if(is.na(set_conservThresh)) stop("error: check set_conservThresh\n")
+if(is.na(set_conservThresh)) stop("error: cannot infer set_conservThresh\n")
 set_weightValue <- NULL
 set_coverageThresh <-  1
 set_tadfileHeader <-  FALSE
@@ -173,7 +175,8 @@ for(chromo in intersectChromo) {
     }
   }
   # <cl1cl2>_40kb/FINAL_DOMAINS/<cl1cl2>_chr15_KR_40kb_final_domains.txt
-  outFile <- file.path(outFolder, paste0(consensusClName, "_", chromo,"_", normMeth, "_", folderSuffix, "_", tadfile_suffixPattern))
+  # outFile <- file.path(outFolder, paste0(consensusClName, "_", chromo,"_", normMeth, "_", folderSuffix, "_", tadfile_suffixPattern))
+  outFile <- file.path(outFolder, paste0(consensusClName, "_", chromo,"_", normMeth,  folderSuffix, tadfile_suffixPattern))
   write.table(domainsDT, file = outFile, sep="\t", quote=F, col.names=F, row.names=F)
   cat(paste0("... written:\t", outFile, "\n"))  
 }
