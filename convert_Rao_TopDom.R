@@ -58,6 +58,21 @@ stopifnot(is.numeric(inDT$count))
 stopifnot(inDT$binA%%binSizeBp == 0)
 stopifnot(inDT$binB%%binSizeBp == 0)
 
+cat("... remove NA count (would make TopDom crash) ... \n")
+nbrNA <- sum(is.na(inDT$count))
+initNrow <- nrow(inDT)
+inDT <- na.omit(inDT)
+newNrow <- nrow(inDT)
+# txt <- paste0("...> initNrow = ", initNrow, "\n")
+# printAndLog(txt, logFile)
+# txt <- paste0("...> newNrow = ", newNrow, "\n")
+# printAndLog(txt, logFile)
+# txt <- paste0("...> nbrNA = ", nbrNA, "\n")
+# printAndLog(txt, logFile)
+stopifnot((initNrow-newNrow) == nbrNA)
+txt <- paste0("... # NA removed: ", nbrNA, "\n")
+printAndLog(txt, logFile)
+
 inDT$idxA <- inDT$binA/binSizeBp + 1
 inDT$idxB <- inDT$binB/binSizeBp + 1
 

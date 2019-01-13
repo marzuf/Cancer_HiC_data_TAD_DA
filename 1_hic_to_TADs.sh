@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-# ./1_hic_to_TADs.sh PC3_rep12 chr1
-# ./1_hic_to_TADs.sh MC-7 chr15
+# ./1_hic_to_TADs.sh PC3_rep_12 chr16
+# ./1_hic_to_TADs.sh MCF-7 chr15 # start from step2
 
 
 start_time=$(date -R)    
@@ -22,17 +22,25 @@ echo "... > Chromosome: $chromo"
 
 step1=0		# extract chromo matrix from hic file
 step2=0		# convert Rao format to TopDom format
-step3=1		# run TopDom
-step4=0     # convert TopDom BED format to FINAL DOMAINS BED FORMAT
+step3=0		# run TopDom
+step4=1     # convert TopDom BED format to FINAL DOMAINS BED format
 
 # INPUT: .hic files from merged replicates
 
 #####**** SOME FUNCTIONS
 
-function runCMD {
-  echo "> $cmd"	
-  $cmd  
+runCMD() {
+  echo "$1"
+  eval $1
 }
+
+checkFile() {
+if [[ ! -f  $2 ]]; then
+    echo "... $1 ($2) does not exist !"
+    exit 1
+fi
+}
+
 
 #####************************
 
@@ -83,15 +91,15 @@ if [[ $step1 -eq 1 ]]; then
 ######################################################################################
 # java -Xms512m -Xmx2048m -jar juicer_tools.jar dump observed KR inFile chromo chromo BP binSizeKb outFile
 # save file in $clName/NORM_MAT
-if [[ ! -f  $hicFile ]]; then
-    echo "... hicFile ($hicFile) does not exist !"
-    exit 1
-fi
-cmd="mkdir -p `dirname $step1_outFile`"
-runCMD $cmd
 
-cmd="$juicerExec dump observed $norm $hicFile $chromo $chromo BP ${binSizeKb}000 $step1_outFile"
-runCMD $cmd
+checkFile hicFile $hicFile
+
+runCMD "mkdir -p `dirname $step1_outFile`"
+runCMD "$juicerExec dump observed $norm $hicFile $chromo $chromo BP ${binSizeKb}000 $step1_outFile"
+
+checkFile step1_outFile $step1_outFile
+
+
 fi
 
 # write: PC3_rep_12_100kb/NORM_MAT/PC3_rep_12_chr1_KR_100kb.hic.matrix
@@ -102,13 +110,14 @@ if [[ $step2 -eq 1 ]]; then
 ######################################################################################
 # Rscript convert_Rao_TopDom.R inFile outFile chromo binSizeBp
 # save file in $clName/TopDom_MAT
-if [[ ! -f  $step1_outFile ]]; then
-    echo "... step1_outFile ($step1_outFile) does not exist !"
-    exit 1
+
+checkFile step1_outFile $step1_outFile
+
+runCMD "$Rexec $step2_rao2td_script $step1_outFile $step2_outFile $chromo ${binSizeKb}000"
 fi
-cmd="$Rexec $step2_rao2td_script $step1_outFile $step2_outFile $chromo ${binSizeKb}000"
-runCMD $cmd
-fi
+
+checkFile step2_outFile $step2_outFile
+
 
 # written: PC3_rep_12_100kb/TopDom_MAT/PC3_rep_12_chr1_KR_100kb.hic.TopDom.matrix
 
@@ -118,12 +127,14 @@ if [[ $step3 -eq 1 ]]; then
 ######################################################################################
 # Rscript convert_Rao_TopDom.R inFile outFile chromo binSizeBp
 # save file in $clName/TopDom_FILES
-if [[ ! -f  $step2_outFile ]]; then
-    echo "... step2_outFile ($step2_outFile) does not exist !"
-    exit 1
-fi
-cmd="$Rexec $step3_topdom_script -i $step2_outFile -o $step3_outPrefix -w $window_size"
-runCMD $cmd
+
+checkFile step2_outFile $step2_outFile
+
+runCMD "$Rexec $step3_topdom_script -i $step2_outFile -o $step3_outPrefix -w $window_size"
+
+checkFile step3_outFile $step3_outFile
+
+
 fi
 
 # Rscript /mnt/ed2/shared/TADcompare/Software/TopDom/run_TopDom.R -i GM12878_50kb/TopDom_MAT/GM12878_chr1_KR_50kb.hic.TopDom.matrix -o GM12878_50kb/TopDom_FILES/GM12878_chr1_KR_50kb -w 5
@@ -136,12 +147,16 @@ if [[ $step4 -eq 1 ]]; then
 ######################################################################################
 # grep domain inFile | cut -f1-3 > outFile
 # save file in $clName/FINAL_DOMAINS
-if [[ ! -f  $step3_outFile ]]; then
-    echo "... step3_outFile ($step3_outFile) does not exist !"
-    exit 1
-fi
-cmd="grep domain $step3_outFile | cut -f1-3 > $step4_outFile"
-runCMD $cmd
+
+checkFile step3_outFile $step3_outFile
+
+runCMD "mkdir -p `dirname $step4_outFile`"
+runCMD "grep domain $step3_outFile | cut -f1-3 | awk '{print \$1 \"\t\" (\$2 + 1) \"\t\" \$3}' > $step4_outFile"
+
+
+checkFile step4_outFile $step4_outFile
+
+
 fi
 
 ###################################################################################################################################################
