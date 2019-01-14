@@ -30,7 +30,7 @@ ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 # => at this point: 
 # MCF-7_40kb/genes2tad/all_assigned_regions.txt
 # MCF-7_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned:				=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned:				# => done ! 14.01.2018
 cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
@@ -38,6 +38,10 @@ cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 ./run_pipeline.sh MCF-7_40Kb TCGAbrca_lum_bas
 Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas
+
+./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 14.01.2018 -r
+
+Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  # => done ! 14.01.2018
 
 #***********************************************************
 # ENCSR549MGQ_T47D - breast 2/2
@@ -54,6 +58,10 @@ cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq |
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # 14.01.2018 -r
+
+Rscript check_TCGA_fpkm.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # => done ! 14.01.2018
+
 
 
 #***********************************************************
@@ -66,14 +74,16 @@ Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=> 
 # assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2018
 ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
 
-# NB: to check which chromosomes with genes assigned: 						=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						#=> done ! 14.01.2018
 cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
+./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # r
 
+Rscript check_TCGA_fpkm.R MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # => done ! 14.01.2018
 
 #***********************************************************
 # K562
@@ -99,12 +109,12 @@ cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | un
 # => at this point: K562_40kb/NORM_MAT
 
 # hic to TADs for K562(set STEP1=0 !!!)
-./1_all_chromo_hic_to_TADs.sh K562					# 	r
+./1_all_chromo_hic_to_TADs.sh K562					# 	=> done ! 14.01.2018
 
 # => at this point: K562_40kb/FINAL_DOMAINS
 
 # assign genes to TADs for K562
-./3_assign_genes.sh K562							# 						
+./3_assign_genes.sh K562							# 			=> done ! 14.01.2018			
 
 # => at this point: 
 # K562_40kb/genes2tad/all_assigned_regions.txt
@@ -245,6 +255,10 @@ cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq |
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # => r
+
+Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
+
 
 #***********************************************************
 # ENCSR401TBQ_Caki2 - kidney 2/2
@@ -265,15 +279,18 @@ cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq 
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => r
+
+Rscript check_TCGA_fpkm.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
 
 #***********************************************************
-# ENCSR079VIJ_G401ENCSR401TBQ_Caki2 - lung consensus
+# ENCSR079VIJ_G401ENCSR401TBQ_Caki2 - kidney consensus
 #***********************************************************
 
-# consensus between breast cancer cell lines	
+# consensus between kidney cancer cell lines	
 Rscript 2_all_chromo_find_consensusTADs.R  ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb 	# => done ! 14.01.2018
 
-# assign genes to TADs for lung consensus ENCSR079VIJ_G401ENCSR401TBQ_Caki2				# => done ! 14.01.2018
+# assign genes to TADs for kidney consensus ENCSR079VIJ_G401ENCSR401TBQ_Caki2				# => done ! 14.01.2018
 ./3_assign_genes.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2
 
 # NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2018
@@ -283,6 +300,9 @@ cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt
 cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
+./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => r
+
+Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
 
 
 
@@ -349,7 +369,7 @@ cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_posit
 
 
 #***********************************************************
-# GSM2334834_U266_HindIII
+# GSM2334834_U266_HindIII - myeloma 1/2
 #***********************************************************
 
 ./1_all_chromo_hic_to_TADs.sh GSM2334834_U266_HindIII  # => done ! 14.01.2018
@@ -370,7 +390,7 @@ cut -f2 GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | 
 
 
 #***********************************************************
-# GSM2334832_RPMI-8226_HindIII
+# GSM2334832_RPMI-8226_HindIII - myeloma 2/2
 #***********************************************************
 
 ./1_all_chromo_hic_to_TADs.sh GSM2334832_RPMI-8226_HindIII  # => done ! 14.01.2018
@@ -388,10 +408,27 @@ cut -f1 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | s
 cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+#***********************************************************
+# GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII - myeloma consensus
+#***********************************************************
+
+# consensus between myeloma cell lines	
+Rscript 2_all_chromo_find_consensusTADs.R  GSM2334834_U266_HindIII_40kb GSM2334832_RPMI-8226_HindIII_40kb	# => done ! 14.01.2018
+
+# assign genes to TADs for myeloma consensus GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII				# => done ! 14.01.2018
+./3_assign_genes.sh GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII
+
+# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2018
+cut -f1 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
 #***********************************************************
-# ENCSR834DXR_SK-N-MC
+# ENCSR834DXR_SK-N-MC - neuroblastoma
+#(derived from metastatic site: supra-orbital area)
+# Originally thought to be a neuroblastoma cell line but shown to be from an Askin tumor)
 #***********************************************************
 
 
@@ -413,6 +450,7 @@ cut -f2 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_genes_positions.txt | sort | uniq
 
 #***********************************************************
 # ENCSR105KFX_SK-N-DZ
+# (derived from metastatic site: bone marrow)
 #***********************************************************
 
 ./1_all_chromo_hic_to_TADs.sh ENCSR105KFX_SK-N-DZ  # r

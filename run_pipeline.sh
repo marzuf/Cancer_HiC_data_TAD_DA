@@ -2,7 +2,12 @@
 
 
 # BREAST
-# ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas
+# ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 14.01.2018
+# ./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # 14.01.2018
+# ./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # 14.01.2018
+
+# KIDNEY
+# ./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich
 
 
 
