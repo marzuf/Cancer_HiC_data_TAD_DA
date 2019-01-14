@@ -8,11 +8,24 @@ PC3_rep_12_100kb
 	-> genes2tad
 
 #**************************************************************************************
+# SCRIPTS 0: FOR THE HI-C DATA DOWNLOADED FROM AWS
+#**************************************************************************************
+
+# these scripts should be run before SCRIPT1
+# then, SCRIPT1 should be run with setting step1=0
+
+./aws1_all_chromo_dwd_juicer_hic.sh MCF-7  		# download 10kb Hi-C from AWS
+./aws2_all_chromo_hicData_rebinning.sh MCF-7  	# rebin 10kb to 40 kb
+./aws3_all_chromo_prepFile.sh MCF-7  			# prepare pre file to create hic
+./aws4_all_chromo_pre2hic2matrix.sh MCF-7  		# create hic from pre, at 40kb with normalization inside
+
+
+#**************************************************************************************
 # SCRIPT 1: FROM Hi-C TO TAD CALLING
 #**************************************************************************************
 
-./1_hic_to_TADs.sh <cell_line_name> <chromo>
-# e.g. ./1_hic_to_TAD.sh PC3_rep12 chr1
+./1_all_chromo_hic_to_TADs.sh <cell_line_name> <chromo>
+# e.g. ./1_all_chromo_hic_to_TAD.sh PC3_rep12 
 
 # this creates the following files:
 PC3_rep_12_100kb/NORM_MAT/PC3_rep_12_chr1_KR_100kb.hic.matrix (step 1)
@@ -24,7 +37,7 @@ PC3_rep_12_100kb/TopDom_FILES/PC3_rep_12_chr1_KR_100kb_final_domains.txt (step 4
 # SCRIPT 2: CONSENSUS TADs [optional]
 #**************************************************************************************
 
-Rscript find_consensusTADs.R  MCF-7 T47D
+Rscript all_chromo_find_consensusTADs.R  MCF-7 ENCSR549MGQ_T47D
 
 
 #**************************************************************************************

@@ -1,30 +1,413 @@
-# download the MCF-7 data from AWS 10kb		=> done !
-./all_chromo_dwd_juicer_hic_MCF7.sh
+ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 
-# rebin the MCF-7 data 10kb	to 40 kb
-./all_chromo_hicData_rebinning.sh
 
-# convert the aggreg count file to pre file for the MCF-7 40 kb
-./all_chromo_prepFile.sh
+#***********************************************************
+# MCF-7 - breast 1/2
+#***********************************************************
+
+# download the MCF-7 data from AWS 10kb								=> done ! 14.01.2018
+./aws1_all_chromo_dwd_juicer_hic.sh MCF-7
+
+# rebin the MCF-7 data 10kb	to 40 kb								=> done ! 14.01.2018
+./aws2_all_chromo_hicData_rebinning.sh MCF-7
+
+# convert the aggreg count file to pre file for the MCF-7 40 kb 	=> done ! 14.01.2018
+./aws3_all_chromo_prepFile.sh MCF-7
 
 # convert the pre 40kb -> hic -> dump 40 kb (output then equivalent to step1 of all_chromo_hic_to_TADs.sh
-./all_chromo_pre2hic2matrix.sh
+./aws4_all_chromo_pre2hic2matrix.sh MCF-7 							=> done ! 14.01.2018
+
+# => at this point: MCF-7_40kb/NORM_MAT
 
 # hic to TADs for MCF-7 (set STEP1=0 !!!)
-./1_all_chromo_hic_to_TADs.sh MCF-7
+./1_all_chromo_hic_to_TADs.sh MCF-7									=> done ! 14.01.2018
+
+# => at this point: MCF-7_40kb/FINAL_DOMAINS
+
+# assign genes to TADs for MCF-7
+# ./3_assign_genes.sh MCF-7											=> done ! 14.01.2018
+
+# => at this point: 
+# MCF-7_40kb/genes2tad/all_assigned_regions.txt
+# MCF-7_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned:				=> done ! 14.01.2018
+cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# ENCSR549MGQ_T47D - breast 2/2
+#***********************************************************
 
 # hic to TADs for ENCSR549MGQ_T47D
-./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D
+./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D				=> done ! 14.01.2018
+# => at this point: ENCSR549MGQ_T47D_40kb/FINAL_DOMAINS
 
-# consensus between breast cancer cell lines
-Rscript find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 
+# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 		=> done ! 14.01.2018
+cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-# assign genes to TADs for MCF-7
-# ./3_assign_genes.sh MCF-7
 
-# assign genes to TADs for MCF-7
-# ./3_assign_genes.sh ENCSR549MGQ_T47D
 
-# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D
+#***********************************************************
+# MCF-7ENCSR549MGQ_T47D - breast consensus
+#***********************************************************
 
-# ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
+# consensus between breast cancer cell lines	
+Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=> done ! 14.01.2018
+
+# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2018
+./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
+
+# NB: to check which chromosomes with genes assigned: 						=> done ! 14.01.2018
+cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+
+#***********************************************************
+# K562
+#***********************************************************
+
+# download the K562 data from AWS 10kb		
+./aws1_all_chromo_dwd_juicer_hic.sh K562			# => done ! 14.01.2018
+# K562/RAW_10kb
+
+# rebin the K562 data 10kb	to 40 kb
+./aws2_all_chromo_hicData_rebinning.sh K562   		# => done ! 14.01.2018
+# K562/RAW_40kb
+
+# convert the aggreg count file to pre file for the K562 40 kb
+./aws3_all_chromo_prepFile.sh K562					# r
+# K562/PRE_40kb
+
+# convert the pre 40kb -> hic -> dump 40 kb (output then equivalent to step1 of all_chromo_hic_to_TADs.sh
+./aws4_all_chromo_pre2hic2matrix.sh K562
+# K562/RAW_HIC_INTRA_40kb
+# K562_40kb/NORM_MAT
+
+# => at this point: K562_40kb/NORM_MAT
+
+# hic to TADs for K562(set STEP1=0 !!!)
+./1_all_chromo_hic_to_TADs.sh K562					# 		
+
+# => at this point: K562_40kb/FINAL_DOMAINS
+
+# assign genes to TADs for K562
+./3_assign_genes.sh K562							# 						
+
+# => at this point: 
+# K562_40kb/genes2tad/all_assigned_regions.txt
+# K562_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned:				# 
+cut -f1 K562_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 K562_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+#***********************************************************
+# ENCSR444WCZ_A549 - lung 1/2
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh ENCSR444WCZ_A549  		=> done ! 14.01.2018
+
+
+# => at this point: ll ENCSR444WCZ_A549_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR444WCZ_A549					=> done ! 14.01.2018
+
+# => at this point: 
+# ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# NCI-H460 - lung 2/2
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh NCI-H460   # r
+
+# => at this point: ll NCI-H460_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh NCI-H460				 	# => done ! 14.01.2018
+
+# => at this point: 
+# NCI-H460_40kb/genes2tad/all_assigned_regions.txt
+# NCI-H460_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# ENCSR346DCU_LNCaP - prostate 1/2
+#***********************************************************
+
+
+./1_all_chromo_hic_to_TADs.sh ENCSR346DCU_LNCaP  # => done ! 14.01.2018
+
+# => at this point: ll ENCSR346DCU_LNCaP_40kb/FINAL_DOMAINS
+
+# ./3_assign_genes.sh ENCSR346DCU_LNCaP				 	# => done ! 14.01.2018
+
+# => at this point: 
+# ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+#***********************************************************
+#  - prostate 2/2
+#***********************************************************
+
+
+#***********************************************************
+# Panc1_rep12 - pancreas
+#***********************************************************
+
+
+./1_all_chromo_hic_to_TADs.sh Panc1_rep12  			# => done ! 14.01.2018
+
+# => at this point: Panc1_rep12_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh Panc1_rep12				 	# => done ! 14.01.2018
+
+# => at this point: 
+# Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt
+# Panc1_rep12_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 Panc1_rep12_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 Panc1_rep12_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+	
+#***********************************************************
+# ENCSR079VIJ_G401 - kidney 1/2
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh ENCSR079VIJ_G401  # => done ! 14.01.2018
+
+
+# => at this point: ll ENCSR079VIJ_G401_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR079VIJ_G401				# => done ! 14.01.2018	
+
+# => at this point: 
+# ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+#***********************************************************
+# ENCSR401TBQ_Caki2 - kidney 2/2
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh ENCSR401TBQ_Caki2  # => done ! 14.01.2018
+
+# => at this point: ll ENCSR401TBQ_Caki2_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR401TBQ_Caki2		 	# => done ! 14.01.2018
+
+# => at this point: 
+# ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+#***********************************************************
+# ENCSR312KHQ_SK-MEL-5 - skin 1/2
+#***********************************************************
+
+
+./1_all_chromo_hic_to_TADs.sh ENCSR312KHQ_SK-MEL-5  # => done ! 14.01.2018
+
+# => at this point: ll ENCSR312KHQ_SK-MEL-5_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR312KHQ_SK-MEL-5			 	# => done ! 14.01.2018
+
+# => at this point: 
+# ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+#***********************************************************
+# RPMI-7951 - skin 2/2
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh ENCSR862OGI_RPMI-7951  # => done ! 14.01.2018
+
+# => at this point: ll ENCSR862OGI_RPMI-7951_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR862OGI_RPMI-7951		 	# => done ! 14.01.2018
+
+# => at this point: 
+# ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# GSM2334834_U266_HindIII
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh GSM2334834_U266_HindIII  # r
+
+# => at this point: ll GSM2334834_U266_HindIII_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh GSM2334834_U266_HindIII		 	# 
+
+# => at this point: 
+# GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt
+# GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	# 
+cut -f1 GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# GSM2334832_RPMI-8226_HindIII
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh GSM2334832_RPMI-8226_HindIII  # r
+
+# => at this point: ll GSM2334832_RPMI-8226_HindIII_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh GSM2334832_RPMI-8226_HindIII		 	# => 
+
+# => at this point: 
+# GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt
+# GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	# => 
+cut -f1 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+#***********************************************************
+# ENCSR834DXR_SK-N-MC
+#***********************************************************
+
+
+./1_all_chromo_hic_to_TADs.sh ENCSR834DXR_SK-N-MC  # r
+
+# => at this point: ll ENCSR834DXR_SK-N-MC_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR834DXR_SK-N-MC		 	# => 
+
+# => at this point: 
+# ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	# => 
+cut -f1 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+#***********************************************************
+# ENCSR105KFX_SK-N-DZ
+#***********************************************************
+
+./1_all_chromo_hic_to_TADs.sh ENCSR105KFX_SK-N-DZ  # r
+
+# => at this point: ll ENCSR105KFX_SK-N-DZ_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh ENCSR105KFX_SK-N-DZ		 	# => 
+
+# => at this point: 
+# ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_assigned_regions.txt
+# ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	# => 
+cut -f1 ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR105KFX_SK-N-DZ_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+
+
+#***********************************************************
+# 
+#***********************************************************
+
+
+
+
+#***********************************************************
+# 
+#***********************************************************
+
+
+
+
+
+
+
+#***********************************************************
+# 
+#***********************************************************
+
+
+
+
+
+
+
+#***********************************************************
+# 
+#***********************************************************
+
+
+
+
+
+
+

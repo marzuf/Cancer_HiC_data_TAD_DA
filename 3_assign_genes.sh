@@ -2,8 +2,8 @@
 
 # ./3_assign_genes.sh MCF-7
 # ./3_assign_genes.sh ENCSR549MGQ_T47D
-# ./3_assign_genes.sh ENCSR549MGQ_T47D
 # ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
+# (see what has been run in all_cmds_pip.txt)
 
 
 start_time=$(date -R)    
@@ -16,8 +16,8 @@ if [[ $# != 1 ]]; then
     exit 1
 fi
 
-#all_chromo=( "chr"{1..23} "chrX" )  # -> need to do all chromo to have 1 single file at the end
-all_chromo=( "chr15" "chr16" "chr17" )
+all_chromo=( "chr"{1..22} "chrX" )  # -> need to do all chromo to have 1 single file at the end
+#all_chromo=( "chr15" "chr16" "chr17" )
 #all_chromo=( "chr15" )
 
 clName="$1"
@@ -41,7 +41,7 @@ step1=1		# assign genes to TADs
 #####**** SOME FUNCTIONS
 
 runCMD() {
-  echo "$1"
+  echo "> $1"
   eval $1
 }
 export -f runCMD
@@ -102,6 +102,9 @@ runCMD "cat $step1_outFolder_tmp/$reg_prefix* > $step1_outFile_tads"
 
 checkFile step1_outFile_genes $step1_outFile_genes
 checkFile step1_outFile_tads $step1_outFile_tads
+
+echo "... Has assigned genes to # chromosomes:"
+runCMD "cut -f2 $step1_outFile_genes | sort | uniq | wc -l"
 
 echo "... Has assigned genes to the following chromosomes:"
 runCMD "cut -f2 $step1_outFile_genes | sort | uniq | paste -sd\" \""

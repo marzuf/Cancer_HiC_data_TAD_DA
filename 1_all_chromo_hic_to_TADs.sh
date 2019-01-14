@@ -1,10 +1,16 @@
 #!/usr/bin/bash
 
-# ./1_all_chromo_hic_to_TADs.sh MCF-7  # start from step2 if download from juicer AWS
-# ./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D
+# ./1_all_chromo_hic_to_TADs.sh MCF-7  # start from step2 if download from juicer AWS - 14.01.2018
+# ./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D # - 14.01.2018
+# ./1_all_chromo_hic_to_TADs.sh K562 # start from step2 if download from juicer AWS - 14.01.2018
+# ./1_all_chromo_hic_to_TADs.sh ENCSR444WCZ_A549 # - 14.01.2018
+# (see what has been run in all_cmds_pip.txt)
+
+# if not downloaded from Juicer, start with hic data located in 
+# "/mnt/ndata/Yuanlong/2.Results/1.Juicer/mega_<cell_line>/mega/aligned/inter_30.hic"
 
 start_time=$(date -R)    
-set -e
+# set -e                #  in case there is no chr23, otherwise not run chrX
 
 if [[ $# != 1 ]]; then
     echo "invalid # of arguments"
@@ -15,25 +21,26 @@ fi
 clName="$1"
 #chromo="$2"
 
-#all_chromo=( "chr"{1..22} "chrX" )
-all_chromo=( "chr15" "chr16" "chr17" )
-#all_chromo=( "chr15" )
+all_chromo=( "chr"{1..22} "chrX" )
+#all_chromo=( "chr15" "chr16" "chr17" )
+#all_chromo=( "chr1" "chr9" )
+#all_chromo=( "chrX" )
 
 echo "*** START ***"
 echo "... > Cell line: $clName"
-echo "... > Chromosome: ${all_chromo[*]}"
+echo "... > Chromosome(s): ${all_chromo[*]}"
 
-step1=1		# extract chromo matrix from hic file
-step2=1		# convert Rao format to TopDom format
-step3=1		# run TopDom
-step4=1     # convert TopDom BED format to FINAL DOMAINS BED format
+step1=1		# extract chromo matrix from hic file # <cell_line>/NORM_MAT
+step2=1		# convert Rao format to TopDom format # <cell_line>/TopDom_MAT
+step3=1		# run TopDom # <cell_line>/TopDom_FILES
+step4=1     # convert TopDom BED format to FINAL DOMAINS BED format # <cell_line>/FINAL_DOMAINS
 
 # INPUT: .hic files from merged replicates
 
 #####**** SOME FUNCTIONS
 
 runCMD() {
-  echo "$1"
+  echo "> $1"
   eval $1
 }
 
@@ -164,6 +171,7 @@ for chromo in "${all_chromo[@]}"; do
 
 	checkFile step4_outFile $step4_outFile
 
+	runCMD "head -2 $step4_outFile"
 
 	fi
 
