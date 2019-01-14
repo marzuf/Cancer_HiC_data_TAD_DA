@@ -326,6 +326,12 @@ cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | un
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => r
+
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf   # => r
+
+
+
 
 #***********************************************************
 # ENCSR862OGI_RPMI-7951 - skin 2/2
@@ -346,6 +352,11 @@ cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | u
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
+
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => r
+
+
 
 #***********************************************************
 # ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951 - skin consensus
@@ -364,6 +375,9 @@ cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_posit
 cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
+
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => r
 
 
 
@@ -449,7 +463,7 @@ cut -f2 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_genes_positions.txt | sort | uniq
 
 
 #***********************************************************
-# ENCSR105KFX_SK-N-DZ
+# ENCSR105KFX_SK-N-DZ - neuroblastoma
 # (derived from metastatic site: bone marrow)
 #***********************************************************
 

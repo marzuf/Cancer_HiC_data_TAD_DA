@@ -3,7 +3,6 @@ startTime <- Sys.time()
 library(foreach)
 library(doMC)
 library(ggplot2)
-library(stringi)
 
 options(scipen=100)
 
@@ -12,11 +11,15 @@ cat("> START: cmp_datasets_matching.R\n")
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
+setDir <- ifelse(SSHFS, "~/media/electron", "")
 
-source("utils_fct.R")
+
+source(file.path("utils_fct.R"))
 source("../Dixon2018_integrative_data/MoC_heatmap_fct.R")
+source("datasets_settings.R")
 
-if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
+# if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
+if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 
 registerDoMC(ifelse(SSHFS, 2, 40))
 
@@ -33,9 +36,8 @@ heightMat <- 14
 widthBoxplot <- 10
 heightBoxplot <- 7
 
-strWidthSplit <- 35
-
 binSize <- 40000
+binSizeKb <- binSize/1000
 tolRad <- 2*binSize
 
 txt <- paste0("!! hard-coded bin size:\t", binSize, "\n")
@@ -43,15 +45,60 @@ printAndLog(txt, logFile)
 txt <- paste0("!! hard-coded tolerance radius:\t", tolRad, "\n")
 printAndLog(txt, logFile)
 
-consensusPattern <- "_final_domains.txt$"    # TO CHECK ZZZZ !!!!
+folderSuffix <- paste0("_", binSizeKb, "kb")
+TADfilePattern <- "_final_domains.txt$"
+TADfolder <- "FINAL_DOMAINS"
+
+all_chromos <- c(paste0("chr", 1:23), "chrX")  # also used for ordering on the plots
+
+xlabType <- "_label"
+stopifnot(xlabType %in% c("", "_label"))
+
+
+### SELECT WHICH CELL LINES TO INCLUDE IN THE COMPARISONS
+cl_to_cmp <- c(
+  "MCF-7",
+  "ENCSR549MGQ_T47D",
+  "MCF-7ENCSR549MGQ_T47D",
   
+  #"DLD1",                              # !!! RUNNING !!!
+  
+  "ENCSR079VIJ_G401",
+  "ENCSR401TBQ_Caki2",
+  "ENCSR079VIJ_G401ENCSR401TBQ_Caki2",
+  
+  #"HepG2",                             # !!! RUNNING !!!
+  
+  "ENCSR444WCZ_A549",
+  "NCI-H460",
+  "ENCSR444WCZ_A549NCI-H460",
+  
+  "K562",
+  
+  "GSM2334834_U266_HindIII",
+  "GSM2334832_RPMI-8226_HindIII",
+  "GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII",
+  
+  "ENCSR834DXR_SK-N-MC",
+  "ENCSR105KFX_SK-N-DZ",
+  # NB: no consensus because of metastatic sites
+  
+  "Panc1_rep12",
+  
+  "ENCSR346DCU_LNCaP",
+  #"GSE73782_PC3",              # !!! RUNNING !!!
+  #"ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
+  
+  "ENCSR312KHQ_SK-MEL-5",
+  "ENCSR862OGI_RPMI-7951",
+  "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951"
+)
+stopifnot(cl_to_cmp %in% cl_names)
+stopifnot(dir.exists(paste0(cl_to_cmp, folderSuffix)))
 
-source("datasets_settings.R")
-
-
-all_cmps1 <- combn(all_ds, m = 2)
+all_cmps1 <- combn(cl_to_cmp, m = 2)
 all_cmps2 <- all_cmps1[c(2,1),]
-all_cmps <- cbind(all_cmps1, all_cmps2)
+all_cmps <- cbind(all_cmps1, all_cmps2) # because asymmetric matching !
 
 stopifnot(nrow(all_cmps) == 2)
 stopifnot(ncol(all_cmps) > 0)
@@ -66,22 +113,46 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
 
   cat(paste0("*** START: ", ds1, " vs. ", ds2, "\n"))
   
-  all_files1 <- eval(parse(text = paste0(ds1, "Files")))
-  all_files2 <- eval(parse(text = paste0(ds2, "Files")))
+  folder1 <- paste0(ds1, folderSuffix)
+  stopifnot(dir.exists(folder1))
+  all_files1 <- list.files(file.path(folder1, TADfolder), pattern=TADfilePattern, recursive=FALSE, full.names = TRUE)
+  stopifnot(length(all_files1) > 0)  
+  stopifnot(length(all_files1) <= 23)
+  all_chromos1 <- sapply(all_files1, function(file1) {
+    chromo <- gsub(".+_(chr.+?)_.+", "\\1", basename(file1))
+    stopifnot(length(chromo) == 1)
+    stopifnot(chromo %in% all_chromos)
+    chromo
+  })
   
-  name1 <- eval(parse(text = paste0(ds1, "name")))
-  name2 <- eval(parse(text = paste0(ds2, "name")))
+  folder2 <- paste0(ds2, folderSuffix)
+  stopifnot(dir.exists(folder2))
+  all_files2 <- list.files(file.path(folder2, TADfolder), pattern=TADfilePattern, recursive=FALSE, full.names = TRUE)
+  stopifnot(length(all_files2) > 0)  
+  stopifnot(length(all_files2) <= 23)
+  all_chromos2 <- sapply(all_files2, function(file2) {
+    chromo <- gsub(".+_(chr.+?)_.+", "\\1", basename(file2))
+    stopifnot(length(chromo) == 1)
+    stopifnot(chromo %in% all_chromos)
+    chromo
+  })
+    
+  intersectChromos <- intersect(all_chromos1, all_chromos2)
+  stopifnot(length(intersectChromos) > 0)
+  stopifnot(intersectChromos %in% all_chromos)
+  
+  cat(paste0("... ", ds1, " vs. ", ds2, " - # intersectChromos:", length(intersectChromos), "\n"))
   
     
   chromo = "chr1"
   chr_match_dt <- foreach(chromo = intersectChromos, .combine='rbind') %do% {
     
-    cat(paste0("> ", ds1, " vs. ", ds2, " - ", chromo, "\n"))
+    cat(paste0("... ", ds1, " vs. ", ds2, " - ", chromo, "\n"))
     
-    file1 <- all_files1[grepl(paste0(chromo, "_"), basename(all_files1)) & grepl(paste0(name1), all_files1)]
+    file1 <- all_files1[grepl(paste0("_", chromo, "_"), basename(all_files1)) & grepl(paste0("^", ds1, "_"), all_files1)]
     stopifnot(length(file1) == 1)
     
-    file2 <- all_files2[grepl(paste0(chromo, "_"), basename(all_files2)) & grepl(paste0(name2), all_files2)]
+    file2 <- all_files2[grepl(paste0("_", chromo, "_"), basename(all_files2)) & grepl(paste0("^", ds2, "_"), all_files2)]
     stopifnot(length(file2) == 1)
     
     dt1 <- read.delim(file1, stringsAsFactors = FALSE, header=F, col.names = c("chromo", "start", "end"))
@@ -103,6 +174,7 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
     head(dt1, 2)
     head(dt2, 2)
     
+    # because depending on the processing it could be 1 bp missing at the last domain
     last_before1 <- dt1$end[nrow(dt1)]
     last_after1 <- ceiling(last_before1/binSize)*binSize
     stopifnot(last_after1 >= last_before1)
@@ -126,8 +198,7 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
     
     stopifnot(dt1$end > dt1$start)
     stopifnot(dt2$end > dt2$start)
-    
-    
+
     dt1$start <- dt1$start - 1
     dt2$start <- dt2$start - 1
     
@@ -209,15 +280,43 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
 outFile <- file.path(outFold, "all_match_dt.Rdata")
 save(all_match_dt, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
+# 
+# all_match_dt <- eval(parse(text = load(outFile)))
+# stopifnot(nrow(all_match_dt) == (length(intersectChromos) * ncol(all_cmps)))
+load("CMP_DATASETS_MATCHING/all_match_dt.Rdata")
+stop("-- ok -- \n")
 
-all_match_dt <- eval(parse(text = load(outFile)))
-stopifnot(nrow(all_match_dt) == (length(intersectChromos) * ncol(all_cmps)))
+# take intersect chromos here
+tmpDT <- all_match_dt
+tmpDT$cmp <- paste0(tmpDT$ds1, tmpDT$ds2) 
+intersectChromos <- Reduce(intersect, by(tmpDT$cmp, data=tmpDT, FUN=function(x) unique(as.character(x$chromo))))
+rm(tmpDT)
+txt <- paste0("... # intersectChromos:\t", length(intersectChromos), "\n")
+printAndLog(txt, logFile)
+txt <- paste0("... intersectChromos:\t", paste0(intersectChromos, collapse=","), "\n")
+printAndLog(txt, logFile)
 
-# stop("-- ok -- \n")
-
+all_match_dt$ds1_label <- sapply(as.character(all_match_dt$ds1), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+  dslab <- as.character(cl_labs[x])
+  stopifnot(length(dslab) == 1)
+  if(is.na(dslab)) {
+    paste0(names(cl_names[cl_names == x]))
+  } else {
+    paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+  }
+})
+all_match_dt$ds2_label <- sapply(as.character(all_match_dt$ds2), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+  dslab <- as.character(cl_labs[x])
+  stopifnot(length(dslab) == 1)
+  if(is.na(dslab)) {
+    paste0(names(cl_names[cl_names == x]))
+  } else {
+    paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+  }
+})
 #******************************************************************************************************************************************** DRAW SYMMETRIC MATRIX
 
-var_to_plot <- colnames(all_match_dt)[!colnames(all_match_dt) %in% c("ds1", "ds2", "chromo")]
+var_to_plot <- colnames(all_match_dt)[!colnames(all_match_dt) %in% c("ds1", "ds2", "chromo", "ds1_label", "ds2_label")]
 
 curr_var <- "strictMatchRatio"
 
@@ -229,50 +328,41 @@ bdMatchRatio = "Boundary matching ratio"
 
 stopifnot(var_to_plot %in% names(plot_tit))
 
-
-### UNCOMMENT TO HAVE NAME WITH CELL LINES
-# all_match_dt$ds1_name <- sapply(all_match_dt$ds1, function(x) eval(parse(text = paste0(x, "name"))))
-# all_match_dt$ds1_init <- all_match_dt$ds1
-# all_match_dt$ds1 <- paste0(all_match_dt$ds1, "/\n", all_match_dt$ds1_name)
-# 
-# all_match_dt$ds2_name <- sapply(all_match_dt$ds2, function(x) eval(parse(text = paste0(x, "name"))))
-# all_match_dt$ds2_init <- all_match_dt$ds2
-# all_match_dt$ds2 <- paste0(all_match_dt$ds2, "/\n", all_match_dt$ds2_name)
-# 
-# all_match_dt$ds1 <- gsub("_vs_", " ", all_match_dt$ds1)
-# all_match_dt$ds1 <- unlist(sapply(all_match_dt$ds1, function(x) paste0(stri_wrap(str = x, width = strWidthSplit), collapse="\n")))
-# all_match_dt$ds2 <- gsub("_vs_", " ", all_match_dt$ds2)
-# all_match_dt$ds2 <- unlist(sapply(all_match_dt$ds2, function(x) paste0(stri_wrap(str = x, width = strWidthSplit), collapse="\n")))
-
-
-
+curr_var=var_to_plot[1]
 for(curr_var in var_to_plot) {
-
 
   mytit <- plot_tit[curr_var]
   
-  mean_match_dt <- aggregate(as.formula(paste0(curr_var, " ~ ds1 + ds2")), FUN=mean, data = all_match_dt)
+  mean_match_dt <- aggregate(as.formula(paste0(curr_var, " ~ ds1", xlabType, " + ds2", xlabType)), FUN=mean, data = all_match_dt)
   stopifnot(!is.na(mean_match_dt))
   
-  self_match_dt <- data.frame(ds1=unique(c(all_match_dt$ds1, all_match_dt$ds2)), ds2=unique(c(all_match_dt$ds1, all_match_dt$ds2)), tmp = 1)
+  self_match_dt <- data.frame(ds1=unique(c(all_match_dt[, paste0("ds1", xlabType)], all_match_dt[, paste0("ds2", xlabType)])), ds2=unique(c(all_match_dt[, paste0("ds1", xlabType)], all_match_dt[, paste0("ds2", xlabType)])), tmp = 1)
   colnames(self_match_dt)[colnames(self_match_dt) == "tmp"] <- curr_var
+  colnames(self_match_dt)[colnames(self_match_dt) == "ds1"] <- paste0("ds1", xlabType)
+  colnames(self_match_dt)[colnames(self_match_dt) == "ds2"] <- paste0("ds2", xlabType)
+  
   
   ratioDT <- rbind(mean_match_dt, self_match_dt)
   stopifnot(!duplicated(ratioDT))
   
-  ratioDT <- ratioDT[order(ratioDT$ds1, ratioDT$ds2),]
-  corMat <- reshape(ratioDT, idvar="ds1", timevar="ds2", direction="wide")
-  rownames(corMat) <- corMat$ds1
+  ratioDT <- ratioDT[order(ratioDT[, paste0("ds1", xlabType)], ratioDT[, paste0("ds2", xlabType)]),]
+  corMat <- reshape(ratioDT, idvar=paste0("ds1", xlabType), timevar=paste0("ds2", xlabType), direction="wide")
+  rownames(corMat) <- corMat[, paste0("ds1", xlabType)]
   colnames(corMat) <- sub(paste0(curr_var, "."), "", colnames(corMat))
-  corMat$ds1 <- NULL
+  corMat[, paste0("ds1", xlabType)] <- NULL
   corMat <- as.matrix(corMat)
   stopifnot(rownames(corMat) == colnames(corMat))
   # stopifnot(isSymmetric(as.matrix(corMat)))
   stopifnot(!is.na(corMat))
   corMat[1:3,1:3]
   
-  
-  tit <- paste0(curr_var, " between tissues (with consensus)\n")
+  if(any(grepl("Consensus", rownames(corMat)))) {
+    tit <- paste0(curr_var, " between tissues (with consensus)\n")
+    outFile <- file.path(outFold, paste0(curr_var, "_tissues_with_consensus_match_heatmap.", plotType))
+  } else {
+    tit <- paste0(curr_var, " between tissues")
+    outFile <- file.path(outFold, paste0(curr_var, "_tissues_match_heatmap.", plotType))
+  }
   
   outfile_dendro <- file.path(outFold, paste0(curr_var, "row.dend_check.png"))
   # with pdf output a different unicode character -> save as svg
@@ -292,7 +382,6 @@ for(curr_var in var_to_plot) {
                                                      lab_color_vect = NULL)
   
   
-  outFile <- file.path(outFold, paste0(curr_var, "_tissues_consensus_match_heatmap.", plotType))
   ggsave(plot=gplot_dendro, file = outFile, width = widthMat, height = heightMat)
   cat(paste0("... written: ", outFile, "\n"))
   foo <- try(dev.off())
@@ -303,29 +392,54 @@ for(curr_var in var_to_plot) {
   
   
   #******************************************************************************************************************************************** BOXPLOT FOR THE CONSENSUS
-  for(tissue in c("lung", "breast", "mcf7", "kidney", "skin")) {
+  tmpDS <- unique(c(all_match_dt$ds1_label, all_match_dt$ds2_label))
+  consensusTissues <- tmpDS[grepl("Consensus", tmpDS)] 
+  
+  if(length(consensusTissues) > 0) consTissue=consensusTissues[1]
+  for(consTissue in consensusTissues) {
       
-    consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2) ) &
-                                  (grepl(tolower(tissue), tolower(all_match_dt$ds1)) & grepl(tolower(tissue), tolower(all_match_dt$ds2)) )
+    tissue <- gsub("Consensus", "", consTissue)
+    
+    consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) ) &
+                                  (grepl(tolower(tissue), tolower(all_match_dt$ds1_label)) & grepl(tolower(tissue), tolower(all_match_dt$ds2_label)) )
                                 ,]
+    stopifnot(nrow(consensus_dt) > 0)
     
     
-    # if short name -> cannot find mcf7 cell lines
-    if(nrow(consensus_dt) == 0 & tissue == "mcf7") {
-      consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2))  &
-                                    ( all_match_dt$ds1 %in% c("breastCL1", "breastCL2") | all_match_dt$ds2 %in% c("breastCL1", "breastCL2") ) 
-                                  ,]
+    
+    # put the consensusDS in newDS1 column
+    consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds1_label), 
+                                  consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
+    consensus_dt$newDS2 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds2_label), 
+                                  consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
+    if(xlabType == "") {
+      consensus_dt$newDS1_label <- sapply(as.character(consensus_dt$newDS1), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+        dslab <- as.character(cl_labs[x])
+        stopifnot(length(dslab) == 1)
+        if(is.na(dslab)) {
+          paste0(names(cl_names[cl_names == x]))
+        } else {
+          paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+        }
+      })
+      consensus_dt$newDS2_label <- sapply(as.character(consensus_dt$newDS2), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+        dslab <- as.character(cl_labs[x])
+        stopifnot(length(dslab) == 1)
+        if(is.na(dslab)) {
+          paste0(names(cl_names[cl_names == x]))
+        } else {
+          paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+        }
+      })
+      
+    } else if(xlabType == "_label") {
+      consensus_dt$newDS1_label <- consensus_dt$newDS1
+      consensus_dt$newDS2_label <- consensus_dt$newDS2
     }
+    stopifnot(grepl(paste0(tissue, "Consensus"), consensus_dt$newDS1_label))
+    stopifnot(!grepl(paste0(tissue, "Consensus"), consensus_dt$newDS2_label))
     
     
-    consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds1), consensus_dt$ds1, consensus_dt$ds2)
-    consensus_dt$newDS2 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds2), consensus_dt$ds1, consensus_dt$ds2)
-    stopifnot(grepl(paste0(tissue, "Consensus"), consensus_dt$newDS1))
-    stopifnot(!grepl(paste0(tissue, "Consensus"), consensus_dt$newDS2))
-    
-    # consensus_dt <- all_match_dt[all_match_dt$ds1 == "consensus" | all_match_dt$ds2 == "consensus",]
-    # consensus_dt$newDS1 <- ifelse(consensus_dt$ds1 == "consensus", consensus_dt$ds1, consensus_dt$ds2)
-    # consensus_dt$newDS2 <- ifelse(consensus_dt$ds2 == "consensus", consensus_dt$ds1, consensus_dt$ds2)
     consensus_dt$comp <- paste0(consensus_dt$newDS1, "_", consensus_dt$newDS2)
     stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds1[i], consensus_dt$comp[i])))
     stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds2[i], consensus_dt$comp[i])))
@@ -333,26 +447,17 @@ for(curr_var in var_to_plot) {
     mean_consensus_dt <- aggregate(as.formula(paste0(curr_var, " ~ newDS1 + newDS2")), FUN=mean, data = consensus_dt)
     mean_consensus_dt <- mean_consensus_dt[order(mean_consensus_dt[, curr_var], decreasing = TRUE),]
     consensus_dt$newDS2 <- factor(as.character(consensus_dt$newDS2), levels = mean_consensus_dt$newDS2)
-    consensus_dt$chromo <- factor(as.character(consensus_dt$chromo), levels = paste0("chr", c(1:22, "X")))
+    consensus_dt$chromo <- factor(as.character(consensus_dt$chromo), levels = all_chromos)
     
     stopifnot(!is.na(consensus_dt))
     
     p_common <- ggplot(consensus_dt, aes_string(x = "newDS2", y = curr_var)) + 
       geom_boxplot(outlier.shape=NA) +
-              # geom_jitter(aes(colour = chromo)) +
-      scale_x_discrete(name="")+
-      # scale_y_continuous(name=paste0("-log10(", padjVarGO, ")"),
-#      scale_y_continuous(name=paste0(curr_var, " with consensus"),
+      scale_x_discrete(name="") +
       scale_y_continuous(name=paste0(mytit, " with consensus"),
-                         breaks = scales::pretty_breaks(n = 10))+ #, limits = c(0, max(auc_DT_m$value)+0.05))+
-      # coord_cartesian(expand = FALSE) +
-      # scale_fill_manual(values = c(selectGenes = "dodgerblue4", selectTADs_genes = "darkorange2"),
-      #                   labels = c(selectGenes = "selectGenes", selectTADs_genes = "selectTADs_genes"))+
-      # scale_colour_manual(values = c(selectGenes = "dodgerblue4", selectTADs_genes = "darkorange2"),
-      #                     labels = c(selectGenes = "selectGenes", selectTADs_genes = "selectTADs_genes"), guide = F)+
+                         breaks = scales::pretty_breaks(n = 10))+ 
       labs(colour  = "") +
-#      ggtitle(label = paste0(curr_var, " between ", tissue, " and consensus"))+
-      ggtitle(label = paste0(mytit, " between ", tissue, " and consensus"))+
+      ggtitle(label = paste0(mytit, " between ", tissue, " and tissue consensus"))+
       theme( # Increase size of axis lines
         # top, right, bottom and left
         # plot.margin = unit(c(1, 1, 4.5, 1), "lines"),
@@ -373,21 +478,18 @@ for(curr_var in var_to_plot) {
         legend.background =  element_rect(),
         legend.key = element_blank()
         # axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1)
-      ) #+
-    # geom_hline(yintercept = 1, linetype = 2)
+      ) 
     
     if(SSHFS) p_common
-    
     p_dot <- p_common + geom_jitter(aes(colour = chromo)) 
     if(SSHFS) p_dot
-    
     p_txt <- p_common + geom_text(aes(label=chromo, colour=chromo, fontface="bold"),size=2.5, position = position_jitter(w = 0.3)) + guides(colour = "none")
     if(SSHFS) p_txt
     
-    outFile <- file.path(outFold, paste0(curr_var, "_matching_", tissue, "_consensus_boxplot_chromoDots.", plotType))
-    ggsave(plot=p_dot, file = outFile, width = widthBoxplot, height = heightBoxplot)
-    cat(paste0("... written: ", outFile, "\n"))
-    foo <- try(dev.off())
+    # outFile <- file.path(outFold, paste0(curr_var, "_matching_", tissue, "_consensus_boxplot_chromoDots.", plotType))
+    # ggsave(plot=p_dot, file = outFile, width = widthBoxplot, height = heightBoxplot)
+    # cat(paste0("... written: ", outFile, "\n"))
+    # foo <- try(dev.off())
     
     outFile <- file.path(outFold, paste0(curr_var, "_matching_", tissue, "_consensus_boxplot_chromoLabs.", plotType))
     ggsave(plot=p_txt, file = outFile, width = widthBoxplot, height = heightBoxplot)

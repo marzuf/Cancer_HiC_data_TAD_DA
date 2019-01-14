@@ -7,11 +7,17 @@
 # ./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # 14.01.2018
 
 # KIDNEY
-# ./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich
+# ./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # 14.01.2018
+# ./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # 14.01.2018
+# ./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich	# 14.01.2018
+
+# SKIN
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf # 14.01.2018
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 14.01.2018
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 14.01.2018
 
 
-
-#### run 22.12.2018: (14 ds)
+#### TO RUN:
 
 # GBM
 # ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_mesenchymal
@@ -25,20 +31,39 @@
 # ./run_pipeline.sh GSE105465_ENCFF777DUA_Caki2_vs_GSE105235_ENCFF235TGH_G401 TCGAkich_norm_kich
 
 # LUNG
-# ./run_pipeline.sh GSE105600_ENCFF852YOE_A549_vs_GSE105725_ENCFF697NNX_NCIH460 TCGAluad_mutKRAS_mutEGFR
-# ./run_pipeline.sh GSE105600_ENCFF852YOE_A549_vs_GSE105725_ENCFF697NNX_NCIH460 TCGAluad_nonsmoker_smoker
-# ./run_pipeline.sh GSE105600_ENCFF852YOE_A549_vs_GSE105725_ENCFF697NNX_NCIH460 TCGAluad_wt_mutKRAS
-# ./run_pipeline.sh GSE105600_ENCFF852YOE_A549_vs_GSE105725_ENCFF697NNX_NCIH460 TCGAlusc_norm_lusc
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc
+
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS
+# ./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc
+
+
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc
+
 
 # SKIN
-# ./run_pipeline.sh GSE106022_ENCFF614EKT_RPMI7951_vs_GSE105491_ENCFF458OWO_SKMEL5 TCGAskcm_lowInf_highInf
-# ./run_pipeline.sh GSE106022_ENCFF614EKT_RPMI7951_vs_GSE105491_ENCFF458OWO_SKMEL5 TCGAskcm_wt_mutBRAF
-# ./run_pipeline.sh GSE106022_ENCFF614EKT_RPMI7951_vs_GSE105491_ENCFF458OWO_SKMEL5 TCGAskcm_wt_mutCTNNB1
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1
+
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
+
+
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
+
 
 
 # PANCREAS
 
-# ./run_pipeline.sh GSE105566_ENCFF358MNA_Panc1 TCGApaad_wt_mutKRAS
+# ./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS
 
 # PROSTATE
 
