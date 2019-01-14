@@ -9,10 +9,11 @@ options(scipen=100)
 cat("> START: cmp_datasets_matching.R\n")
 # Rscript cmp_datasets_matching.R
 
+buildTable <- FALSE
+
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "~/media/electron", "")
-
 
 source(file.path("utils_fct.R"))
 source("../Dixon2018_integrative_data/MoC_heatmap_fct.R")
@@ -40,6 +41,8 @@ binSize <- 40000
 binSizeKb <- binSize/1000
 tolRad <- 2*binSize
 
+txt <- paste0("!! Hard-coded buildTable:\t", as.character(buildTable), "\n")
+printAndLog(txt, logFile)
 txt <- paste0("!! hard-coded bin size:\t", binSize, "\n")
 printAndLog(txt, logFile)
 txt <- paste0("!! hard-coded tolerance radius:\t", tolRad, "\n")
@@ -91,7 +94,9 @@ cl_to_cmp <- c(
   
   "ENCSR312KHQ_SK-MEL-5",
   "ENCSR862OGI_RPMI-7951",
-  "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951"
+  "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951",
+  
+  "pipelineConsensus"
 )
 stopifnot(cl_to_cmp %in% cl_names)
 stopifnot(dir.exists(paste0(cl_to_cmp, folderSuffix)))
@@ -104,6 +109,7 @@ stopifnot(nrow(all_cmps) == 2)
 stopifnot(ncol(all_cmps) > 0)
 
 i=1
+if(buildTable){
 all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
   
   # percent matching of the domains from ds1 in ds2
@@ -181,8 +187,10 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
     dt1$end[nrow(dt1)] <- last_after1
     stopifnot(dt1$end %% binSize == 0)
     stopifnot( (dt1$start-1) %% binSize == 0)
-    txt <- paste0("... change last end from\t", last_before1, "\tto\t", last_after1, "\n" )
-    printAndLog(txt, logFile)
+    if(last_before1 != last_after1) {
+      txt <- paste0("... change last end from\t", last_before1, "\tto\t", last_after1, "\n" )
+      printAndLog(txt, logFile)
+    }
     
     last_before2 <- dt2$end[nrow(dt2)]
     last_after2 <- ceiling(last_before2/binSize)*binSize
@@ -190,8 +198,10 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
     dt2$end[nrow(dt2)] <- last_after2
     stopifnot(dt2$end %% binSize == 0)
     stopifnot( (dt2$start-1) %% binSize == 0)
-    txt <- paste0("... change last end from\t", last_before2, "\tto\t", last_after2, "\n" )
-    printAndLog(txt, logFile)
+    if(last_before2 != last_after2){
+      txt <- paste0("... change last end from\t", last_before2, "\tto\t", last_after2, "\n" )
+      printAndLog(txt, logFile)
+    }
     
     stopifnot(!is.na(dt1))
     stopifnot(!is.na(dt2))
@@ -280,11 +290,15 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
 outFile <- file.path(outFold, "all_match_dt.Rdata")
 save(all_match_dt, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
+} else {
+  outFile <- file.path(outFold, "all_match_dt.Rdata")
+  all_match_dt <- eval(parse(text = load(outFile)))
+}
 # 
 # all_match_dt <- eval(parse(text = load(outFile)))
 # stopifnot(nrow(all_match_dt) == (length(intersectChromos) * ncol(all_cmps)))
-load("CMP_DATASETS_MATCHING/all_match_dt.Rdata")
-stop("-- ok -- \n")
+# load("CMP_DATASETS_MATCHING/all_match_dt.Rdata")
+# stop("-- ok -- \n")
 
 # take intersect chromos here
 tmpDT <- all_match_dt
@@ -396,13 +410,21 @@ for(curr_var in var_to_plot) {
   consensusTissues <- tmpDS[grepl("Consensus", tmpDS)] 
   
   if(length(consensusTissues) > 0) consTissue=consensusTissues[1]
+  
   for(consTissue in consensusTissues) {
       
     tissue <- gsub("Consensus", "", consTissue)
     
-    consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) ) &
-                                  (grepl(tolower(tissue), tolower(all_match_dt$ds1_label)) & grepl(tolower(tissue), tolower(all_match_dt$ds2_label)) )
-                                ,]
+    if(tissue == "pipeline") {
+      consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) )
+                                    ,]
+    }else {
+      consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) ) &
+                                      (grepl(tolower(tissue), tolower(all_match_dt$ds1_label)) & grepl(tolower(tissue), tolower(all_match_dt$ds2_label)) )
+                                    ,]
+    }
+    
+
     stopifnot(nrow(consensus_dt) > 0)
     
     
@@ -441,8 +463,13 @@ for(curr_var in var_to_plot) {
     
     
     consensus_dt$comp <- paste0(consensus_dt$newDS1, "_", consensus_dt$newDS2)
-    stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds1[i], consensus_dt$comp[i])))
-    stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds2[i], consensus_dt$comp[i])))
+    stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(strsplit(consensus_dt[, paste0("ds1", xlabType)][i], "\n")[[1]][1],
+                                                                    #consensus_dt[, paste0("ds1", xlabType)][i],
+                                                                   consensus_dt$comp[i])))
+    stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(
+                                                                    strsplit(consensus_dt[, paste0("ds2", xlabType)][i], "\n")[[1]][1],
+                                                                    consensus_dt[, paste0("ds2", xlabType)][i], 
+                                                                   consensus_dt$comp[i])))
     
     mean_consensus_dt <- aggregate(as.formula(paste0(curr_var, " ~ newDS1 + newDS2")), FUN=mean, data = consensus_dt)
     mean_consensus_dt <- mean_consensus_dt[order(mean_consensus_dt[, curr_var], decreasing = TRUE),]
@@ -497,87 +524,8 @@ for(curr_var in var_to_plot) {
     foo <- try(dev.off())
   }
   
-  tissue <- pipConsensusname
-  if( all(all_match_dt$ds1 %in% all_ds)) tissue <- "pipConsensus"
-  
-  consensus_dt <- all_match_dt[ (grepl(paste0(tissue), all_match_dt$ds1) | grepl(paste0(tissue), all_match_dt$ds2) ),]
-  
-  
-  
-  # consensus_dt$newDS1 <- ifelse(consensus_dt$ds1 == "consensus", consensus_dt$ds1, consensus_dt$ds2)
-  # consensus_dt$newDS2 <- ifelse(consensus_dt$ds2 == "consensus", consensus_dt$ds1, consensus_dt$ds2)
-  consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue), consensus_dt$ds1), consensus_dt$ds1, consensus_dt$ds2)
-  consensus_dt$newDS2 <- ifelse(grepl(paste0(tissue), consensus_dt$ds2), consensus_dt$ds1, consensus_dt$ds2)
-  
-  stopifnot(grepl(paste0(tissue), consensus_dt$newDS1))
-  stopifnot(!grepl(paste0(tissue), consensus_dt$newDS2))
-  
-  consensus_dt$comp <- paste0(consensus_dt$newDS1, "_", consensus_dt$newDS2)
-  stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds1[i], consensus_dt$comp[i])))
-  stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(consensus_dt$ds2[i], consensus_dt$comp[i])))
-  
-  mean_consensus_dt <- aggregate(as.formula(paste0(curr_var, " ~ newDS1 + newDS2")), FUN=mean, data = consensus_dt)
-  mean_consensus_dt <- mean_consensus_dt[order(mean_consensus_dt[,curr_var], decreasing = TRUE),]
-  consensus_dt$newDS2 <- factor(as.character(consensus_dt$newDS2), levels = mean_consensus_dt$newDS2)
-  consensus_dt$chromo <- factor(as.character(consensus_dt$chromo), levels = paste0("chr", c(1:22, "X")))
-  
-  stopifnot(!is.na(consensus_dt))
-  
-  p_common <- ggplot(consensus_dt, aes_string(x = "newDS2", y = curr_var)) + 
-    geom_boxplot(outlier.shape=NA) +
-    # geom_jitter(aes(colour = chromo)) +
-    scale_x_discrete(name="")+
-    # scale_y_continuous(name=paste0("-log10(", padjVarGO, ")"),
-    scale_y_continuous(name=paste0(curr_var, " with pipeline consensus"),
-                       breaks = scales::pretty_breaks(n = 10))+ #, limits = c(0, max(auc_DT_m$value)+0.05))+
-    # coord_cartesian(expand = FALSE) +
-    # scale_fill_manual(values = c(selectGenes = "dodgerblue4", selectTADs_genes = "darkorange2"),
-    #                   labels = c(selectGenes = "selectGenes", selectTADs_genes = "selectTADs_genes"))+
-    # scale_colour_manual(values = c(selectGenes = "dodgerblue4", selectTADs_genes = "darkorange2"),
-    #                     labels = c(selectGenes = "selectGenes", selectTADs_genes = "selectTADs_genes"), guide = F)+
-    labs(colour  = "") +
-    ggtitle(label = paste0(curr_var, " with ", tissue))+
-    theme( # Increase size of axis lines
-      # top, right, bottom and left
-      # plot.margin = unit(c(1, 1, 4.5, 1), "lines"),
-      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-      plot.subtitle = element_text(hjust = 0.5, size=10),
-      panel.grid = element_blank(),
-      # panel.grid.major = element_line(colour = "lightpink"),
-      # strip.text.x = element_text(),
-      axis.text.x = element_text( hjust=1,vjust = 0.5, size=12, angle = 90),
-      axis.line.x = element_line(size = .2, color = "black"),
-      axis.line.y = element_line(size = .3, color = "black"),
-      #    axis.ticks.x = element_blank(),
-      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
-      axis.title.y = element_text(color="black", size=12),
-      axis.title.x = element_text(color="black", size=12),
-      panel.border = element_blank(),
-      panel.background = element_rect(fill = "transparent"),
-      legend.background =  element_rect(),
-      legend.key = element_blank()
-      # axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1)
-    ) #+
-  # geom_hline(yintercept = 1, linetype = 2)
-  
-  if(SSHFS) p_all
-  
-  p_dot <- p_common +  geom_jitter(aes(colour = chromo))
-  if(SSHFS) p_dot
-  
-  p_txt <- p_common + geom_text(aes(label=chromo, colour=chromo, fontface="bold"),size=2.5, position = position_jitter(w = 0.3)) + guides(colour = "none")
-  if(SSHFS) p_txt
-  
-  outFile <- file.path(outFold, paste0(curr_var, "_matching_", tissue, "_consensus_boxplot_chromoDots.", plotType))
-  ggsave(plot=p_dot, file = outFile, width = widthBoxplot, height = heightBoxplot)
-  cat(paste0("... written: ", outFile, "\n"))
-  
-  outFile <- file.path(outFold, paste0(curr_var, "_matching_", tissue, "_consensus_boxplot_chromoLabs.", plotType))
-  ggsave(plot=p_txt, file = outFile, width = widthBoxplot, height = heightBoxplot)
-  cat(paste0("... written: ", outFile, "\n"))
-  
-  
-}
+
+} # end iterating var_to_plot
 
 ### add the same boxplot here for pipTopDomconsensus only !!!
 

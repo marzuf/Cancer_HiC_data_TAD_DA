@@ -9,6 +9,8 @@ options(scipen=100)
 cat("> START: cmp_datasets_nbrTADs.R\n")
 # Rscript cmp_datasets_nbrTADs.R
 
+buildTable <- TRUE
+
 SSHFS <- FALSE
 # setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "~/media/electron", "")
@@ -69,7 +71,10 @@ cl_to_cmp <- c(
   
   "ENCSR312KHQ_SK-MEL-5",
   "ENCSR862OGI_RPMI-7951",
-  "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951"
+  "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951",
+  
+  "pipelineConsensus"
+  
 )
 stopifnot(cl_to_cmp %in% cl_names)
 stopifnot(dir.exists(paste0(cl_to_cmp, folderSuffix)))
@@ -91,6 +96,8 @@ myWidth <- ifelse(plotType == "png", 400, 7)
 
 cexPlot <- 1.2
 
+txt <- paste0("!! Hard-coded buildTable:\t", as.character(buildTable), "\n")
+printAndLog(txt, logFile)
 txt <- paste0("!! Hard-coded bin size:\t", binSize, "\n")
 printAndLog(txt, logFile)
 txt <- paste0("!! Hard-coded # cell lines compared:\t", length(cl_to_cmp), "\n")
@@ -98,9 +105,10 @@ printAndLog(txt, logFile)
 txt <- paste0("!! Hard-coded cell lines compared:\t", paste0(cl_to_cmp, collapse=","), "\n")
 printAndLog(txt, logFile)
 
-ds1=cl_to_cmp[i]
+ds1=cl_to_cmp[1]
 ds1="MCF-7ENCSR549MGQ_T47D"
 
+if(buildTable){
 all_nbr_dt <- foreach(ds1 = cl_to_cmp, .combine="rbind") %dopar% {
   
   folder1 <- paste0(ds1, folderSuffix)
@@ -149,6 +157,12 @@ all_nbr_dt <- foreach(ds1 = cl_to_cmp, .combine="rbind") %dopar% {
 outFile <- file.path(outFold, "all_nbr_dt.Rdata")
 save(all_nbr_dt, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
+
+} else {
+  outFile <- file.path(outFold, "all_nbr_dt.Rdata")
+  all_nbr_dt <- eval(parse(text = load(outFile)))
+}
+
 
 # take intersect chromos here
 intersectChromos <- Reduce(intersect, by(all_nbr_dt$ds1, data=all_nbr_dt, FUN=function(x) unique(as.character(x$chromo))))

@@ -29,7 +29,9 @@ cl_labs <- c(
 "GSE73782_PC3" = "JAK",
 
 "ENCSR312KHQ_SK-MEL-5" = "JD",
-"ENCSR862OGI_RPMI-7951" = "JD"
+"ENCSR862OGI_RPMI-7951" = "JD",
+
+"pipelineConsensus" = NA
 )
 stopifnot(!duplicated(names(cl_labs)))
 
@@ -62,7 +64,9 @@ cl_names <- c(
 "prostateCl2" = "GSE73782_PC3",				# !!! RUNNING !!!
 
 "skinCl1" = "ENCSR312KHQ_SK-MEL-5",
-"skinCl2" = "ENCSR862OGI_RPMI-7951"
+"skinCl2" = "ENCSR862OGI_RPMI-7951",
+
+"pipelineConsensus" = "pipelineConsensus"
 )
 
 stopifnot( length(cl_names) == length(cl_labs))
