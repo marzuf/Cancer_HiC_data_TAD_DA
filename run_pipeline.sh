@@ -2,7 +2,7 @@
 
 
 # BREAST
-# ./run_pipeline.sh MCF-7_40Kb TCGAbrca_lum_bas
+# ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas
 
 
 
@@ -46,11 +46,51 @@ if [[ $# != 2 ]]; then
     exit 1
 fi
 
+hic_dataset="$1"
+expr_dataset="$2"
+
+echo "*** START ***"
+echo "... > Hi-C dataset: $hic_dataset"
+echo "... > Gene expression dataset: $expr_dataset"
+
+#********************** HARD-CODED SETTINGS FOR THE PIPELINE ********************************************
+step1=1     # prepare setting file
+step2=1    # run the pipeline
+
+TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "3" "4" "5" "6" "7" "8c" "9" "10" "11" "13cleanInput" "14f2" "170revision2EZH2" )
+#TAD_DE_pipSteps=( "0cleanInputTCGA" )
+#TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "3" )
+#TAD_DE_pipSteps=( "4" "5" "6" "7" "8c")
 
 runDir="/mnt/etemp/marie/Cancer_HiC_data_TAD_DA"
 
 TAD_DE_pipDir="/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_TopDom"
 TAD_DE_script="./zzz_run_given_step_given_data_v2.sh"
+old_inputFolder="/mnt/ed4/marie/scripts/TAD_DE_pipeline/SETTING_FILES_cleanInput"
+nPermut="10000"
+#nPermut="10"
+ncpu="20"
+
+Rexec=`which Rscript`
+
+new_inputFolder="$runDir/PIPELINE/INPUT_FILES/$hic_dataset"
+mkdir -p $new_inputFolder
+outputFolder="$runDir/PIPELINE/OUTPUT_FOLDER/$hic_dataset/$expr_dataset"
+mkdir -p $outputFolder
+
+echo "!!! IMPORTANT HARD-CODED SETTINGS !!!"
+echo "... ! step1 = $step1"
+echo "... ! step2 = $step2"
+
+echo "... ! old_inputFolder = $old_inputFolder"
+echo "... ! nPermut = $nPermut"
+echo "... ! ncpu = $ncpu"
+
+if [[ $step2 -eq 1 ]]; then
+	echo "... ! TAD_DE_pipDir = $TAD_DE_pipDir"
+	echo "... ! TAD_DE_script = $TAD_DE_script"
+	echo "... ! TAD_DE_pipStep(s): ${TAD_DE_pipSteps[*]}"
+fi
 
 ###################################### FUNCTION DEFINITIONS
 
@@ -61,7 +101,7 @@ function mvBack {
 trap mvBack EXIT
 
 runCMD() {
-  echo "$1"
+  echo "> $1"
   eval $1
 }
 
@@ -71,37 +111,7 @@ if [[ ! -f  $2 ]]; then
     exit 1
 fi
 }
-###################################### 
-
-hic_dataset="$1"
-expr_dataset="$2"
-
-echo "*** START ***"
-echo "... > Hi-C dataset: $hic_dataset"
-echo "... > Gene expression dataset: $expr_dataset"
-
-old_inputFolder="/mnt/ed4/marie/scripts/TAD_DE_pipeline/SETTING_FILES_cleanInput"
-
-
-#********************** HARD-CODED SETTINGS FOR THE PIPELINE ********************************************
-Rexec=`which Rscript`
-
-new_inputFolder="$runDir/PIPELINE/INPUT_FILES/$hic_dataset"
-mkdir -p $new_inputFolder
-outputFolder="$runDir/PIPELINE/OUTPUT_FOLDER/$hic_dataset/$expr_dataset"
-mkdir -p $outputFolder
-
-nPermut="10000"
-ncpu="20"
-
-step1=1     # prepare setting file
-step2=1     # run the pipeline
-
-TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "3" "5" "4" "6" "7" "8c" "9" "10" "11" "13cleanInput" "14f2" "170revision2EZH2" )
-
-
-#****************************************************************************************
-
+############################################################################
 
 old_setting_file="$old_inputFolder/run_settings_${expr_dataset}.R"
 
@@ -128,8 +138,6 @@ new_gene2tad_file="$hic_dataset/genes2tad/all_genes_positions.txt"
 checkFile new_TADpos_file $new_TADpos_file
 
 checkFile new_gene2tad_file $new_gene2tad_file
-
-
 
 if [[ "$step1" -eq 1 ]] ; then
 
@@ -190,9 +198,8 @@ if [[ "$step2" -eq 1 ]] ; then
 	$TAD_DE_script ${new_setting_file} `echo ${TAD_DE_pipSteps[*]}`
 
 	cd $runDir
-	echo "> END STEP2:" $(date -R) 
+	echo "> END STEP2:" $(date -R)
 fi
-
 
 ###################################################################################################################################################
 ########## END ####################################################################################################################################

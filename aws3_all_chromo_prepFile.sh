@@ -32,6 +32,10 @@ all_chromo=( "chr"{1..22} "chrX" )
 #all_chromo=( "chr21" )
 #all_chromo=( "chr1" "chr9" )
 
+echo "*** START ***"
+echo "... > Cell line: $cl"
+echo "... > Chromosome(s): ${all_chromo[*]}"
+
 inFold="${cl}/RAW_${binSizeKb}kb"
 
 outFold="${cl}/PRE_${binSizeKb}kb"

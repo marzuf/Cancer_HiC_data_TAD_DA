@@ -34,14 +34,16 @@ newBinSizeKb="40"
 #all_chromo=( "chr1" "chr9" )
 all_chromo=( "chrX" )
 
+echo "*** START ***"
+echo "... > Cell line: $cl"
+echo "... > Chromosome(s): ${all_chromo[*]}"
+
 oldFold="${cl}/RAW_${oldBinSizeKb}kb"
 
 newFold="${cl}/RAW_${newBinSizeKb}kb"
-
 mkdir -p $newFold
 
 for chromo in "${all_chromo[@]}"; do
-
 	
 #  Rscript prepFromHiC_aggregCounts.R -f MCF-7/RAW_10kb/MCF-7_chr16_RAW_10kb.hic.counts -F MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts -b 10000 -B 40000 > MCF-7/RAW_40kb/MCF-7_chr16_RAW_40kb.hic.counts_aggregCounts.log
 #  Rscript prepFromHiC_aggregCounts.R -f oldFile -F newFile -b oldBinSizeBp -B newBinSizeBp > logfile

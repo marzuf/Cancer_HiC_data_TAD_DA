@@ -37,8 +37,7 @@ step4=1     # convert TopDom BED format to FINAL DOMAINS BED format # <cell_line
 
 # INPUT: .hic files from merged replicates
 
-#####**** SOME FUNCTIONS
-
+##################################################**** SOME FUNCTIONS
 runCMD() {
   echo "> $1"
   eval $1
@@ -50,13 +49,10 @@ if [[ ! -f  $2 ]]; then
     exit 1
 fi
 }
-
-
-#####************************
+#############################################************************
 
 
 #####**** HARD-CODED SETTINGS
-
 # for all steps
 norm="KR"
 binSizeKb="40"

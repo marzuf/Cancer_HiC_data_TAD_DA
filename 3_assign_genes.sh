@@ -5,7 +5,6 @@
 # ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
 # (see what has been run in all_cmds_pip.txt)
 
-
 start_time=$(date -R)    
 #set -e  # comment otherwise do not cat at the end
 
@@ -21,25 +20,14 @@ all_chromo=( "chr"{1..22} "chrX" )  # -> need to do all chromo to have 1 single 
 #all_chromo=( "chr15" )
 
 clName="$1"
-#chromo="$2"
 
 echo "*** START ***"
 echo "... > Cell line: $clName"
-#echo "... > Chromosome: $chromo"
+echo "... > Chromosome(s): ${all_chromo[*]}"
 
 step1=1		# assign genes to TADs
 
-
-# input file:
-# MCF-7_40kb/FINAL_DOMAINS/MCF-7_chr15_KR_40kb_final_domains.txt
-#  <cl1cl2>_40kb/FINAL_DOMAINS/<cl1cl2>_chr15_KR_40kb_final_domains.txt  # for the consensus: pass cl1namecl2name as clname
- 
-# .../${clName}_${chromo}_${norm}_${binSize}kb_final_domains.txt
-  
-# output file:
-
-#####**** SOME FUNCTIONS
-
+###################################**** SOME FUNCTIONS
 runCMD() {
   echo "> $1"
   eval $1
@@ -52,8 +40,7 @@ if [[ ! -f  $2 ]]; then
     exit 1
 fi
 }
-
-#####************************
+###################################************************
 
 
 #####**** HARD-CODED SETTINGS

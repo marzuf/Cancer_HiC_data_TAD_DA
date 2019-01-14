@@ -26,6 +26,11 @@ all_chromo=( {1..23} "X" )
 #all_chromo=( "1" "6" "15" "21" )
 # all_chromo=( "9" )
 
+echo "*** START ***"
+echo "... > Cell line: $cl"
+echo "... > Chromosome(s): ${all_chromo[*]}"
+
+
 outFold="$cl/RAW_${resolKb}kb"
 mkdir -p $outFold
 
