@@ -214,9 +214,9 @@ for(var_to_plot in c("rowSum", "rowSum_log10", "rowSumNoOut", "rowSumNoOut_log10
   cat(paste0("... written: ", outFile, "\n"))
 }
 
-all_files <- all_files[!grepl("_matrixRowSum\\.Rdata$", all_files)]
-curr_file <- all_files[1]
-all_resol_DT <- foreach(curr_file = all_files, .combine='rbind') %do% {
+all_files_rowSum <- all_files_rowSum[!grepl("_matrixRowSum\\.Rdata$", all_files_rowSum)]
+curr_file <- all_files_rowSum[1]
+all_resol_DT <- foreach(curr_file = all_files_rowSum, .combine='rbind') %do% {
   eval(parse(text=load(curr_file)))
 }
 
