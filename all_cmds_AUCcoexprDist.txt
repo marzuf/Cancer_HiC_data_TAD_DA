@@ -1,6 +1,6 @@
 ### PREPARE GENE DISTANCE FILE
 # DS launched 15.01.2018:
-all_TAD_files_ds=(
+all_TAD_files_ds=(									# => r
 #"MCF-7_40kb"  # run separately for test
 "ENCSR549MGQ_T47D_40kb"
 "MCF-7ENCSR549MGQ_T47D_40kb"
@@ -26,8 +26,8 @@ all_TAD_files_ds=(
 
 ### PREPARE GENE SAME FAMILY FILE
 
-./all_prep_data_for_AUC_coexprDist_sameFam.sh
-# DS launched 15.01.2018:
+./all_prep_data_for_AUC_coexprDist_sameFam.sh   
+# DS launched 15.01.2018:  									# => done 15.01.2018
 all_TAD_files_ds=(
 #"MCF-7_40kb"  # run separately for test
 "ENCSR549MGQ_T47D_40kb"
@@ -54,7 +54,7 @@ all_TAD_files_ds=(
 ### PREPARE GENE SAME TAD FILE
 
 ./all_prep_data_for_AUC_coexprDist_sameTAD.sh
-# DS launched 15.01.2018:
+# DS launched 15.01.2018:									# => done 15.01.2018
 all_TAD_files_ds=(
 #"MCF-7_40kb"  # run separately for test
 "ENCSR549MGQ_T47D_40kb"

@@ -122,6 +122,12 @@ cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
+./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3   # => 
+Rscript check_TCGA_fpkm.R K562_40kb TCGAlaml_wt_mutFLT3  # => 
+Rscript check_step17_files.R K562_40kb TCGAlaml_wt_mutFLT3  # =>
+
+
+
 #***********************************************************
 # ENCSR444WCZ_A549 - lung 1/2
 #***********************************************************
@@ -321,14 +327,18 @@ cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | un
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => r
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf  # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF		 # => r
+
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF		 # => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# => r
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
 
 
 #***********************************************************
@@ -350,14 +360,19 @@ cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | u
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF 		# => r
+
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF 		# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1			# => r
+
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1			# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
 
 
 #***********************************************************
@@ -377,15 +392,18 @@ cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_posit
 cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => r
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF   # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
 
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  # => r
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2018
 Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1   # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
 
 
 #***********************************************************
