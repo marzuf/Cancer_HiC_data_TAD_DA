@@ -9,7 +9,7 @@ options(scipen=100)
 cat("> START: cmp_datasets_matching.R\n")
 # Rscript cmp_datasets_matching.R
 
-buildTable <- FALSE
+buildTable <- TRUE
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")

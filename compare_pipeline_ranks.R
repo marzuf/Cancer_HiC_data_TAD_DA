@@ -1,16 +1,16 @@
 SSHFS <- F
 setDir <- ifelse(SSHFS, "/media/electron", "")
+setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 startTime <- Sys.time()
 
-# if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Dixon2018_integrative_data")
-if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Dixon2018_integrative_data")
+# if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
+if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 
 source(file.path("utils_fct.R"))
 
-
-cat("> START compare_pipeline_signif.R", "\n")
-# Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7 pipelineConsensus
+cat("> START compare_pipeline_ranks.R", "\n")
+# Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas MCF-7 pipelineConsensus
 
 # pipeline gene list
 # ENSG00000000003 ENSG00000000005 ENSG00000000419 ENSG00000000457 ENSG00000000460 
@@ -25,7 +25,7 @@ exprDS <- args[1]
 ds1 <- args[2]
 ds2 <- args[3]
 
-outFold <- file.path("COMPARE_PIPELINE_SIGNIF", paste0(ds1, "_", ds2), exprDS)
+outFold <- file.path("COMPARE_PIPELINE_RANKS", paste0(ds1, "_", ds2), exprDS)
 system(paste0("mkdir -p ", outFold))
 
 plotType <- "svg"
@@ -35,7 +35,7 @@ myWidth <- ifelse(plotType == "png", 400, 7)
 
 logFile <- file.path(outFold, paste0("compare_pip_results_", ds1, "_", ds2, "_logFile.txt"))
 if(SSHFS) logFile <- ""
-if(!SSHFS) system(paste0("rm -f ", logFile))
+if(!SSHFS) file.remove(logFile)
 
 signifThresh <- 0.05 
 binSizeKb <- 40
@@ -88,109 +88,119 @@ commonGenes <- intersect(geneList1, geneList2)
 stopifnot(commonGenes %in% g2t1$entrezID)
 stopifnot(commonGenes %in% g2t2$entrezID)
 
-txt <- paste0("... genes from ds1:\t", length(geneList1), "\n")
+txt <- paste0("***** ", ds1 , " vs. ", ds2 ,": ", exprDS, " *****\n")
 printAndLog(txt, logFile)
-txt <- paste0("... genes from ds2:\t", length(geneList2), "\n")
+txt <- paste0("... genes from ", ds1, ":\t", length(geneList1), "\n")
+printAndLog(txt, logFile)
+txt <- paste0("... genes from ", ds2, ":\t", length(geneList2), "\n")
 printAndLog(txt, logFile)
 txt <- paste0("... genes in common:\t", length(commonGenes), "\n")
+printAndLog(txt, logFile)
+txt <- paste0(
+              " (", round(length(commonGenes)/length(geneList1)*100, 2) , " % ", ds1, "; ",
+              round(length(commonGenes)/length(geneList2)*100, 2) , " % ", ds2, ")",
+              "\n")
 printAndLog(txt, logFile)
 
 tadpval1 <- eval(parse(text = load(file.path(mainDir1, "11_runEmpPvalCombined", "emp_pval_combined.Rdata"))))
 tadpval1 <- p.adjust(tadpval1, method ="BH")
 tadpval1 <- sort(tadpval1, decreasing=FALSE)
-
-stopifnot(names(tadpval1) %in% g2t1$region)
-tadpval1_dt <- data.frame(region = names(tadpval1), region_pval = tadpval1, stringsAsFactors = FALSE)
-rownames(tadpval1_dt) <- NULL
+tadrank1 <- rank(tadpval1, ties.method = "min")
+stopifnot(names(tadrank1) %in% g2t1$region)
+tadrank1_dt <- data.frame(region = names(tadrank1), region_rank = tadrank1, stringsAsFactors = FALSE)
+rownames(tadrank1_dt) <- NULL
 
 tadpval2 <- eval(parse(text = load(file.path(mainDir2, "11_runEmpPvalCombined", "emp_pval_combined.Rdata"))))
 tadpval2 <- p.adjust(tadpval2, method ="BH")
 tadpval2 <- sort(tadpval2, decreasing=FALSE)
-
-stopifnot(names(tadpval2) %in% g2t2$region)
-tadpval2_dt <- data.frame(region = names(tadpval2), region_pval = tadpval2, stringsAsFactors = FALSE)
-rownames(tadpval2_dt) <- NULL
+tadrank2 <- rank(tadpval2, ties.method = "min")
+stopifnot(names(tadrank2) %in% g2t2$region)
+tadrank2_dt <- data.frame(region = names(tadrank2), region_rank = tadrank2, stringsAsFactors = FALSE)
+rownames(tadrank2_dt) <- NULL
 
 g2t1_dt <- g2t1[g2t1$entrezID %in% commonGenes,]
 stopifnot(nrow(g2t1_dt) > 0)
 g2t2_dt <- g2t2[g2t2$entrezID %in% commonGenes,]
 stopifnot(nrow(g2t2_dt) > 0)
 
-g2t1_dt_withPval <- merge(g2t1_dt, tadpval1_dt, by="region", all.x=TRUE, all.y=FALSE)
-stopifnot(commonGenes %in% g2t1_dt_withPval$entrezID)
-stopifnot(!duplicated(g2t1_dt_withPval$entrezID))
-rownames(g2t1_dt_withPval) <- as.character(g2t1_dt_withPval$entrezID)
-g2t1_dt_withPval <- g2t1_dt_withPval[as.character(commonGenes),]
-stopifnot(g2t1_dt_withPval$entrezID == rownames(g2t1_dt_withPval))
-stopifnot(g2t1_dt_withPval$entrezID == commonGenes)
+###############################################################
+############################################################### TAD RANK
+###############################################################
 
-g2t2_dt_withPval <- merge(g2t2_dt, tadpval2_dt, by="region", all.x=TRUE, all.y=FALSE)
-stopifnot(commonGenes %in% g2t2_dt_withPval$entrezID)
-stopifnot(!duplicated(g2t2_dt_withPval$entrezID))
-rownames(g2t2_dt_withPval) <- as.character(g2t2_dt_withPval$entrezID)
-g2t2_dt_withPval <- g2t2_dt_withPval[as.character(commonGenes),]
-stopifnot(g2t2_dt_withPval$entrezID == rownames(g2t2_dt_withPval))
-stopifnot(g2t2_dt_withPval$entrezID == commonGenes)
+g2t1_dt_withRank <- merge(g2t1_dt, tadrank1_dt, by="region", all.x=TRUE, all.y=FALSE)
+stopifnot(commonGenes %in% g2t1_dt_withRank$entrezID)
+stopifnot(!duplicated(g2t1_dt_withRank$entrezID))
+rownames(g2t1_dt_withRank) <- as.character(g2t1_dt_withRank$entrezID)
+g2t1_dt_withRank <- g2t1_dt_withRank[as.character(commonGenes),]
+stopifnot(g2t1_dt_withRank$entrezID == rownames(g2t1_dt_withRank))
+stopifnot(g2t1_dt_withRank$entrezID == commonGenes)
 
-myTit <- paste0(exprDS, ": gene TAD pval comparison")
-myxlab <- paste0("gene TAD pval ", ds1, " (", length(commonGenes), "/", length(geneList1), ")")
-myylab <- paste0("gene TAD pval ", ds2, " (", length(commonGenes), "/", length(geneList2), ")")
+g2t2_dt_withRank <- merge(g2t2_dt, tadrank2_dt, by="region", all.x=TRUE, all.y=FALSE)
+stopifnot(commonGenes %in% g2t2_dt_withRank$entrezID)
+stopifnot(!duplicated(g2t2_dt_withRank$entrezID))
+rownames(g2t2_dt_withRank) <- as.character(g2t2_dt_withRank$entrezID)
+g2t2_dt_withRank <- g2t2_dt_withRank[as.character(commonGenes),]
+stopifnot(g2t2_dt_withRank$entrezID == rownames(g2t2_dt_withRank))
+stopifnot(g2t2_dt_withRank$entrezID == commonGenes)
+
+myTit <- paste0(exprDS, ": gene TAD ranking comparison")
+myxlab <- paste0("gene TAD rank ", ds1, " (", length(commonGenes), "/", length(geneList1), ")")
+myylab <- paste0("gene TAD rank ", ds2, " (", length(commonGenes), "/", length(geneList2), ")")
 mySub <- paste0(ds1, " vs. ", ds2)
-myxlab <- paste0("gene TAD pval\n", ds1, "\n(", length(commonGenes), "/", length(geneList1), ")")
-myylab <- paste0("gene TAD pval\n", ds2, "\n(", length(commonGenes), "/", length(geneList2), ")")
-mySub <- paste0(ds1, " vs.\n", ds2)
-myxlab <- paste0("gene TAD pval (", length(commonGenes), "/", length(geneList1), ")", "\n", ds1)
-myylab <- paste0("gene TAD pval (", length(commonGenes), "/", length(geneList2), ")", "\n", ds2)
+
+myxlab <- paste0("gene TAD rank (", length(commonGenes), "/", length(geneList1), ")", "\n", ds1)
+myylab <- paste0("gene TAD rank (", length(commonGenes), "/", length(geneList2), ")", "\n", ds2)
 mySub <- paste0(ds1, " vs.\n", ds2)
 
-          # outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_pval.", plotType))
-          # do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-          # par(mar= par()$mar + c(1,1,1,1))
-          # plot(x = g2t1_dt_withPval$region_pval,
-          #      y = g2t2_dt_withPval$region_pval,
-          #      xlab=myxlab,
-          #      ylab=myylab,
-          #      pch = 16, cex = 0.7,
-          #      main = myTit
-          #      )
-          # mtext(side=3, text = mySub)
-          # add_curv_fit(x = g2t1_dt_withPval$region_pval, 
-          #              y=g2t2_dt_withPval$region_pval, withR2 = FALSE, lty=2, col="darkgray")
-          # addCorr(x=g2t1_dt_withPval$region_pval, 
-          #           y = g2t2_dt_withPval$region_pval,
-          #         bty="n",
-          #   legPos="bottomright")
-          # foo <- dev.off()
-          # cat(paste0("... written: ", outFile, "\n"))
 
-############################################################### density plot
 
-outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_pval_density.", plotType))
+        # outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_rank.", plotType))
+        # do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+        # par(mar= par()$mar + c(1,1,1,1))
+        # plot(x = g2t1_dt_withRank$region_rank,
+        #      y = g2t2_dt_withRank$region_rank,
+        #      xlab=myxlab,
+        #      ylab=myylab,
+        #      pch = 16, cex = 0.7,
+        #      main = myTit
+        #      )
+        # mtext(side=3, text = mySub)
+        # add_curv_fit(x = g2t1_dt_withRank$region_rank, 
+        #              y=g2t2_dt_withRank$region_rank, withR2 = FALSE, lty=2, col="darkgray")
+        # addCorr(x=g2t1_dt_withRank$region_rank, 
+        #           y = g2t2_dt_withRank$region_rank,
+        #         bty="n",
+        #   legPos="bottomright")
+        # foo <- dev.off()
+        # cat(paste0("... written: ", outFile, "\n"))
+
+############################################################### density
+
+outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_rank_density.", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-#par(oma= par()$oma + c(6,6,6,6))
-#par(oma= par()$oma + c(2,2,2,2))
 par(mar= par()$mar + c(1,1,1,1))
-densplot(x=g2t1_dt_withPval$region_pval,
-         y=g2t2_dt_withPval$region_pval,
+densplot(x=g2t1_dt_withRank$region_rank,
+         y=g2t2_dt_withRank$region_rank,
          xlab=myxlab,
          ylab=myylab,
          pch = 16, cex = 0.7,
          main = myTit
 )
 mtext(side=3, text = mySub)
-add_curv_fit(x = g2t1_dt_withPval$region_pval, 
-             y=g2t2_dt_withPval$region_pval, withR2 = FALSE, lty=2, col="darkgray")
+add_curv_fit(x = g2t1_dt_withRank$region_rank, 
+             y=g2t2_dt_withRank$region_rank, withR2 = FALSE, lty=2, col="darkgray")
 
-addCorr(x=g2t1_dt_withPval$region_pval, 
-        y = g2t2_dt_withPval$region_pval,
+addCorr(x=g2t1_dt_withRank$region_rank, 
+        y = g2t2_dt_withRank$region_rank,
         bty="n",
         legPos="bottomright")
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
 ###############################################################
-############################################################### select only genes from signif. TADs
+############################################################### GENES FROM SIGNIF TADS
 ###############################################################
+
 
 signifTADs1 <- tadpval1[tadpval1 <= signifThresh]
 signifGenes1 <- g2t1_dt$entrezID[g2t1_dt$region %in% names(signifTADs1)]
@@ -216,43 +226,41 @@ txt <- paste0("... # commonGenes in signif. TADs common ", ds1, " vs. ",  ds2, "
               "\n")
 printAndLog(txt, logFile)
 
-stopifnot(commonSignif %in% rownames(g2t1_dt_withPval))
-g2t1_dt_withPval_onlySignif <- g2t1_dt_withPval[commonSignif,]
-stopifnot(g2t1_dt_withPval_onlySignif$entrezID == rownames(g2t1_dt_withPval_onlySignif))
-stopifnot(g2t1_dt_withPval_onlySignif$entrezID == commonSignif)
+stopifnot(commonSignif %in% rownames(g2t1_dt_withRank))
+g2t1_dt_withRank_onlySignif <- g2t1_dt_withRank[commonSignif,]
+stopifnot(g2t1_dt_withRank_onlySignif$entrezID == rownames(g2t1_dt_withRank_onlySignif))
+stopifnot(g2t1_dt_withRank_onlySignif$entrezID == commonSignif)
 
-stopifnot(commonSignif %in% rownames(g2t2_dt_withPval))
-g2t2_dt_withPval_onlySignif <- g2t2_dt_withPval[commonSignif,]
-stopifnot(g2t2_dt_withPval_onlySignif$entrezID == rownames(g2t2_dt_withPval_onlySignif))
-stopifnot(g2t2_dt_withPval_onlySignif$entrezID == commonSignif)
-
+stopifnot(commonSignif %in% rownames(g2t2_dt_withRank))
+g2t2_dt_withRank_onlySignif <- g2t2_dt_withRank[commonSignif,]
+stopifnot(g2t2_dt_withRank_onlySignif$entrezID == rownames(g2t2_dt_withRank_onlySignif))
+stopifnot(g2t2_dt_withRank_onlySignif$entrezID == commonSignif)
 
 ############################################################### density - genes from signif TADs only
 
 mySub <- paste0(ds1, " vs. ", ds2, " (genes from signif. TADs only)")
 mySub <- paste0(ds1, " vs.\n", ds2, " (genes from signif. TADs only)")
 
-outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_pval_density_onlySignifTADs.", plotType))
+outFile <- file.path(outFold, paste0(ds1, "_", ds2, "_", exprDS, "_gene_tad_rank_density_onlySignifTADs.", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 par(mar= par()$mar + c(1,1,1,1))
-densplot(x=g2t1_dt_withPval_onlySignif$region_pval,
-         y=g2t2_dt_withPval_onlySignif$region_pval,
+densplot(x=g2t1_dt_withRank_onlySignif$region_rank,
+         y=g2t2_dt_withRank_onlySignif$region_rank,
          xlab=myxlab,
          ylab=myylab,
          pch = 16, cex = 0.7,
          main = myTit
 )
 mtext(side=3, text = mySub)
-add_curv_fit(x = g2t1_dt_withPval_onlySignif$region_pval, 
-             y=g2t2_dt_withPval_onlySignif$region_pval, withR2 = FALSE, lty=2, col="darkgray")
+add_curv_fit(x = g2t1_dt_withRank_onlySignif$region_rank, 
+             y=g2t1_dt_withRank_onlySignif$region_rank, withR2 = FALSE, lty=2, col="darkgray")
 
-addCorr(x=g2t1_dt_withPval_onlySignif$region_pval, 
-        y = g2t2_dt_withPval_onlySignif$region_pval,
+addCorr(x=g2t1_dt_withRank_onlySignif$region_rank, 
+        y = g2t2_dt_withRank_onlySignif$region_rank,
         bty="n",
         legPos="bottomright")
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
-
 
 
 ######################################################################################

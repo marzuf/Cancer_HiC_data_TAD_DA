@@ -1,0 +1,94 @@
+# when all pipeline runs ok:
+Rscript cmpd_datasets_matching.R
+Rscript cmpd_datasets_MoC.R
+Rscript cmpd_datasets_nbrTADs.R
+
+# 
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas ENCSR549MGQ_T47D pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7ENCSR549MGQ_T47D pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7 ENCSR549MGQ_T47D
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7 MCF-7ENCSR549MGQ_T47D
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAbrca_lum_bas ENCSR549MGQ_T47D MCF-7ENCSR549MGQ_T47D
+# run 15.01.2018
+
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR079VIJ_G401 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR401TBQ_Caki2 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR079VIJ_G401ENCSR401TBQ_Caki2 pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR079VIJ_G401 ENCSR401TBQ_Caki2
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR079VIJ_G401 ENCSR079VIJ_G401ENCSR401TBQ_Caki2
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAkich_norm_kich ENCSR401TBQ_Caki2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2
+# run 15.01.2018
+
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951 pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+
+
+
+
+
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas MCF-7 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas ENCSR549MGQ_T47D pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas MCF-7ENCSR549MGQ_T47D pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas MCF-7 ENCSR549MGQ_T47D
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas MCF-7 MCF-7ENCSR549MGQ_T47D
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAbrca_lum_bas ENCSR549MGQ_T47D MCF-7ENCSR549MGQ_T47D
+# run 15.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR079VIJ_G401 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR401TBQ_Caki2 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR079VIJ_G401ENCSR401TBQ_Caki2 pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR079VIJ_G401 ENCSR401TBQ_Caki2
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR079VIJ_G401 ENCSR079VIJ_G401ENCSR401TBQ_Caki2
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAkich_norm_kich ENCSR401TBQ_Caki2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2
+# run 15.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 pipelineConsensus
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951 pipelineConsensus
+# run 15.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
+# run 15.01.2018
+

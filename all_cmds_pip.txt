@@ -36,12 +36,10 @@ cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh MCF-7_40Kb TCGAbrca_lum_bas
-Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas
 
-./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 14.01.2018 -r
-
-Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  # => done ! 14.01.2018
+./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2018
+Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  		# => done ! 14.01.2018
+Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas	# => done ! 15.01.2018
 
 #***********************************************************
 # ENCSR549MGQ_T47D - breast 2/2
@@ -58,11 +56,9 @@ cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq |
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # 14.01.2018 -r
-
-Rscript check_TCGA_fpkm.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # => done ! 14.01.2018
-
-
+./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   						# => done ! 14.01.2018
+Rscript check_TCGA_fpkm.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2018
+Rscript check_step17_files.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2018
 
 #***********************************************************
 # MCF-7ENCSR549MGQ_T47D - breast consensus
@@ -83,7 +79,7 @@ cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | un
 
 ./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   		# => done ! 14.01.2018
 Rscript check_TCGA_fpkm.R MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # => done ! 14.01.2018
-Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => done ! 14.01.2018
+Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2018
 
 #***********************************************************
 # K562
@@ -255,10 +251,9 @@ cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq |
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # => r
-
+./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # => done ! 14.01.2018
 Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
-
+Rscript check_step17_files.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 15.01.2018
 
 #***********************************************************
 # ENCSR401TBQ_Caki2 - kidney 2/2
@@ -279,9 +274,10 @@ cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq 
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => r
 
+./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2018
 Rscript check_TCGA_fpkm.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
+Rscript check_step17_files.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2018
 
 #***********************************************************
 # ENCSR079VIJ_G401ENCSR401TBQ_Caki2 - kidney consensus
@@ -300,10 +296,9 @@ cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt
 cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => r
-
+./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2018
 Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
-
+Rscript check_step17_files.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2018
 
 
 #***********************************************************
@@ -327,13 +322,13 @@ cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uni
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf  # => done ! 15.01.2018
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF		 # => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2018
 
 
 #***********************************************************
@@ -356,13 +351,13 @@ cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | un
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
 
 ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF 		# => r
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
 
 ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1			# => r
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2018
 
 
 #***********************************************************
@@ -383,14 +378,14 @@ cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_posit
 
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF   # => done ! 15.01.2018
 
 
 ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  # => r
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1   # => done ! 15.01.2018
 
 
 #***********************************************************

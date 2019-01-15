@@ -1,0 +1,45 @@
+#***********************************************************
+# MCF-7 - breast 1/2
+
+# ENCSR549MGQ_T47D - breast 2/2
+
+# MCF-7ENCSR549MGQ_T47D - breast consensus
+
+# K562
+
+# ENCSR444WCZ_A549 - lung 1/2
+
+# NCI-H460 - lung 2/2
+
+# ENCSR444WCZ_A549NCI-H460 - lung consensus
+
+# ENCSR346DCU_LNCaP - prostate 1/2
+
+# XXX - prostate 2/2
+
+# Panc1_rep12 - pancreas
+
+# ENCSR079VIJ_G401 - kidney 1/2
+
+# ENCSR401TBQ_Caki2 - kidney 2/2
+
+# ENCSR079VIJ_G401ENCSR401TBQ_Caki2 - kidney consensus
+
+# ENCSR312KHQ_SK-MEL-5 - skin 1/2
+
+# ENCSR862OGI_RPMI-7951 - skin 2/2
+
+# ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951 - skin consensus
+
+# GSM2334834_U266_HindIII - myeloma 1/2
+
+# GSM2334832_RPMI-8226_HindIII - myeloma 2/2
+
+# GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII - myeloma consensus
+
+# ENCSR834DXR_SK-N-MC - neuroblastoma (derived from metastatic site: supra-orbital area)
+
+# ENCSR105KFX_SK-N-DZ - neuroblastoma (derived from metastatic site: bone marrow)
+#***********************************************************
+
+
