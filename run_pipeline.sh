@@ -16,7 +16,14 @@
 # ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 14.01.2018
 # ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 14.01.2018
 
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF # 15.01.2018
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # 15.01.2018 
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # 15.01.2018
 
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# 15.01.2018
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# 15.01.2018
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1	# 15.01.2018
+	
 #### TO RUN:
 
 # GBM
@@ -48,16 +55,6 @@
 # ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc
 
 
-# SKIN
-# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF
-# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1
-
-# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF
-# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
-
-
-# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF
-# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
 
 
 

@@ -111,12 +111,9 @@ stopifnot(ncol(all_cmps) > 0)
 i=1
 if(buildTable){
 all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
-  
   # percent matching of the domains from ds1 in ds2
-  
   ds1 <- all_cmps[1,i]
   ds2 <- all_cmps[2,i]
-
   cat(paste0("*** START: ", ds1, " vs. ", ds2, "\n"))
   
   folder1 <- paste0(ds1, folderSuffix)
@@ -149,7 +146,6 @@ all_match_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
   
   cat(paste0("... ", ds1, " vs. ", ds2, " - # intersectChromos:", length(intersectChromos), "\n"))
   
-    
   chromo = "chr1"
   chr_match_dt <- foreach(chromo = intersectChromos, .combine='rbind') %do% {
     
@@ -355,7 +351,6 @@ for(curr_var in var_to_plot) {
   colnames(self_match_dt)[colnames(self_match_dt) == "ds1"] <- paste0("ds1", xlabType)
   colnames(self_match_dt)[colnames(self_match_dt) == "ds2"] <- paste0("ds2", xlabType)
   
-  
   ratioDT <- rbind(mean_match_dt, self_match_dt)
   stopifnot(!duplicated(ratioDT))
   
@@ -404,7 +399,6 @@ for(curr_var in var_to_plot) {
   # ggsave(plot=gplot_dendro, file = outFile, width = 26, height = 14)
   # cat(paste0("... written: ", outFile, "\n"))
   
-  
   #******************************************************************************************************************************************** BOXPLOT FOR THE CONSENSUS
   tmpDS <- unique(c(all_match_dt$ds1_label, all_match_dt$ds2_label))
   consensusTissues <- tmpDS[grepl("Consensus", tmpDS)] 
@@ -418,16 +412,16 @@ for(curr_var in var_to_plot) {
     if(tissue == "pipeline") {
       consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) )
                                     ,]
+      curr_tit <- paste0(mytit, " with ", tissue, " consensus")
+      
     }else {
       consensus_dt <- all_match_dt[ (grepl(paste0(tissue, "Consensus"), all_match_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_match_dt$ds2_label) ) &
                                       (grepl(tolower(tissue), tolower(all_match_dt$ds1_label)) & grepl(tolower(tissue), tolower(all_match_dt$ds2_label)) )
                                     ,]
+      curr_tit <- paste0(mytit, " between ", tissue, " cell lines and ", tissue, " consensus")
     }
     
-
     stopifnot(nrow(consensus_dt) > 0)
-    
-    
     
     # put the consensusDS in newDS1 column
     consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds1_label), 
@@ -484,7 +478,7 @@ for(curr_var in var_to_plot) {
       scale_y_continuous(name=paste0(mytit, " with consensus"),
                          breaks = scales::pretty_breaks(n = 10))+ 
       labs(colour  = "") +
-      ggtitle(label = paste0(mytit, " between ", tissue, " and tissue consensus"))+
+      ggtitle(label = paste0(curr_tit))+
       theme( # Increase size of axis lines
         # top, right, bottom and left
         # plot.margin = unit(c(1, 1, 4.5, 1), "lines"),
@@ -526,10 +520,6 @@ for(curr_var in var_to_plot) {
   
 
 } # end iterating var_to_plot
-
-### add the same boxplot here for pipTopDomconsensus only !!!
-
-
 
 ######################################################################################
 cat(paste0("... written: ", logFile, "\n"))
