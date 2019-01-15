@@ -33,6 +33,10 @@
 # ./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  # 15.01.2018
 # ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker # 15.01.2018
 
+#./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS
+
 	
 #### TO RUN:
 
@@ -48,14 +52,8 @@
 # ./run_pipeline.sh GSE105465_ENCFF777DUA_Caki2_vs_GSE105235_ENCFF235TGH_G401 TCGAkich_norm_kich
 
 # LUNG
-# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS
 # ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc
-
-# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS
 # ./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc
-
-
-# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS
 # ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc
 
 

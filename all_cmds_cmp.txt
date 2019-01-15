@@ -1,7 +1,31 @@
+# needed before cmp_datasets_resol.R
+Rscript check_matResol.R MCF-7 
+Rscript check_matResol.R ENCSR549MGQ_T47D 
+Rscript check_matResol.R K562
+Rscript check_matResol.R ENCSR444WCZ_A549
+Rscript check_matResol.R NCI-H460
+Rscript check_matResol.R ENCSR346DCU_LNCaP
+
+
+
+Rscript check_matResol.R ENCSR079VIJ_G401
+Rscript check_matResol.R ENCSR401TBQ_Caki2
+Rscript check_matResol.R ENCSR312KHQ_SK-MEL-5
+Rscript check_matResol.R ENCSR862OGI_RPMI-7951
+Rscript check_matResol.R GSM2334834_U266_HindIII
+Rscript check_matResol.R GSM2334832_RPMI-8226_HindIII
+Rscript check_matResol.R ENCSR834DXR_SK-N-MC
+Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+
+
+
+
 # when all pipeline runs ok:
 Rscript cmpd_datasets_matching.R
 Rscript cmpd_datasets_MoC.R
 Rscript cmpd_datasets_nbrTADs.R
+Rscript cmpd_datasets_resol.R
+
 
 # 
 Rscript compare_pipeline_signif.R TCGAbrca_lum_bas MCF-7 pipelineConsensus

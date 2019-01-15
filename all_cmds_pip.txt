@@ -122,8 +122,8 @@ cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3   # => 
-Rscript check_TCGA_fpkm.R K562_40kb TCGAlaml_wt_mutFLT3  # => 
+./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3   # => r
+Rscript check_TCGA_fpkm.R K562_40kb TCGAlaml_wt_mutFLT3  # => done ! 15.01.2018
 Rscript check_step17_files.R K562_40kb TCGAlaml_wt_mutFLT3  # =>
 
 
@@ -148,6 +148,20 @@ cut -f1 ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt | sort | uniq |
 cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR # r 
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  # =>
+
+
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker # r 15.01.2018
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker  	# => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker  # =>
+
+
+./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  			# r  15.01.2018
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  	# => 
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  # =>
+
 
 
 #***********************************************************
@@ -169,6 +183,20 @@ cut -f1 NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  				# r 15.01.2018
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 # =>
+
+
+./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  				# r 15.01.2018
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_nonsmoker_smoker  			# => done ! 15.01.2018
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_nonsmoker_smoker 			 # =>
+
+
+./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS				# r 15.01.2018
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => done ! 15.01.2018
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_wt_mutKRAS  # =>
+
 
 
 #***********************************************************
@@ -176,7 +204,7 @@ cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 #***********************************************************
 
 # consensus between lung cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  ENCSR444WCZ_A549_40kb NCI-H460_40kb 	=> done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR444WCZ_A549_40kb NCI-H460_40kb #	=> done ! 14.01.2018
 
 # assign genes to TADs for lung consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2018
 ./3_assign_genes.sh ENCSR444WCZ_A549NCI-H460
@@ -186,6 +214,19 @@ cut -f1 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort 
 cut -f1 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 				# r 15.01.2018
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 # =>
+
+
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 				# r 15.01.2018
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker  			# => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 			 # =>
+
+./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS			# r 15.01.2018
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => # => done ! 15.01.2018
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  # =>
 
 
 
