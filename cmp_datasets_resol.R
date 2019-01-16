@@ -52,7 +52,8 @@ mainFold <- "CHECK_MATRESOL"
 stopifnot(dir.exists(mainFold))
 
 # retrieve the intersect chromos:
-all_files_rowSum <- list.files(mainFold, full.names=T, recursive = TRUE, pattern="_matrixRowSum\\.Rdata")
+all_files_rowSum <- list.files(mainFold, full.names=T, recursive = TRUE, pattern="_matrixRowSum\\.Rdata$")
+stopifnot(length(all_files_rowSum) > 0)
 files_chr_dt <- data.frame(
   ds = basename(dirname(all_files_rowSum)),
   chromo = as.character(sapply(basename(all_files_rowSum), function(x) gsub(".+_(chr.+?)_matrixRowSum.Rdata", "\\1", x))),
@@ -214,13 +215,13 @@ for(var_to_plot in c("rowSum", "rowSum_log10", "rowSumNoOut", "rowSumNoOut_log10
   cat(paste0("... written: ", outFile, "\n"))
 }
 
-all_files_rowSum <- all_files_rowSum[!grepl("_matrixRowSum\\.Rdata$", all_files_rowSum)]
-curr_file <- all_files_rowSum[1]
-all_resol_DT <- foreach(curr_file = all_files_rowSum, .combine='rbind') %do% {
+all_files_resol <- list.files(mainFold, full.names=T, recursive = TRUE, pattern="_check_resolDT\\.Rdata$")
+stopifnot(length(all_files_resol) > 0)
+
+curr_file <- all_files_resol[1]
+all_resol_DT <- foreach(curr_file = all_files_resol, .combine='rbind') %do% {
   eval(parse(text=load(curr_file)))
 }
-
-
 all_resol_DT$countSum_log10 <- log10(all_resol_DT$countSum)
 all_vars <- colnames(all_resol_DT)[!colnames(all_resol_DT) %in% c("dataset", "chromo")]
 all_resol_DT$datasetLabel <- unlist(sapply(as.character(all_resol_DT$dataset), function(x) names(cl_names[cl_names == x])))

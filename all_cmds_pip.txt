@@ -5,112 +5,112 @@ ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 # MCF-7 - breast 1/2
 #***********************************************************
 
-# download the MCF-7 data from AWS 10kb								=> done ! 14.01.2018
+# download the MCF-7 data from AWS 10kb								=> done ! 14.01.2019
 ./aws1_all_chromo_dwd_juicer_hic.sh MCF-7
 
-# rebin the MCF-7 data 10kb	to 40 kb								=> done ! 14.01.2018
+# rebin the MCF-7 data 10kb	to 40 kb								=> done ! 14.01.2019
 ./aws2_all_chromo_hicData_rebinning.sh MCF-7
 
-# convert the aggreg count file to pre file for the MCF-7 40 kb 	=> done ! 14.01.2018
+# convert the aggreg count file to pre file for the MCF-7 40 kb 	=> done ! 14.01.2019
 ./aws3_all_chromo_prepFile.sh MCF-7
 
 # convert the pre 40kb -> hic -> dump 40 kb (output then equivalent to step1 of all_chromo_hic_to_TADs.sh
-./aws4_all_chromo_pre2hic2matrix.sh MCF-7 							=> done ! 14.01.2018
+./aws4_all_chromo_pre2hic2matrix.sh MCF-7 							=> done ! 14.01.2019
 
 # => at this point: MCF-7_40kb/NORM_MAT
 
 # hic to TADs for MCF-7 (set STEP1=0 !!!)
-./1_all_chromo_hic_to_TADs.sh MCF-7									=> done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh MCF-7									=> done ! 14.01.2019
 
 # => at this point: MCF-7_40kb/FINAL_DOMAINS
 
 # assign genes to TADs for MCF-7
-# ./3_assign_genes.sh MCF-7											=> done ! 14.01.2018
+# ./3_assign_genes.sh MCF-7											=> done ! 14.01.2019
 
 # => at this point: 
 # MCF-7_40kb/genes2tad/all_assigned_regions.txt
 # MCF-7_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned:				# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned:				# => done ! 14.01.2019
 cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  		# => done ! 14.01.2018
-Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas	# => done ! 15.01.2018
+./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  		# => done ! 14.01.2019
+Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas	# => done ! 15.01.2019
 
 #***********************************************************
 # ENCSR549MGQ_T47D - breast 2/2
 #***********************************************************
 
 # hic to TADs for ENCSR549MGQ_T47D
-./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D				=> done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR549MGQ_T47D				=> done ! 14.01.2019
 # => at this point: ENCSR549MGQ_T47D_40kb/FINAL_DOMAINS
 
-# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> done ! 14.01.2018
-# NB: to check which chromosomes with genes assigned: 		=> done ! 14.01.2018
+# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> done ! 14.01.2019
+# NB: to check which chromosomes with genes assigned: 		=> done ! 14.01.2019
 cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   						# => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2018
-Rscript check_step17_files.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2018
+./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   						# => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2019
+Rscript check_step17_files.R ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2019
 
 #***********************************************************
 # MCF-7ENCSR549MGQ_T47D - breast consensus
 #***********************************************************
 
 # consensus between breast cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=> done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=> done ! 14.01.2019
 
-# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2018
+# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2019
 ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
 
-# NB: to check which chromosomes with genes assigned: 						#=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						#=> done ! 14.01.2019
 cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   		# => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # => done ! 14.01.2018
-Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2018
+./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   		# => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # => done ! 14.01.2019
+Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.2019
 
 #***********************************************************
 # K562
 #***********************************************************
 
 # download the K562 data from AWS 10kb		
-./aws1_all_chromo_dwd_juicer_hic.sh K562			# => done ! 14.01.2018
+./aws1_all_chromo_dwd_juicer_hic.sh K562			# => done ! 14.01.2019
 # K562/RAW_10kb
 
 # rebin the K562 data 10kb	to 40 kb
-./aws2_all_chromo_hicData_rebinning.sh K562   		# => done ! 14.01.2018
+./aws2_all_chromo_hicData_rebinning.sh K562   		# => done ! 14.01.2019
 # K562/RAW_40kb
 
 # convert the aggreg count file to pre file for the K562 40 kb
-./aws3_all_chromo_prepFile.sh K562					# => done ! 14.01.2018
+./aws3_all_chromo_prepFile.sh K562					# => done ! 14.01.2019
 # K562/PRE_40kb
 
 # convert the pre 40kb -> hic -> dump 40 kb (output then equivalent to step1 of all_chromo_hic_to_TADs.sh
-./aws4_all_chromo_pre2hic2matrix.sh K562		# => done ! 14.01.2018
+./aws4_all_chromo_pre2hic2matrix.sh K562		# => done ! 14.01.2019
 # K562/RAW_HIC_INTRA_40kb
 # K562_40kb/NORM_MAT
 
 # => at this point: K562_40kb/NORM_MAT
 
 # hic to TADs for K562(set STEP1=0 !!!)
-./1_all_chromo_hic_to_TADs.sh K562					# 	=> done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh K562					# 	=> done ! 14.01.2019
 
 # => at this point: K562_40kb/FINAL_DOMAINS
 
 # assign genes to TADs for K562
-./3_assign_genes.sh K562							# 			=> done ! 14.01.2018			
+./3_assign_genes.sh K562							# 			=> done ! 14.01.2019			
 
 # => at this point: 
 # K562_40kb/genes2tad/all_assigned_regions.txt
@@ -122,9 +122,9 @@ cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 K562_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3   # => r
-Rscript check_TCGA_fpkm.R K562_40kb TCGAlaml_wt_mutFLT3  # => done ! 15.01.2018
-Rscript check_step17_files.R K562_40kb TCGAlaml_wt_mutFLT3  # =>
+./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3   				# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R K562_40kb TCGAlaml_wt_mutFLT3  		# => done ! 15.01.2019
+Rscript check_step17_files.R K562_40kb TCGAlaml_wt_mutFLT3  	# => done ! 15.01.2019
 
 
 
@@ -132,70 +132,77 @@ Rscript check_step17_files.R K562_40kb TCGAlaml_wt_mutFLT3  # =>
 # ENCSR444WCZ_A549 - lung 1/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh ENCSR444WCZ_A549  		=> done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR444WCZ_A549  		=> done ! 14.01.2019
 
 
 # => at this point: ll ENCSR444WCZ_A549_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR444WCZ_A549					=> done ! 14.01.2018
+./3_assign_genes.sh ENCSR444WCZ_A549					=> done ! 14.01.2019
 
 # => at this point: 
 # ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR444WCZ_A549_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR444WCZ_A549_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR # r 
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  # =>
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR 					# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR  		# => done ! 15.01.2019
 
 
-# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker # r 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker  	# => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker  # =>
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker 			# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker  		# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker 	# => done ! 15.01.2019
 
 
-./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  			# r  15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  	# => 
-Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  # =>
+./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  			# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  	# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS  # => done ! 15.01.2019
 
+./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc 				# r 16.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc  	# => done ! 16.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc  	# 
 
 
 #***********************************************************
 # NCI-H460 - lung 2/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh NCI-H460   # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh NCI-H460   # => done ! 14.01.2019
 
 # => at this point: ll NCI-H460_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh NCI-H460				 	# => done ! 14.01.2018
+./3_assign_genes.sh NCI-H460				 	# => done ! 14.01.2019
 
 # => at this point: 
 # NCI-H460_40kb/genes2tad/all_assigned_regions.txt
 # NCI-H460_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  				# r 15.01.2018
-Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
-Rscript check_step17_files.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 # =>
+./run_pipeline.sh NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  							# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  					# => done ! 15.01.2019
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 	# => done ! 15.01.2019
 
 
-./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  				# r 15.01.2018
-Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_nonsmoker_smoker  			# => done ! 15.01.2018
-Rscript check_step17_files.R NCI-H460_40kb TCGAluad_nonsmoker_smoker 			 # =>
+./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  						# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_nonsmoker_smoker  				# => done ! 15.01.2019
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_nonsmoker_smoker 			# => done ! 15.01.2019
 
 
-./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS				# r 15.01.2018
-Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => done ! 15.01.2018
-Rscript check_step17_files.R NCI-H460_40kb TCGAluad_wt_mutKRAS  # =>
+./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS				# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => done ! 15.01.2019
+Rscript check_step17_files.R NCI-H460_40kb TCGAluad_wt_mutKRAS  # => done ! 15.01.2019
+
+./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc 					# r 16.01.2019
+Rscript check_TCGA_fpkm.R NCI-H460_40kb TCGAlusc_norm_lusc  		# => done ! 16.01.2019
+Rscript check_step17_files.R NCI-H460_40kb TCGAlusc_norm_lusc  	 	# 
 
 
 
@@ -204,31 +211,34 @@ Rscript check_step17_files.R NCI-H460_40kb TCGAluad_wt_mutKRAS  # =>
 #***********************************************************
 
 # consensus between lung cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  ENCSR444WCZ_A549_40kb NCI-H460_40kb #	=> done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR444WCZ_A549_40kb NCI-H460_40kb #	=> done ! 14.01.2019
 
-# assign genes to TADs for lung consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2018
+# assign genes to TADs for lung consensus MCF-7ENCSR549MGQ_T47D				=> done ! 14.01.2019
 ./3_assign_genes.sh ENCSR444WCZ_A549NCI-H460
 
-# NB: to check which chromosomes with genes assigned: 						=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						=> done ! 14.01.2019
 cut -f1 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR444WCZ_A549NCI-H460_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 				# r 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  			# => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 # =>
+./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 							# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  					# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR 			 	# => done ! 15.01.2019
 
 
-# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 				# r 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker  			# => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 			 # =>
+./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 					# done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker  			# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker 		 # => done ! 15.01.2019
 
-./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS			# r 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  # =>
+./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS				# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  	# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  # => done ! 15.01.2019
 
 
+./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc 					# r 16.01.2019
+Rscript check_TCGA_fpkm.R ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc  		# => done ! 16.01.2019
+Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc  		# 
 
 
 #***********************************************************
@@ -236,20 +246,26 @@ Rscript check_step17_files.R ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS  
 #***********************************************************
 
 
-./1_all_chromo_hic_to_TADs.sh ENCSR346DCU_LNCaP  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR346DCU_LNCaP  # => done ! 14.01.2019
 
 # => at this point: ll ENCSR346DCU_LNCaP_40kb/FINAL_DOMAINS
 
-# ./3_assign_genes.sh ENCSR346DCU_LNCaP				 	# => done ! 14.01.2018
+# ./3_assign_genes.sh ENCSR346DCU_LNCaP				 	# => done ! 14.01.2019
 
 # => at this point: 
 # ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+./run_pipeline.sh ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad							# r 16.01.2019
+Rscript check_TCGA_fpkm.R ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad  				# => done ! 16.01.2019
+Rscript check_step17_files.R ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad  			# 
+
 
 #***********************************************************
 #  - prostate 2/2
@@ -261,91 +277,94 @@ cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq |
 #***********************************************************
 
 
-./1_all_chromo_hic_to_TADs.sh Panc1_rep12  			# => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh Panc1_rep12  			# => done ! 14.01.2019
 
 # => at this point: Panc1_rep12_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh Panc1_rep12				 	# => done ! 14.01.2018
+./3_assign_genes.sh Panc1_rep12				 	# => done ! 14.01.2019
 
 # => at this point: 
 # Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt
 # Panc1_rep12_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 Panc1_rep12_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 Panc1_rep12_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 Panc1_rep12_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS 						# r 16.01.2019
+Rscript check_TCGA_fpkm.R Panc1_rep12_40kb TCGApaad_wt_mutKRAS  			# => done ! 16.01.2019
+Rscript check_step17_files.R Panc1_rep12_40kb TCGApaad_wt_mutKRAS  			# 
 
 	
 #***********************************************************
 # ENCSR079VIJ_G401 - kidney 1/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh ENCSR079VIJ_G401  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR079VIJ_G401  # => done ! 14.01.2019
 
 
 # => at this point: ll ENCSR079VIJ_G401_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR079VIJ_G401				# => done ! 14.01.2018	
+./3_assign_genes.sh ENCSR079VIJ_G401				# => done ! 14.01.2019	
 
 # => at this point: 
 # ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR079VIJ_G401_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR079VIJ_G401_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
-Rscript check_step17_files.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 15.01.2018
+./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 14.01.2019
+Rscript check_step17_files.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # => done ! 15.01.2019
 
 #***********************************************************
 # ENCSR401TBQ_Caki2 - kidney 2/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh ENCSR401TBQ_Caki2  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR401TBQ_Caki2  # => done ! 14.01.2019
 
 # => at this point: ll ENCSR401TBQ_Caki2_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR401TBQ_Caki2		 	# => done ! 14.01.2018
+./3_assign_genes.sh ENCSR401TBQ_Caki2		 	# => done ! 14.01.2019
 
 # => at this point: 
 # ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
-Rscript check_step17_files.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2018
+./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2019
+Rscript check_step17_files.R ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2019
 
 #***********************************************************
 # ENCSR079VIJ_G401ENCSR401TBQ_Caki2 - kidney consensus
 #***********************************************************
 
 # consensus between kidney cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb 	# => done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb 	# => done ! 14.01.2019
 
-# assign genes to TADs for kidney consensus ENCSR079VIJ_G401ENCSR401TBQ_Caki2				# => done ! 14.01.2018
+# assign genes to TADs for kidney consensus ENCSR079VIJ_G401ENCSR401TBQ_Caki2				# => done ! 14.01.2019
 ./3_assign_genes.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2
 
-# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2019
 cut -f1 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2018
-Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2018
-Rscript check_step17_files.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2018
+./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich		# => done ! 14.01.2019
+Rscript check_TCGA_fpkm.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich  # => done ! 14.01.2019
+Rscript check_step17_files.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # => done ! 15.01.2019
 
 
 #***********************************************************
@@ -353,67 +372,67 @@ Rscript check_step17_files.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_nor
 #***********************************************************
 
 
-./1_all_chromo_hic_to_TADs.sh ENCSR312KHQ_SK-MEL-5  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR312KHQ_SK-MEL-5  # => done ! 14.01.2019
 
 # => at this point: ll ENCSR312KHQ_SK-MEL-5_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR312KHQ_SK-MEL-5			 	# => done ! 14.01.2018
+./3_assign_genes.sh ENCSR312KHQ_SK-MEL-5			 	# => done ! 14.01.2019
 
 # => at this point: 
 # ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR312KHQ_SK-MEL-5_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf  # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf  # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2019
 
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF		 # => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF		 # => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2019
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2019
 
 
 #***********************************************************
 # ENCSR862OGI_RPMI-7951 - skin 2/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh ENCSR862OGI_RPMI-7951  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR862OGI_RPMI-7951  # => done ! 14.01.2019
 
 # => at this point: ll ENCSR862OGI_RPMI-7951_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR862OGI_RPMI-7951		 	# => done ! 14.01.2018
+./3_assign_genes.sh ENCSR862OGI_RPMI-7951		 	# => done ! 14.01.2019
 
 # => at this point: 
 # ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
 cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2019
 
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF 		# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF 		# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2019
 
 
-./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1			# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
+./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1			# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2019
 
 
 #***********************************************************
@@ -421,46 +440,46 @@ Rscript check_step17_files.R ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # 
 #***********************************************************
 
 # consensus between skin cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb 	# => done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb 	# => done ! 14.01.2019
 
-# assign genes to TADs for skin consensus ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951				# => done ! 14.01.2018
+# assign genes to TADs for skin consensus ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951				# => done ! 14.01.2019
 ./3_assign_genes.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
 
-# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2019
 cut -f1 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf		# => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf   # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # => done ! 15.01.2019
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF   # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF   # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # => done ! 15.01.2019
 
 
-./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2018
-Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1   # => done ! 15.01.2018
-Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2018
+./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1  # => done ! 15.01.2019
+Rscript check_TCGA_fpkm.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1   # => done ! 15.01.2019
+Rscript check_step17_files.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1 # => done ! 15.01.2019
 
 
 #***********************************************************
 # GSM2334834_U266_HindIII - myeloma 1/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh GSM2334834_U266_HindIII  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh GSM2334834_U266_HindIII  # => done ! 14.01.2019
 
 # => at this point: ll GSM2334834_U266_HindIII_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh GSM2334834_U266_HindIII		 	# => done ! 14.01.2018
+./3_assign_genes.sh GSM2334834_U266_HindIII		 	# => done ! 14.01.2019
 
 # => at this point: 
 # GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt
 # GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2019
 cut -f1 GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSM2334834_U266_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
@@ -472,16 +491,16 @@ cut -f2 GSM2334834_U266_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | 
 # GSM2334832_RPMI-8226_HindIII - myeloma 2/2
 #***********************************************************
 
-./1_all_chromo_hic_to_TADs.sh GSM2334832_RPMI-8226_HindIII  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh GSM2334832_RPMI-8226_HindIII  # => done ! 14.01.2019
 
 # => at this point: ll GSM2334832_RPMI-8226_HindIII_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh GSM2334832_RPMI-8226_HindIII		 	# => done ! 14.01.2018
+./3_assign_genes.sh GSM2334832_RPMI-8226_HindIII		 	# => done ! 14.01.2019
 
 # => at this point: 
 # GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt
 # GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2019
 cut -f1 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
@@ -492,12 +511,12 @@ cut -f2 GSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | so
 #***********************************************************
 
 # consensus between myeloma cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  GSM2334834_U266_HindIII_40kb GSM2334832_RPMI-8226_HindIII_40kb	# => done ! 14.01.2018
+Rscript 2_all_chromo_find_consensusTADs.R  GSM2334834_U266_HindIII_40kb GSM2334832_RPMI-8226_HindIII_40kb	# => done ! 14.01.2019
 
-# assign genes to TADs for myeloma consensus GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII				# => done ! 14.01.2018
+# assign genes to TADs for myeloma consensus GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII				# => done ! 14.01.2019
 ./3_assign_genes.sh GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII
 
-# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 						# => done ! 14.01.2019
 cut -f1 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
@@ -511,16 +530,16 @@ cut -f2 GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb/genes2tad/all_g
 #***********************************************************
 
 
-./1_all_chromo_hic_to_TADs.sh ENCSR834DXR_SK-N-MC  # => done ! 14.01.2018
+./1_all_chromo_hic_to_TADs.sh ENCSR834DXR_SK-N-MC  # => done ! 14.01.2019
 
 # => at this point: ll ENCSR834DXR_SK-N-MC_40kb/FINAL_DOMAINS
 
-./3_assign_genes.sh ENCSR834DXR_SK-N-MC		 	# => done ! 14.01.2018
+./3_assign_genes.sh ENCSR834DXR_SK-N-MC		 	# => done ! 14.01.2019
 
 # => at this point: 
 # ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_assigned_regions.txt
 # ENCSR862OGI_RPMI-7951_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2018
+# NB: to check which chromosomes with genes assigned: 	# => done ! 14.01.2019
 cut -f1 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 ENCSR834DXR_SK-N-MC_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "

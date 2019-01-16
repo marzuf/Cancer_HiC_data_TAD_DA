@@ -71,10 +71,7 @@ scatterFontSizeTitle <- 12
 # Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile.R  <TADlist> <dataset> 
 # Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile.R <TADlist> <dataset> <family>
 
-# Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile.R GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_mesenchymal
-# Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile.R GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_mesenchymal hgnc
-
-# Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105318_ENCFF439QFU_DLD1 TCGAcoad_msi_mss
+# Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
 
 #### !!! change for otherTADfile: <<< GENE DATA DO NOT CHANGE
 # retrieve the sameTAD data frame from:
@@ -101,7 +98,7 @@ outFold <- file.path("AUC_COEXPRDIST_WITHFAM_SORTNODUP",  curr_TADlist, paste0(c
 dir.create(outFold, recursive = TRUE)
 
 logFile <- file.path(outFold, paste0("coexpr_dist_withFam_otherTADfile_logFile.txt"))  
-system(paste0("rm -f ", logFile))
+file.remove(logFile)
 
 printAndLog(txt, logFile)
 txt <- paste0("... curr_TADlist = ",  curr_TADlist, "\n")
@@ -124,7 +121,6 @@ printAndLog(txt, logFile)
 txt <- paste0("... fitMeth = ",  fitMeth, "\n")
 printAndLog(txt, logFile)
 
-# mycols <- c("sameTAD" ="darkorange1" , "diffTAD"="darkslateblue",  "sameFam+sameTAD"="violetred1", "sameFam+diffTAD" = "lightskyblue")
 mycols <- c("same TAD" ="darkorange1" , "diff. TAD"="darkslateblue",  "same Fam. + same TAD"="violetred1", "same Fam. + diff. TAD" = "lightskyblue")
 
 sameTADcol <- mycols["same TAD"]
@@ -164,11 +160,19 @@ sameFamFolder <- file.path("CREATE_SAME_FAMILY_SORTNODUP", curr_TADlist)
 # checking the file comes after (iterating over family and family_short)
 stopifnot(dir.exists(sameFamFolder))
 sameFamFile <- file.path(sameFamFolder, paste0(familyData, "_family_all_family_pairs.Rdata")) # at least this one should exist !
-cat("sameFamFile = ", sameFamFile, "\n")
 stopifnot(file.exists(sameFamFile))
 
 dataset_pipDir <- file.path("PIPELINE", "OUTPUT_FOLDER", curr_TADlist, curr_dataset) # used to retrieve gene list
 stopifnot(dir.exists(dataset_pipDir))
+
+txt <- paste0("... distFile = ",  distFile, "\n")
+printAndLog(txt, logFile)
+txt <- paste0("... coexprFile = ",  coexprFile, "\n")
+printAndLog(txt, logFile)
+txt <- paste0("... sameTADfile = ",  sameTADfile, "\n")
+printAndLog(txt, logFile)
+txt <- paste0("... sameFamFile = ",  sameFamFile, "\n")
+printAndLog(txt, logFile)
 
 ################################################ DATA PREPARATION
 
@@ -305,28 +309,24 @@ for(i_fam in all_familyData) {
   sameTAD_DT <- allData_dt[allData_dt$sameTAD == 1,c("gene1", "gene2", "coexpr", "dist", "dist_kb")]
   sameTAD_DT <- na.omit(sameTAD_DT)
   sameTAD_DT <- sameTAD_DT[order(sameTAD_DT$dist_kb),]
-  # sameTAD_DT$cumdist <- cumsum(sameTAD_DT$dist_kb)
   sameTAD_DT$nPair <- 1:nrow(sameTAD_DT)
   sameTAD_DT$label <- "same TAD"
   
   diffTAD_DT <- allData_dt[allData_dt$sameTAD == 0,c("gene1", "gene2",  "coexpr", "dist", "dist_kb")]
   diffTAD_DT <- na.omit(diffTAD_DT)
   diffTAD_DT <- diffTAD_DT[order(diffTAD_DT$dist_kb),]
-  # diffTAD_DT$cumdist <- cumsum(diffTAD_DT$dist_kb)
   diffTAD_DT$nPair <- 1:nrow(diffTAD_DT)
   diffTAD_DT$label <- "diff. TAD"
   
   sameFam_sameTAD_DT <- allData_dt[allData_dt$sameFamily == 1 & allData_dt$sameTAD == 1 ,c("gene1", "gene2", "coexpr", "dist",  "dist_kb")]
   sameFam_sameTAD_DT <- na.omit(sameFam_sameTAD_DT)
   sameFam_sameTAD_DT <- sameFam_sameTAD_DT[order(sameFam_sameTAD_DT$dist_kb),]
-  # sameFam_sameTAD_DT$cumdist <- cumsum(sameFam_sameTAD_DT$dist_kb)
   sameFam_sameTAD_DT$nPair <- 1:nrow(sameFam_sameTAD_DT)
   sameFam_sameTAD_DT$label <- "same Fam. + same TAD"
   
   sameFam_diffTAD_DT <- allData_dt[allData_dt$sameFamily == 1 & allData_dt$sameTAD == 0 ,c("gene1", "gene2",  "coexpr", "dist", "dist_kb")]
   sameFam_diffTAD_DT <- na.omit(sameFam_diffTAD_DT)
   sameFam_diffTAD_DT <- sameFam_diffTAD_DT[order(sameFam_diffTAD_DT$dist_kb),]
-  # sameFam_diffTAD_DT$cumdist <- cumsum(sameFam_diffTAD_DT$dist_kb)
   sameFam_diffTAD_DT$nPair <- 1:nrow(sameFam_diffTAD_DT)
   sameFam_diffTAD_DT$label <- "same Fam. + diff. TAD"
   
@@ -360,8 +360,6 @@ for(i_fam in all_familyData) {
     plot(NULL,
          xlim = range(allData_dt$dist), 
          ylim = range(c(smooth_vals_sameTAD, smooth_vals_diffTAD)),
-         # xlab="", 
-         # ylab="",
          xlab=my_xlab, 
          ylab=my_ylab,
          main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
@@ -384,16 +382,6 @@ for(i_fam in all_familyData) {
     
     auc_diffTAD_distVect <- auc(x = distVect, y = smooth_vals_diffTAD_distVect)
     auc_sameTAD_distVect <- auc(x = distVect, y = smooth_vals_sameTAD_distVect)
-    
-    diffTAD_mod <- loess(coexpr ~ dist, data = diffTAD_DT)
-    outFile <- file.path(outFold, "diffTAD_mod.Rdata")
-    save(diffTAD_mod, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
-    
-    diffTAD_obsDist <- diffTAD_DT$dist
-    outFile <- file.path(outFold, "diffTAD_obsDist.Rdata")
-    save(diffTAD_obsDist, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
     
     outFile <- file.path(outFold, "auc_diffTAD_distVect.Rdata")
     save(auc_diffTAD_distVect, file = outFile)
@@ -420,8 +408,6 @@ for(i_fam in all_familyData) {
     plot(NULL,
          xlim = range(distVect), 
          ylim = range(c(na.omit(smooth_vals_sameTAD_distVect), na.omit(smooth_vals_diffTAD_distVect))),
-         # xlab="", 
-         # ylab="",
          xlab=my_xlab,
          ylab=my_ylab,
          main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
@@ -450,8 +436,6 @@ for(i_fam in all_familyData) {
     plot(NULL,
          xlim = range(allData_dt$dist), 
          ylim = range(c(smooth_vals_sameFamSameTAD, smooth_vals_sameFamDiffTAD)),
-         # xlab="", 
-         # ylab="",
          xlab=my_xlab, 
          ylab=my_ylab,
          main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
@@ -474,6 +458,16 @@ for(i_fam in all_familyData) {
     
     auc_sameFamDiffTAD_distVect <- auc(x = distVect, y = smooth_vals_sameFamDiffTAD_distVect)
     auc_sameFamSameTAD_distVect <- auc(x = distVect, y = smooth_vals_sameFamSameTAD_distVect)
+    
+    diffTAD_mod <- loess(coexpr ~ dist, data = diffTAD_DT)
+    outFile <- file.path(outFold, "diffTAD_mod.Rdata")
+    save(diffTAD_mod, file = outFile)
+    cat(paste0("... written: ", outFile, "\n"))
+    
+    sameTAD_mod <- loess(coexpr ~ dist, data = sameTAD_DT)
+    outFile <- file.path(outFold, "sameTAD_mod.Rdata")
+    save(sameTAD_mod, file = outFile)
+    cat(paste0("... written: ", outFile, "\n"))
     
     sameFamDiffTAD_mod <- loess(coexpr ~ dist, data = sameFam_diffTAD_DT)
     outFile <- file.path(outFold, "sameFamDiffTAD_mod.Rdata")
@@ -582,10 +576,12 @@ for(i_fam in all_familyData) {
   }
 } # end iterating over family data
   
-  ######################################################################################
-  ######################################################################################
-  ######################################################################################
-  cat(paste0("... written: ", logFile, "\n"))
-  ######################################################################################
-  cat("*** DONE\n")
-  cat(paste0(startTime, "\n", Sys.time(), "\n"))
+######################################################################################
+######################################################################################
+######################################################################################
+cat(paste0("... written: ", logFile, "\n"))
+######################################################################################
+cat("*** DONE\n")
+cat(paste0(startTime, "\n", Sys.time(), "\n"))
+
+

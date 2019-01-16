@@ -1,13 +1,10 @@
-# needed before cmp_datasets_resol.R
+# needed before cmp_datasets_resol.R        # launched 15.01.2019
 Rscript check_matResol.R MCF-7 
 Rscript check_matResol.R ENCSR549MGQ_T47D 
 Rscript check_matResol.R K562
 Rscript check_matResol.R ENCSR444WCZ_A549
 Rscript check_matResol.R NCI-H460
 Rscript check_matResol.R ENCSR346DCU_LNCaP
-
-
-
 Rscript check_matResol.R ENCSR079VIJ_G401
 Rscript check_matResol.R ENCSR401TBQ_Caki2
 Rscript check_matResol.R ENCSR312KHQ_SK-MEL-5
@@ -16,15 +13,18 @@ Rscript check_matResol.R GSM2334834_U266_HindIII
 Rscript check_matResol.R GSM2334832_RPMI-8226_HindIII
 Rscript check_matResol.R ENCSR834DXR_SK-N-MC
 Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+### missing:
+# missing:
+# prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus
 
-
+./draw_matrix.sh
 
 
 # when all pipeline runs ok:
-Rscript cmpd_datasets_matching.R
-Rscript cmpd_datasets_MoC.R
-Rscript cmpd_datasets_nbrTADs.R
-Rscript cmpd_datasets_resol.R
+Rscript cmp_datasets_matching.R
+Rscript cmp_datasets_MoC.R
+Rscript cmp_datasets_nbrTADs.R
+Rscript cmp_datasets_resol.R
 
 
 # 
@@ -71,6 +71,80 @@ Rscript compare_pipeline_signif.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 
 # run 15.01.2018
 
 
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAlusc_norm_lusc NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_mutKRAS_mutEGFR NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_nonsmoker_smoker NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_signif.R TCGAluad_wt_mutKRAS NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+
+
+
+
+
+Rscript compare_pipeline_signif.R TCGApaad_wt_mutKRAS Panc1_rep12 pipelineConsensus
+#  16.01.2019
+	
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaP pipelineConsensus
+#  16.01.2019
+
+
+
+
+
+
 
 
 
@@ -115,4 +189,74 @@ Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR312KHQ_SK-MEL-5 EN
 # run 15.01.2018
 Rscript compare_pipeline_ranks.R TCGAskcm_lowInf_highInf ENCSR862OGI_RPMI-7951 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951
 # run 15.01.2018
+
+
+"
+
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAlusc_norm_lusc NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_mutKRAS_mutEGFR NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_nonsmoker_smoker NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549NCI-H460 pipelineConsensus
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS ENCSR444WCZ_A549 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+Rscript compare_pipeline_ranks.R TCGAluad_wt_mutKRAS NCI-H460 ENCSR444WCZ_A549NCI-H460
+# run 16.01.2018
+
+
+
+Rscript compare_pipeline_ranks.R TCGApaad_wt_mutKRAS Panc1_rep12 pipelineConsensus
+#  16.01.2019
+	
+
+
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaP pipelineConsensus
+#  16.01.2019
+
 

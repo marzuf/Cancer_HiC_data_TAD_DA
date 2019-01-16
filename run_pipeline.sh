@@ -33,9 +33,23 @@
 # ./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  # 15.01.2018
 # ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker # 15.01.2018
 
-#./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS
-# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS
-# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS
+#./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS # 15.01.2018
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS # 15.01.2018
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS # 15.01.2018
+
+
+### RUN 16.01.2019
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc  # 16.01.2018
+# ./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc # 16.01.2018
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc # 16.01.2018
+	
+	
+# PANCREAS
+# ./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS # 16.01.2018
+	
+
+# PROSTATE	
+# ./run_pipeline.sh ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad # 16.01.2019
 
 	
 #### TO RUN:
@@ -48,24 +62,9 @@
 # COLORECTAL
 # ./run_pipeline.sh GSE105318_ENCFF439QFU_DLD1 TCGAcoad_msi_mss
 
-# KIDNEY
-# ./run_pipeline.sh GSE105465_ENCFF777DUA_Caki2_vs_GSE105235_ENCFF235TGH_G401 TCGAkich_norm_kich
 
-# LUNG
-# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc
-# ./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc
-# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc
-
-
-
-
-
-# PANCREAS
-
-# ./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS
-
-# PROSTATE
-
+# PROSTATE 
+#xxx
 
 start_time=$(date -R)    
 set -e

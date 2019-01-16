@@ -12,6 +12,7 @@ cat("> START: cmp_auc_fcc_coexprDist_pipeline_tissue.R\n")
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
+setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 coexprdistFolder <- file.path("AUC_COEXPRDIST_WITHFAM_SORTNODUP")
 stopifnot(dir.exists(coexprdistFolder))
@@ -65,7 +66,7 @@ all_ratio_files <- list.files(coexprdistFolder,
                           full.names=TRUE)
 stopifnot(length(all_ratio_files) > 0)
 
-curr_file = "AUC_COEXPRDIST_WITHFAM_SORTNODUP/GSM1631185_MCF7_vs_GSE75070_MCF7_shGFP/TCGAbrca_lum_bas_hgnc/hgnc_family_short/auc_values.Rdata"
+curr_file = "AUC_COEXPRDIST_WITHFAM_SORTNODUP/MCF-7/TCGAbrca_lum_bas_hgnc/hgnc_family_short/auc_values.Rdata"
 
 all_auc_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %dopar% {
   curr_ds <- basename(dirname(dirname(curr_file)))
@@ -163,15 +164,7 @@ for( i in seq_along(all_comps) ) {
   if(xvar=="aucFCC" & yvar=="aucCoexprDist")
     leg_pos <- "topright"
   
-#  if(grepl("old_", xvar)) {
-#    stopifnot(grepl("old_", yvar))
-#    labpart <- "pipeline TADs"
-#    xvar <- gsub("old_", "", xvar)
-#    yvar <- gsub("old_", "", yvar)
-#    
-#  } else {
-#    labpart <- "tissue TADs"
-#  }
+
   if(grepl("old_", xvar)) {
     labpartX <- "pipeline TADs"
     xvar <- gsub("old_", "", xvar)
@@ -186,11 +179,7 @@ for( i in seq_along(all_comps) ) {
   }
  
   
-#  myTit <- paste0(" % increase AUC\n", xvar, " vs. ", yvar, " (", gsub(" ", "", labpart), ")")
   myTit <- paste0(" % increase AUC\n", xvar, "  (", gsub(" ", "", labpartX), ") vs. ", yvar, " (", gsub(" ", "", labpartY), ")")
-  #myTit <- paste0("Tissue-specific consensus vs. pipeline consensus % increase FCC AUC")
-#  x_lab <- paste("% increase", xvar, " (", labpart, ")")
-#  y_lab <- paste("% increase", yvar, " (", labpart, ")")
   x_lab <- paste("% increase", xvar, " (", labpartX, ")")
   y_lab <- paste("% increase", yvar, " (", labpartY, ")")
   mySub <- paste0("(# DS = ", nrow(all_auc_DT), ")")
@@ -200,7 +189,6 @@ for( i in seq_along(all_comps) ) {
   curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
   stopifnot(!is.na(curr_colors))
   
-#  outFile <- file.path(outFold, paste0(xvar, "_", yvar, "_", gsub(" ", "", labpart), ".", plotType))
   outFile <- file.path(outFold, paste0(xvar, "_", gsub(" ", "", labpartX),"_", yvar, "_", gsub(" ", "", labpartY), ".", plotType))
   do.call(plotType, list(outFile, height=myHeight, width=myWidth))
   plot(x = myx,
@@ -236,6 +224,10 @@ for( i in seq_along(all_comps) ) {
   cat(paste0("... written: ", outFile, "\n"))
   
 }
+
+######################################################################################
+cat("*** DONE\n")
+cat(paste0(startTime, "\n", Sys.time(), "\n"))
 
 
   

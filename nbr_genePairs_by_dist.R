@@ -7,6 +7,9 @@ stopifnot(length(args) == 2)
 
 stopifnot(dir.exists(hicds))
 
+# retrieve the information from the loess model, so no need to recompute everything !
+# (loess model computed in:  Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R)
+
 geneFile <- file.path("PIPELINE/OUTPUT_FOLDER", hicds, exprds, "0_prepGeneData/pipeline_geneList.Rdata")
 stopifnot(file.exists(geneFile))
 geneList <- eval(parse(text = load(geneFile)))
