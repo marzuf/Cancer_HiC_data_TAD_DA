@@ -31,7 +31,7 @@ logFile <- file.path(outFold, "cmp_datasets_matching_logFile.txt")
 if(!SSHFS) system(paste0("rm -f ", logFile))
 if(SSHFS) logFile <- ""
 
-plotType <- "svg"
+plotType <- "png"
 widthMat <- 26
 heightMat <- 14
 widthBoxplot <- 10

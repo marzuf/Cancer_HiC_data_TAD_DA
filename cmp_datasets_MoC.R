@@ -31,7 +31,7 @@ logFile <- file.path(outFold, "cmp_datasets_MoC_logFile.txt")
 if(!SSHFS) file.remove(logFile)
 if(SSHFS) logFile <- ""
 
-plotType <- "svg"
+plotType <- "png"
 widthMoCmat <- 26
 heightMoCmat <- 14
 widthBoxplot <- 10

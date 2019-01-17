@@ -26,7 +26,7 @@ dir.create(outFold, recursive = TRUE)
 # if(!SSHFS) system(paste0("rm -f ", logFile))
 # if(SSHFS) logFile <- ""
 
-plotType <- "svg"
+plotType <- "png"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 

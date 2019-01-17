@@ -14,6 +14,7 @@ setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 source(file.path("utils_fct.R"))
+source(file.path("datasets_settings.R"))
 
 # if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
@@ -39,32 +40,38 @@ dir.create(outFold, recursive = TRUE)
 # if(SSHFS) logFile <- ""
 
 plotType <- "svg"
-
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 
+plotCex <- 1.2
+
 mocDT <- eval(parse(text = load(mocFile)))
 head(mocDT)
-# ds1             ds2 chromo       MoC
-# 1 pipConsensus breastConsensus   chr1 0.6174482
-# 2 pipConsensus breastConsensus  chr10 0.6232023
-# 3 pipConsensus breastConsensus  chr11 0.5779753
+# ds1              ds2 chromo       MoC
+# 1 MCF-7 ENCSR549MGQ_T47D   chr1 0.6680636
+# 2 MCF-7 ENCSR549MGQ_T47D  chr10 0.5903376
+# 3 MCF-7 ENCSR549MGQ_T47D  chr11 0.6515738
 mocDS <- unique(c(mocDT$ds1, mocDT$ds2) )
 
 resolDT <- eval(parse(text = load(resolFile)))
 head(resolDT)
-# dataset chromo  countSum rowAbove1000 countSum_log10 datasetLabel
-# 1  GSE105194_ENCFF027IEO   chr1 314471319       0.9660       8.497581     astroCL1
-# 12 GSE105194_ENCFF027IEO   chr2 256565529       0.9840       8.409198     astroCL1
-resolDS <- unique(resolDT$datasetLabel)
+# dataset chromo countSum rowAbove1000 countSum_log10 datasetLabel
+# 1  ENCSR079VIJ_G401   chr1 19193942       0.8917       7.283164    kidneyCl1
+# 12 ENCSR079VIJ_G401   chr2 22877966       0.9712       7.359417    kidneyCl1
+# 16 ENCSR079VIJ_G401   chr3 19073485       0.9844       7.280430    kidneyCl1
+resolDS <- unique(resolDT$dataset)
 
 cat("setdiff(mocDS, resolDS)\n")
 setdiff(mocDS, resolDS)
 
 commonDS <- intersect(mocDS, resolDS)
+stopifnot(length(commonDS) > 0)
 
 mocDT <- mocDT[mocDT$ds1 %in% commonDS & mocDT$ds2 %in% commonDS,]
-resolDT <- resolDT[resolDT$datasetLabel %in% commonDS,]
+resolDT <- resolDT[resolDT$dataset %in% commonDS,]
+
+stopifnot(nrow(mocDT) > 0)
+stopifnot(nrow(resolDT) > 0)
 
 ### HAVE i THE MOC FOR EACH CHROMO IN MOC DT ???
 
@@ -72,22 +79,23 @@ resolDT$chromo <- as.character(resolDT$chromo)
 mocDT$chromo <- as.character(mocDT$chromo)
 
 resol1DT <- resolDT
-resol1DT$dataset <- NULL
+resol1DT$datasetLabel <- NULL
 colnames(resol1DT) <- paste0(colnames(resol1DT), "_ds1")
 merge1 <- left_join(mocDT, resol1DT, 
-                    by = c("ds1" = "datasetLabel_ds1", "chromo" ="chromo_ds1"))  # or datasetLabel_ds1 ??? if chromo available in MoC dt, otherwise just dataset
+                    by = c("ds1" = "dataset_ds1", "chromo" ="chromo_ds1"))  # or datasetLabel_ds1 ??? if chromo available in MoC dt, otherwise just dataset
+stopifnot(nrow(merge1) > 0)
 
 resol2DT <- resolDT
-resol2DT$dataset <- NULL
+resol2DT$datasetLabel <- NULL
 colnames(resol2DT) <- paste0(colnames(resol2DT), "_ds2")
-merge2 <- left_join(merge1, resol2DT, by = c("ds2" = "datasetLabel_ds2", "chromo" ="chromo_ds2"))  # or datasetLabel_ds1 ??? if chromo available in MoC dt, otherwise just dataset
+merge2 <- left_join(merge1, resol2DT, by = c("ds2" = "dataset_ds2", "chromo" ="chromo_ds2"))  # or datasetLabel_ds1 ??? if chromo available in MoC dt, otherwise just dataset
+stopifnot(nrow(merge2) > 0)
 
 resol_MoC_DT <- merge2
 
 mycolumns <- c("rowAbove1000", "countSum", "countSum_log10")
 
 otherVar <- "MoC"
-
 
 var_names <- c(
                     "MoC" = "MoC",
@@ -100,17 +108,30 @@ var_names <- c(
 # resol_MoC_DT$tissues <- as.factor(gsub("(.+)CL.*", "\\1", resol_MoC_DT$ds1))
 
 nDS <- length(commonDS)
+stopifnot(nDS > 0)
 
-resol_MoC_DT$dataset <- paste0(resol_MoC_DT$ds1, " vs. ", resol_MoC_DT$ds2)
+resol_MoC_DT$ds1_label <- sapply(as.character(resol_MoC_DT$ds1), function(x) as.character(names(cl_names[cl_names==x])))
+resol_MoC_DT$ds2_label <- sapply(as.character(resol_MoC_DT$ds2), function(x) as.character(names(cl_names[cl_names==x])))
 
+resol_MoC_DT$dataset <- paste0(resol_MoC_DT$ds1_label, " vs. ", resol_MoC_DT$ds2_label)
+
+
+mycol=mycolumns[1]
 ### 1 row for each chromo
 for(mycol in mycolumns) {
      resolVar <- paste0(mycol, "_ratio")
      resol_MoC_DT[,resolVar] <- resol_MoC_DT[,paste0(mycol, "_ds1")] / resol_MoC_DT[,paste0(mycol, "_ds2")]
     # leg_pos <- ifelse(mycol %in% c("TOSET"), "bottomleft", "bottomright")
+     
     leg_pos <- "topright"
     myx <- resol_MoC_DT[,resolVar]
     myy <- resol_MoC_DT[,otherVar]
+    
+    # some chromo for some ds have 0 rows above 1000 -> NA or Inf
+    keepIdx <- (!is.na(myx) & !is.infinite(myx) )& (!is.na(myy) & !is.infinite(myy) )
+    myx <- myx[keepIdx]
+    myy <- myy[keepIdx]
+    
     stopifnot(resolVar %in% names(var_names))
     stopifnot(otherVar %in% names(var_names))
     myxlab <- paste0(var_names[resolVar])
@@ -127,6 +148,7 @@ for(mycol in mycolumns) {
              ylab=myylab,
              pch = 16, cex = 0.7,
             # col = as.numeric(resol_MoC_DT[,"tissues"]),
+            cex.axis = plotCex, cex.lab = plotCex,
              main = myTit
     )
     text(x=myx,
@@ -148,6 +170,7 @@ for(mycol in mycolumns) {
 
 ### aggregate -> 1 row for each dataset pair
 meanDS_resol_MoC_DT <- resol_MoC_DT
+meanDS_resol_MoC_DT$ds1_label <- meanDS_resol_MoC_DT$ds2_label <- NULL
 meanDS_resol_MoC_DT$ds1 <- meanDS_resol_MoC_DT$ds2 <- meanDS_resol_MoC_DT$chromo <- NULL
 meanDS_resol_MoC_DT <- aggregate(. ~ dataset, data = meanDS_resol_MoC_DT, FUN=mean, na.rm=T)
 
@@ -175,6 +198,7 @@ for(mycol in mycolumns) {
     ylab=myylab,
     pch = 16, cex = 0.7,
     # col = as.numeric(meanDS_resol_MoC_DT[,"tissues"]),
+    cex.lab = plotCex, cex.axis = plotCex,
     main = myTit
   )
   text(x=myx,

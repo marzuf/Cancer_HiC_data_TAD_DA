@@ -3,7 +3,6 @@ startTime <- Sys.time()
 library(foreach)
 library(doMC)
 library(ggplot2)
-library(stringi)
 
 options(scipen=100)
 
@@ -36,7 +35,10 @@ stopifnot(dir.exists(old_fcc_folder))
 fcc_folder <- file.path("PIPELINE", "OUTPUT_FOLDER")
 stopifnot(dir.exists(fcc_folder))
 
-plotType <- "png"
+family <- "_hgnc"
+familyData <- "_family_short"
+
+plotType <- "svg"
 myHeight <- ifelse(plotType == "png", 500, 7)
 myWidth <- myHeight
 myGGheight <- ifelse(plotType == "png", 500, 7)
@@ -66,11 +68,14 @@ all_ratio_files <- list.files(coexprdistFolder,
                           full.names=TRUE)
 stopifnot(length(all_ratio_files) > 0)
 
-curr_file = "AUC_COEXPRDIST_WITHFAM_SORTNODUP/MCF-7/TCGAbrca_lum_bas_hgnc/hgnc_family_short/auc_values.Rdata"
 
+curr_file=all_ratio_files[1]
 all_auc_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %dopar% {
+  hicds <- basename(dirname(dirname(dirname(curr_file))))
   curr_ds <- basename(dirname(dirname(curr_file)))
-  ds_name <- gsub("(.+?_.+?_.+?)_.+", "\\1", curr_ds)
+  # ds_name <- gsub("(.+?_.+?_.+?)_.+", "\\1", curr_ds)
+  ds_name <- gsub(family, "", curr_ds)
+  ds_name <- gsub(familyData, "", ds_name)
   stopifnot(grepl("TCGA", curr_ds))
   all_ratios <- eval(parse(text = load(curr_file)))
   aucCoexprDist <- as.numeric(all_ratios["auc_ratio_same_over_diff_distVect"])
@@ -81,6 +86,10 @@ all_auc_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %dopar% {
   old_file <- list.files(file.path(coexprdistOldFolder,
                         curr_ds), recursive = TRUE, full.names = TRUE,
                         pattern = "auc_values.Rdata")
+  if(length(old_file) == 0){
+    cat("... missing OLD dataset: ", ds_name, "\n")
+    return(NULL)
+  }
   stopifnot(length(old_file) == 1)
   stopifnot(file.exists(old_file))
   
@@ -91,11 +100,10 @@ all_auc_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %dopar% {
   stopifnot(! is.na(old_aucCoexprDistSameFam))
   
   
-  curr_fcc_file <- list.files(file.path(fcc_folder),
+  curr_fcc_file <- list.files(file.path(fcc_folder, hicds, ds_name),
                                 pattern = paste0("auc_ratios.Rdata"),
                                 recursive=TRUE,
                                 full.names=TRUE)
-  curr_fcc_file <- curr_fcc_file[grepl(ds_name, curr_fcc_file)]
   stopifnot(length(curr_fcc_file) == 1)
   stopifnot(file.exists(curr_fcc_file))
   
