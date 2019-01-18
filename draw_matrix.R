@@ -54,6 +54,9 @@ skipcol <- ifelse(is.null(opt$col_to_skip), 3, opt$col_to_skip)
 start_matrix <- opt$start_matrix
 end_matrix <- opt$end_matrix
 
+ds = basename(matrixFile)
+ds = gsub("(.+)_chr.+_.+", "\\1", ds)
+
 outFile <- opt$output_file
 system(paste0("mkdir -p ", dirname(outFile)))
 
@@ -148,6 +151,7 @@ image(x=axLab, y=axLab, as.matrix(log10(drawMatrixDT+0.001)),
       xlab="", ylab="",
       xaxt = "n", yaxt="n",
       col = imageColPalette)
+mtext(ds, side=3)
 
 title(paste0(chromo, " - ", 1+binSize*(start_matrix-1), "(", start_matrix, "):", end_matrix*binSize, "(", end_matrix,")"))
 

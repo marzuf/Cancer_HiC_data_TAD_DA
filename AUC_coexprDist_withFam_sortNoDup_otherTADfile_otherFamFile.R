@@ -359,14 +359,14 @@ for(i_fam in all_familyData) {
     auc_diffTAD_obsDist <- auc(x = sort(diffTAD_DT$dist), y = smooth_vals_diffTAD)
     auc_sameTAD_obsDist <- auc(x = sort(sameTAD_DT$dist), y = smooth_vals_sameTAD)
     
-    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "sameTAD_diffTAD_loessFit_originalDist", ".", plotType))
+    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "_sameTAD_diffTAD_loessFit_originalDist", ".", plotType))
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     plot(NULL,
          xlim = range(allData_dt$dist), 
          ylim = range(c(smooth_vals_sameTAD, smooth_vals_diffTAD)),
          xlab=my_xlab, 
          ylab=my_ylab,
-         main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
+         main=paste0(curr_TADlist, " - ", curr_dataset, ": coexpr ~ dist loess fit"))
     mtext(text = "observed distance values", side = 3)
     lines( x = sort(sameTAD_DT$dist), y = smooth_vals_sameTAD, col = sameTADcol)
     lines( x = sort(diffTAD_DT$dist), y = smooth_vals_diffTAD, col = diffTADcol)
@@ -407,14 +407,14 @@ for(i_fam in all_familyData) {
     save(distVect, file = outFile)
     cat(paste0("... written: ", outFile, "\n"))
     
-    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "sameTAD_diffTAD_loessFit_vectDist.", plotType))
+    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "_sameTAD_diffTAD_loessFit_vectDist.", plotType))
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     plot(NULL,
          xlim = range(distVect), 
          ylim = range(c(na.omit(smooth_vals_sameTAD_distVect), na.omit(smooth_vals_diffTAD_distVect))),
          xlab=my_xlab,
          ylab=my_ylab,
-         main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
+         main=paste0(curr_TADlist, " - ", curr_dataset, ": coexpr ~ dist loess fit"))
     mtext(text = paste0("distance values seq from 0 to ", distLimit, " (# points = ", nbrLoessPoints, ")"), side = 3)
     lines( x = distVect, y = smooth_vals_sameTAD_distVect, col = sameTADcol)
     lines( x = distVect, y = smooth_vals_diffTAD_distVect, col = diffTADcol)
@@ -440,14 +440,14 @@ for(i_fam in all_familyData) {
     auc_sameFamDiffTAD_obsDist <- auc(x = sort(sameFam_diffTAD_DT$dist), y = smooth_vals_sameFamDiffTAD)
     auc_sameFamSameTAD_obsDist <- auc(x = sort(sameFam_sameTAD_DT$dist), y = smooth_vals_sameFamSameTAD)
     
-    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "sameFamsameTAD_sameFamDiffTAD_loessFit_originalDist", ".", plotType))
+    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "_sameFamSameTAD_sameFamDiffTAD_loessFit_originalDist", ".", plotType))
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     plot(NULL,
          xlim = range(allData_dt$dist), 
          ylim = range(c(smooth_vals_sameFamSameTAD, smooth_vals_sameFamDiffTAD)),
          xlab=my_xlab, 
          ylab=my_ylab,
-         main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
+         main=paste0(curr_TADlist, " - ", curr_dataset, ": coexpr ~ dist loess fit"))
     mtext(text = "observed distance values", side = 3)
     lines( x = sort(sameFam_sameTAD_DT$dist), y = smooth_vals_sameFamSameTAD, col = sameFamSameTADcol)
     lines( x = sort(sameFam_diffTAD_DT$dist), y = smooth_vals_sameFamDiffTAD, col = sameFamDiffTADcol)
@@ -514,7 +514,7 @@ for(i_fam in all_familyData) {
     save(smooth_vals_sameFamDiffTAD_distVect, file = outFile)
     cat(paste0("... written: ", outFile, "\n"))
     
-    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "sameFamSameTAD_sameFamDiffTAD_loessFit_vectDist.", plotType))
+    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "_sameFamSameTAD_sameFamDiffTAD_loessFit_vectDist.", plotType))
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     plot(NULL,
          xlim = range(distVect), 
@@ -523,7 +523,7 @@ for(i_fam in all_familyData) {
          # ylab="",
          xlab=my_xlab,
          ylab=my_ylab,
-         main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
+         main=paste0(curr_TADlist, " - ", curr_dataset, ": coexpr ~ dist loess fit"))
     mtext(text = paste0("distance values seq from 0 to ", distLimit, " (# points = ", nbrLoessPoints, ")"), side = 3)
     lines( x = distVect, y = smooth_vals_sameFamSameTAD_distVect, col = sameFamSameTADcol)
     lines( x = distVect, y = smooth_vals_sameFamDiffTAD_distVect, col = sameFamDiffTADcol)
@@ -538,7 +538,7 @@ for(i_fam in all_familyData) {
     cat(paste0("... written: ", outFile, "\n"))
     
     ################################################################ 
-    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "sameTAD_diffTAD_sameFamSameTAD_sameFamDiffTAD_loessFit_vectDist.", plotType))
+    outFile <- file.path(outFold, paste0(curr_TADlist, "_", curr_dataset, "_sameTAD_diffTAD_sameFamSameTAD_sameFamDiffTAD_loessFit_vectDist.", plotType))
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     plot(NULL,
          xlim = range(distVect), 
@@ -550,7 +550,7 @@ for(i_fam in all_familyData) {
          # ylab="",
          xlab=my_xlab,
          ylab=my_ylab,
-         main=paste0(curr_dataset, ": coexpr ~ dist loess fit"))
+         main=paste0(curr_TADlist, " - ", curr_dataset, ": coexpr ~ dist loess fit"))
     mtext(text = paste0("distance values seq from 0 to ", distLimit, " (# points = ", nbrLoessPoints, ")"), side = 3)
     lines( x = distVect, y = smooth_vals_sameFamSameTAD_distVect, col = sameFamSameTADcol)
     lines( x = distVect, y = smooth_vals_sameFamDiffTAD_distVect, col = sameFamDiffTADcol)
