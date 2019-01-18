@@ -3,7 +3,6 @@ startTime <- Sys.time()
 library(foreach)
 library(doMC)
 library(ggplot2)
-library(stringi)
 
 options(scipen=100)
 
@@ -25,7 +24,7 @@ coexprdistOldFolder <-  file.path(
 stopifnot(dir.exists(coexprdistOldFolder))
 
 
-plotType <- "png"
+plotType <- "svg"
 myHeight <- ifelse(plotType == "png", 300, 7)
 myWidth <- myHeight
 myGGheight <- ifelse(plotType == "png", 300, 7)
@@ -38,7 +37,8 @@ dir.create(outFold, recursive = TRUE)
 source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
 head(score_DT)
 
-source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+source("utils_fct.R")
+source("colors_utils.R")
 
 dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
 length(dataset_proc_colors)
@@ -55,7 +55,7 @@ all_ratio_files <- list.files(coexprdistFolder,
                           full.names=TRUE)
 stopifnot(length(all_ratio_files) > 0)
 
-curr_file = "AUC_COEXPRDIST_WITHFAM_SORTNODUP/GSM1631185_MCF7_vs_GSE75070_MCF7_shGFP/TCGAbrca_lum_bas_hgnc/hgnc_family_short/auc_values.Rdata"
+curr_file = "AUC_COEXPRDIST_WITHFAM_SORTNODUP/ENCSR079VIJ_G401_40kb/TCGAkich_norm_kich_hgnc/hgnc_family_short/auc_values.Rdata"
 
 all_aucCoexprDist_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %dopar% {
   curr_ds <- basename(dirname(dirname(curr_file)))
@@ -79,8 +79,10 @@ all_aucCoexprDist_DT <- foreach(curr_file = all_ratio_files, .combine='rbind') %
   stopifnot(! is.na(old_aucCoexprDist))
   stopifnot(! is.na(old_aucCoexprDistSameFam))
   
+  
   data.frame(
     dataset = ds_name,
+    datasetLabel = paste0(basename(dirname(dirname(dirname(curr_file)))), "\n", basename(dirname(dirname(curr_file)))),
     aucCoexprDist = aucCoexprDist,
     old_aucCoexprDist = old_aucCoexprDist,
     aucCoexprDistSameFam = aucCoexprDistSameFam,
@@ -103,7 +105,6 @@ mySub <- paste0("(# DS = ", nrow(all_aucCoexprDist_DT), ")")
 myx <- 100*(all_aucCoexprDist_DT$old_aucCoexprDist-1)
 myy <- 100*(all_aucCoexprDist_DT$aucCoexprDist-1)
 mynames <- all_aucCoexprDist_DT$dataset
-
 
 curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
 stopifnot(!is.na(curr_colors))
@@ -205,17 +206,25 @@ var_names <- c(aucCoexprDist = "% increase AUC coexprDist (tissue specific)",
                old_aucCoexprDistSameFam = "% increase AUC coexprDist (same fam.; pipeline consensus)"
                )
 
+coexprdist="old_aucCoexprDist"
+
 for(coexprdist in c("aucCoexprDist", "old_aucCoexprDist", "aucCoexprDistSameFam", "old_aucCoexprDistSameFam" )) {
   
   auc_DT_m <- all_aucCoexprDist_DT[order(all_aucCoexprDist_DT[,coexprdist], decreasing = TRUE),]
   
-  auc_DT_m$dataset <- factor(as.character(auc_DT_m$dataset), levels = as.character(auc_DT_m$dataset))
+  if(grepl("old_", coexprdist)) {
+    auc_DT_m$datasetLabel <- auc_DT_m$dataset
+    auc_DT_m <- auc_DT_m[, c("datasetLabel", "dataset", paste0(coexprdist))]
+    auc_DT_m <- unique(auc_DT_m)
+  }
+  
+  auc_DT_m$datasetLabel <- factor(as.character(auc_DT_m$datasetLabel), levels = as.character(auc_DT_m$datasetLabel))
   
   # stopifnot(as.character(auc_DT_m$dataset)  %in% names(dataset_proc_colors) )
   # curr_colors <- dataset_proc_colors[as.character(levels(auc_DT_m$dataset))]
   
   stopifnot(as.character(auc_DT_m$dataset)  %in% names(dataset_proc_colors) )
-  curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[levels(auc_DT_m$dataset)])])
+  curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[as.character(auc_DT_m$dataset)])])
   stopifnot(!is.na(curr_colors))
   
   plotDT <- auc_DT_m
@@ -231,7 +240,8 @@ for(coexprdist in c("aucCoexprDist", "old_aucCoexprDist", "aucCoexprDistSameFam"
   # my_labels <- my_breaks + 1
   my_labels <- my_breaks
   
-  p_AUC <- ggplot(plotDT, aes_string(x = paste0("dataset"), y = paste0(coexprdist))) +
+  p_AUC <- ggplot(plotDT, aes_string(x = paste0("datasetLabel"), y = paste0(coexprdist))) +
+    # p_AUC <- ggplot(plotDT, aes_string(x = paste0("dataset"), y = paste0(coexprdist))) +
     geom_bar(stat="identity", position="dodge", width = 0.7, fill = colFill) +
     scale_x_discrete(name="")+
     ggtitle(label=myTit) +

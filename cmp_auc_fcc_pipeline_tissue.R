@@ -152,17 +152,27 @@ var_names <- c(aucFCC = "% increase AUC FCC (tissue specific)",
 
 for(fcc in c("aucFCC", "old_aucFCC")) {
   
+  
   auc_DT_m <- all_aucFCC_DT[order(all_aucFCC_DT[,fcc], decreasing = TRUE),]
   
-  auc_DT_m$dataset <- factor(as.character(auc_DT_m$dataset), levels = unique(as.character(auc_DT_m$dataset)))
+  if(fcc == "old_aucFCC") {
+    auc_DT_m$datasetLabel <- auc_DT_m$dataset
+    auc_DT_m <- auc_DT_m[, c("dataset", "datasetLabel", paste0(fcc))]
+    auc_DT_m <- unique(auc_DT_m)
+  }
+  
+  # auc_DT_m$dataset <- factor(as.character(auc_DT_m$dataset), levels = unique(as.character(auc_DT_m$dataset)))
   auc_DT_m$datasetLabel <- factor(as.character(auc_DT_m$datasetLabel), levels = as.character(auc_DT_m$datasetLabel))
   
   
   # stopifnot(as.character(auc_DT_m$dataset)  %in% names(dataset_proc_colors) )
   # curr_colors <- dataset_proc_colors[as.character(levels(auc_DT_m$dataset))]
   
+  cat(paste0(as.character(auc_DT_m$dataset)[!as.character(auc_DT_m$dataset)  %in% names(dataset_proc_colors) ], collapse="\n"), "\n")
+  
   stopifnot(as.character(auc_DT_m$dataset)  %in% names(dataset_proc_colors) )
-  curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[levels(auc_DT_m$dataset)])])
+  
+  curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[as.character(auc_DT_m$dataset)])])
   stopifnot(!is.na(curr_colors))
   
   plotDT <- auc_DT_m
@@ -178,7 +188,8 @@ for(fcc in c("aucFCC", "old_aucFCC")) {
   # my_labels <- my_breaks + 1
   my_labels <- my_breaks
   
-  p_AUC <- ggplot(plotDT, aes_string(x = paste0("dataset"), y = paste0(fcc))) +
+  # p_AUC <- ggplot(plotDT, aes_string(x = paste0("dataset"), y = paste0(fcc))) +
+    p_AUC <- ggplot(plotDT, aes_string(x = paste0("datasetLabel"), y = paste0(fcc))) +
     geom_bar(stat="identity", position="dodge", width = 0.7, fill = colFill) +
     scale_x_discrete(name="")+
     ggtitle(label=myTit) +
