@@ -26,7 +26,7 @@ javaExec="java -Xms512m -Xmx2048m -jar /mnt/ed2/shared/TADcompare/Software/juice
 resolKb="40"
 
 all_chromo=( {1..22} "X" )
-# all_chromo=( "1" "9" )
+#all_chromo=( "21" )
 
 echo "*** START ***"
 echo "... > Cell line: $cl"

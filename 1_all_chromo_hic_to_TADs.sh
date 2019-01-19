@@ -21,17 +21,20 @@ fi
 clName="$1"
 #chromo="$2"
 
-all_chromo=( "chr"{1..22} "chrX" )
+#all_chromo=( "chr"{1..22} "chrX" )
 #all_chromo=( "chr15" "chr16" "chr17" )
 #all_chromo=( "chr1" "chr9" )
 #all_chromo=( "chrX" )
+
+all_chromo=( "chr20" )
+
 
 echo "*** START ***"
 echo "... > Cell line: $clName"
 echo "... > Chromosome(s): ${all_chromo[*]}"
 
-step1=1		# extract chromo matrix from hic file # <cell_line>/NORM_MAT
-step2=1		# convert Rao format to TopDom format # <cell_line>/TopDom_MAT
+step1=0		# extract chromo matrix from hic file # <cell_line>/NORM_MAT
+step2=0		# convert Rao format to TopDom format # <cell_line>/TopDom_MAT
 step3=1		# run TopDom # <cell_line>/TopDom_FILES
 step4=1     # convert TopDom BED format to FINAL DOMAINS BED format # <cell_line>/FINAL_DOMAINS
 
@@ -54,9 +57,15 @@ fi
 
 #####**** HARD-CODED SETTINGS
 # for all steps
-norm="KR"
 binSizeKb="40"
 Rexec="Rscript"
+
+	if [[ "$clName" ==  "GSE73782_PC3" ]]; then
+		norm="ICE"
+	else
+		norm="KR"
+	fi
+
 
 for chromo in "${all_chromo[@]}"; do
 
@@ -65,7 +74,14 @@ for chromo in "${all_chromo[@]}"; do
 	juicerExec="java -Xms512m -Xmx2048m -jar /mnt/ed2/shared/TADcompare/Software/juicer/juicer_tools.jar"
 	step1_outFile="${clName}_${binSizeKb}kb/$step1_outFolder/${clName}_${chromo}_${norm}_${binSizeKb}kb.hic.matrix"
 	hicFolder="/mnt/ndata/Yuanlong/2.Results/1.Juicer"
-	hicFile="$hicFolder/mega_$clName/mega/aligned/inter_30.hic"
+	
+	
+	if [[ "$clName" ==  "GSE105318_DLD1" ]]; then
+		hicFile="$hicFolder/mega_$clName/aligned/inter_30.hic"
+	else
+		hicFile="$hicFolder/mega_$clName/mega/aligned/inter_30.hic"
+	fi
+	
 
 	# step2:
 	step2_outFolder="TopDom_MAT"

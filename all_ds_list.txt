@@ -15,7 +15,6 @@
 
 # ENCSR346DCU_LNCaP - prostate 1/2
 
-# XXX - prostate 2/2
 
 # Panc1_rep12 - pancreas
 
@@ -40,6 +39,21 @@
 # ENCSR834DXR_SK-N-MC - neuroblastoma (derived from metastatic site: supra-orbital area)
 
 # ENCSR105KFX_SK-N-DZ - neuroblastoma (derived from metastatic site: bone marrow)
+
+
+### running
+
+# GSE105194_spinal_cord - astrocyte 1/2
+# GSE105318_DLD1 - colorectal
+
 #***********************************************************
 
+MISSING:
 
+# XXX - prostate 2/2
+
+prostate consensus
+
+astrocyte - cerebellum
+
+liver
