@@ -22,7 +22,7 @@ resolKb="40"
 
 all_chromo=( {1..22} "X" )
 #all_chromo=( "1" "6" "15" "21" )
-#all_chromo=( "20" )
+#all_chromo=( "21" )
 
 echo "*** START ***"
 echo "... > Cell line: $cl"

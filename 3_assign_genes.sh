@@ -46,13 +46,24 @@ fi
 #####**** HARD-CODED SETTINGS
 
 # for all steps
-norm="KR"
+
+
+	if [[ "$clName" ==  "GSE73782_PC3_ICE" ]]; then
+		norm="ICE"
+	else
+		norm="KR"
+	fi
+
+
+#norm="KR"
+
+
 binSizeKb="40"
 Rexec="Rscript"
 mainFold="${clName}_${binSizeKb}kb"
 
-maxJobs=40
-maxLoad=60
+maxJobs=200
+maxLoad=200
 
 # step1:
 g2t_script="gene2TAD_consensus_version2.R"

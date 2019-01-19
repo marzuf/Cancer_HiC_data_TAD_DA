@@ -18,8 +18,8 @@
 #- metaTADheader 
 #- featureHeader 
 
-maxJobs=100
-maxLoad=100
+maxJobs=200
+maxLoad=200
 
 script_name="draw_matrix.R"
 
@@ -30,30 +30,44 @@ all_chromos=( "chr1" "chr9" "chr21" )
 #all_chromos=( "chr5" )
 #all_chromos=( "chr"{1..22} "chrX" ) 
 
+# all_dataset_id=(
+# "ENCSR549MGQ_T47D"
+# "K562"
+# "ENCSR444WCZ_A549"
+# "NCI-H460"
+# "ENCSR346DCU_LNCaP"
+# "Panc1_rep12"
+# "ENCSR079VIJ_G401"
+# "ENCSR401TBQ_Caki2"
+# "ENCSR312KHQ_SK-MEL-5"
+# "ENCSR862OGI_RPMI-7951"
+# "GSM2334834_U266_HindIII"
+# "GSM2334832_RPMI-8226_HindIII"
+# "ENCSR834DXR_SK-N-MC"
+# "ENCSR105KFX_SK-N-DZ"
+# )
+
 all_dataset_id=(
-"ENCSR549MGQ_T47D"
-"K562"
-"ENCSR444WCZ_A549"
-"NCI-H460"
-"ENCSR346DCU_LNCaP"
-"Panc1_rep12"
-"ENCSR079VIJ_G401"
-"ENCSR401TBQ_Caki2"
-"ENCSR312KHQ_SK-MEL-5"
-"ENCSR862OGI_RPMI-7951"
-"GSM2334834_U266_HindIII"
-"GSM2334832_RPMI-8226_HindIII"
-"ENCSR834DXR_SK-N-MC"
-"ENCSR105KFX_SK-N-DZ"
+"GSE73782_PC3"
+"GSE73782_PC3_ICE"
+"GSE105318_DLD1"
+"GSE105194_spinal_cord"
 )
+
 
 
 for dataID in "${all_dataset_id[@]}"; do
 
+	if [[ "$dataID" == "GSE73782_PC3_ICE" ]]; then
+		norm="ICE"
+	else
+		norm="KR"
+	fi
+
 
 	matrixFolder="${dataID}_${binSizeKb}kb/TopDom_MAT"
 	matrixPrefix="${dataID}_"
-	matrixSuffix="_KR_${binSizeKb}kb.hic.TopDom.matrix"
+	matrixSuffix="_${norm}_${binSizeKb}kb.hic.TopDom.matrix"
 	outFolder="DRAW_ENCODE_MATRIX/${dataID}_${binSizeKb}kb"
 
 

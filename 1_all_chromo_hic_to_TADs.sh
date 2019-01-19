@@ -21,12 +21,12 @@ fi
 clName="$1"
 #chromo="$2"
 
-#all_chromo=( "chr"{1..22} "chrX" )
+all_chromo=( "chr"{1..22} "chrX" )
 #all_chromo=( "chr15" "chr16" "chr17" )
 #all_chromo=( "chr1" "chr9" )
 #all_chromo=( "chrX" )
 
-all_chromo=( "chr20" )
+#all_chromo=( "chr21" )
 
 
 echo "*** START ***"
@@ -60,12 +60,14 @@ fi
 binSizeKb="40"
 Rexec="Rscript"
 
-	if [[ "$clName" ==  "GSE73782_PC3" ]]; then
+	if [[ "$clName" ==  "GSE73782_PC3_ICE" ]]; then
 		norm="ICE"
 	else
 		norm="KR"
 	fi
 
+
+#norm="KR"
 
 for chromo in "${all_chromo[@]}"; do
 

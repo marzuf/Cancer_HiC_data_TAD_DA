@@ -17,30 +17,30 @@ ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 
 
 # hic to TADs for GSE105194_spinal_cord
-./1_all_chromo_hic_to_TADs.sh GSE105194_spinal_cord				=> r 19.01.2019
+./1_all_chromo_hic_to_TADs.sh GSE105194_spinal_cord				=> done 19.01.2019
 # => at this point: GSE105194_spinal_cord_40kb/FINAL_DOMAINS
 
-# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> 
-# NB: to check which chromosomes with genes assigned: 		=> 
+# ./3_assign_genes.sh GSE105194_spinal_cord  					=> done 19.01.2019
+# NB: to check which chromosomes with genes assigned: 		=> done 19.01.2019
 cut -f1 GSE105194_spinal_cord_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSE105194_spinal_cord_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSE105194_spinal_cord_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 GSE105194_spinal_cord_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal   						# =>
-Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal  				# => 
+./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal   						# => r 19.01.2019
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal  				# => done 19.01.2019
 Rscript check_step17_files.R GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal			  	# => 
 
-./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_neural   						# =>
-Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_neural  				# => 
+./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_neural   						# => r 19.01.2019
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_neural  				# => done 19.01.2019
 Rscript check_step17_files.R GSE105194_spinal_cord_40kb TCGAgbm_classical_neural			  	# => 
 
-./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural   						# =>
-Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural  				# => 
+./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural   						# => r 19.01.2019
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural  				# => done 19.01.2019
 Rscript check_step17_files.R GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural			  	# => 
 
-./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc   						# =>
-Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc  				# => 
+./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc   						# => r 19.01.2019
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc  				# => done 19.01.2019
 Rscript check_step17_files.R GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc			  	# => 
 
 
@@ -54,10 +54,10 @@ TCGAgbm_classical_mesenchymal  TCGAgbm_classical_neural  TCGAgbm_classical_prone
 
 
 # hic to TADs for GSE105318_DLD1
-./1_all_chromo_hic_to_TADs.sh GSE105194_spinal_cord				=> r 19.01.2019
-# => at this point: GSE105194_spinal_cord_40kb/FINAL_DOMAINS
+./1_all_chromo_hic_to_TADs.sh XXXX
+# => at this point: XXX/FINAL_DOMAINS
 
-# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> 
+# ./3_assign_genes.sh XXX  					=> 
 # NB: to check which chromosomes with genes assigned: 		=> 
 cut -f1 GSE105194_spinal_cord_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSE105194_spinal_cord_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
@@ -99,19 +99,19 @@ Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => done ! 15.01.
 
 
 # hic to TADs for GSE105318_DLD1
-./1_all_chromo_hic_to_TADs.sh GSE105318_DLD1				=> r 19.01.2019
+./1_all_chromo_hic_to_TADs.sh GSE105318_DLD1				# => done ! 19.01.2019
 # => at this point: GSE105318_DLD1_40kb/FINAL_DOMAINS
 
-# ./3_assign_genes.sh ENCSR549MGQ_T47D  					=> 
-# NB: to check which chromosomes with genes assigned: 		=> 
+# ./3_assign_genes.sh GSE105318_DLD1  					# => done ! 19.01.2019
+# NB: to check which chromosomes with genes assigned: 		# => done ! 19.01.2019
 cut -f1 GSE105318_DLD1_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSE105318_DLD1_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSE105318_DLD1_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 GSE105318_DLD1_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh GSE105318_DLD1_40kb TCGAcoad_msi_mss   						# =>
-Rscript check_TCGA_fpkm.R GSE105318_DLD1_40kb TCGAcoad_msi_mss  				# => 
-Rscript check_step17_files.R GSE105318_DLD1_40kb TCGAcoad_msi_mss			  	# => d
+./run_pipeline.sh GSE105318_DLD1_40kb TCGAcoad_msi_mss   						# => r 19.01.2019
+Rscript check_TCGA_fpkm.R GSE105318_DLD1_40kb TCGAcoad_msi_mss  				# => done ! 19.01.2019
+Rscript check_step17_files.R GSE105318_DLD1_40kb TCGAcoad_msi_mss			  	# => 
 
 
 #***********************************************************
@@ -383,63 +383,126 @@ Rscript check_step17_files.R ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad  			#
 #***********************************************************
 #  - prostate 2/2
 #***********************************************************
-
 (NB: have tried KR intrachromo with the aws3_ and aws4_ files -> did not work)
 
 mega_GSE73782_PC3
 # ! normalization has to be done separately !!!
 
+
+-- VERSION KR
+
 # get count matrix from Yuanlong folder 40kb								=> done ! 19.01.2019
 ./pc3_all_chromo_dwd_juicer_hic.sh GSE73782_PC3
 
+# take the 40kb count files and generate pre file 
+./aws3_all_chromo_prepFile.sh GSE73782_PC3
 
+# juicer command to generate hic file with norm from pre
+./aws4_all_chromo_pre2hic2matrix.sh GSE73782_PC3
+
+# hic to TADs for GSE73782_PC3 (set STEP1=0 !!!)
+./1_all_chromo_hic_to_TADs.sh GSE73782_PC3	 ## CHANGE HARD-CODED NORM TO KR !!!
+
+
+# ./3_assign_genes.sh GSE73782_PC3				 	# 
+
+# => at this point: 
+# GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt
+# GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
+cut -f1 GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+
+
+-- VERSION ICE
+
+# get count matrix from Yuanlong folder 40kb								=> done ! 19.01.2019
+./pc3_all_chromo_dwd_juicer_hic.sh GSE73782_PC3
+
+# ICE normalize the 40kb counts
 ./pc3_all_chromo_ice_normalize.sh GSE73782_PC3   => running
 
 # => at this point: GSE73782_PC3_40kb/TopDom_MAT
 
-# hic to TADs for GSE73782_PC3 (set STEP1=0 AND STEP2=0  !!!)
-./1_all_chromo_hic_to_TADs.sh GSE73782_PC3									=> done ! 14.01.2019
+# hic to TADs for GSE73782_PC3 (set STEP1=0 AND STEP2=0  !!!) ## CHANGE HARD-CODED NORM TO ICE !!!
+./1_all_chromo_hic_to_TADs.sh GSE73782_PC3									=> done ! 19.01.2019
 
 # => at this point: GSE73782_PC3/FINAL_DOMAINS
 
 # assign genes to TADs for GSE73782_PC3
-# ./3_assign_genes.sh GSE73782_PC3											=> done ! 14.01.2019
+# ./3_assign_genes.sh GSE73782_PC3				## CHANGE HARD-CODED NORM TO ICE !!!							=> done ! 19.01.2019
 
 # => at this point: 
-# MCF-7_40kb/genes2tad/all_assigned_regions.txt
-# MCF-7_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned:				# => done ! 14.01.2019
-cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
-cut -f1 MCF-7_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
-cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
-cut -f2 MCF-7_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+# GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt
+# GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt
+# NB: to check which chromosomes with genes assigned:				# => 
+cut -f1 GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+### => then I moved the GSE73782_PC3_40kb folder to GSE73782_PC3_ICE_40kb and GSE73782_PC3 to GSE73782_PC3_ICE
+### => !!!! GSE73782_PC3 -> corresponds to the KR data
 
 
-./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas  				# => done ! 14.01.2019
-Rscript check_TCGA_fpkm.R MCF-7_40kb TCGAbrca_lum_bas  		# => done ! 14.01.2019
-Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas	# => done ! 15.01.2019
-
-./1_all_chromo_hic_to_TADs.sh GSE73782_PC3  # => done ! 14.01.2019
-
-# => at this point: ll ENCSR346DCU_LNCaP_40kb/FINAL_DOMAINS
-
-# ./3_assign_genes.sh ENCSR346DCU_LNCaP				 	# => done ! 14.01.2019
-
-# => at this point: 
-# ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt
-# ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt
-# NB: to check which chromosomes with genes assigned: 	=> done ! 14.01.2019
-cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
-cut -f1 ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
-cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
-cut -f2 ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+./run_pipeline.sh GSE73782_PC3_40kb TCGAprad_norm_prad  				# => r	
+Rscript check_TCGA_fpkm.R GSE73782_PC3_40kb TCGAprad_norm_prad  		# => done
+Rscript check_step17_files.R GSE73782_PC3_40kb TCGAprad_norm_prad			# => 
 
 
-./run_pipeline.sh ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad							# r 16.01.2019
-Rscript check_TCGA_fpkm.R ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad  				# => done ! 16.01.2019
-Rscript check_step17_files.R ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad  			# 
+
+./run_pipeline.sh GSE73782_PC3_ICE_40kb TCGAprad_norm_prad							# r 
+Rscript check_TCGA_fpkm.R GSE73782_PC3_ICE_40kb TCGAprad_norm_prad  				# => done
+Rscript check_step17_files.R GSE73782_PC3_ICE_40kb TCGAprad_norm_prad  			# 
 
 
+
+
+#***********************************************************
+#  - prostate consensus KR
+#***********************************************************
+
+# consensus between prostate cancer cell lines	
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR346DCU_LNCaP_40kb GSE73782_PC3_40kb #	=> done
+
+# assign genes to TADs for prostate KR consensus ENCSR346DCU_LNCaPGSE73782_PC3				=> done
+./3_assign_genes.sh ENCSR346DCU_LNCaPGSE73782_PC3
+
+# NB: to check which chromosomes with genes assigned: 						=> done
+cut -f1 ENCSR346DCU_LNCaPGSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR346DCU_LNCaPGSE73782_PC3_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR346DCU_LNCaPGSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR346DCU_LNCaPGSE73782_PC3_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+./run_pipeline.sh ENCSR346DCU_LNCaPGSE73782_PC3_40kb TCGAprad_norm_prad 							# WAIT LOAD
+Rscript check_TCGA_fpkm.R ENCSR346DCU_LNCaPGSE73782_PC3_40kb TCGAprad_norm_prad  					# => 
+Rscript check_step17_files.R ENCSR346DCU_LNCaPGSE73782_PC3_40kb TCGAprad_norm_prad 			 	# => 
+
+
+
+
+#***********************************************************
+#  - prostate consensus ICE
+#***********************************************************
+
+Rscript 2_all_chromo_find_consensusTADs.R  ENCSR346DCU_LNCaP_40kb GSE73782_PC3_ICE_40kb #	=> done
+
+
+# assign genes to TADs for prostate KR consensus ENCSR346DCU_LNCaPGSE73782_PC3_ICE				=> 
+./3_assign_genes.sh ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+# NB: to check which chromosomes with genes assigned: 						=>
+cut -f1 ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+./run_pipeline.sh ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb TCGAprad_norm_prad 							# 
+Rscript check_TCGA_fpkm.R ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb TCGAprad_norm_prad  					# => 
+Rscript check_step17_files.R ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb TCGAprad_norm_prad 			 	# => 
 
 
 

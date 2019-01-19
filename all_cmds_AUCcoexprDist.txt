@@ -1,4 +1,5 @@
 ### PREPARE GENE DISTANCE FILE
+
 # DS launched 15.01.2018:
 all_TAD_files_ds=(									# => r
 #"MCF-7_40kb"  # run separately for test
@@ -21,6 +22,9 @@ all_TAD_files_ds=(									# => r
 "GSM2334834_U266_HindIIIGSM2334832_RPMI-8226_HindIII_40kb"
 "ENCSR834DXR_SK-N-MC_40kb"
 "ENCSR105KFX_SK-N-DZ_40kb"
+
+## added 19.01.2018
+
 )
 
 
@@ -124,6 +128,18 @@ all_TAD_files_ds=(
 "MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas"
 
 "Panc1_rep12_40kb TCGApaad_wt_mutKRAS"
+
+
+# added 19.01.2018
+"GSE73782_PC3 TCGAprad_norm_prad"
+"GSE73782_PC3_ICE TCGAprad_norm_prad"
+"GSE105318_DLD1 TCGAcoad_msi_mss"
+"GSE105194_spinal_cord TCGAgbm_classical_mesenchymal"
+"GSE105194_spinal_cord TCGAgbm_classical_neural"
+"GSE105194_spinal_cord TCGAgbm_classical_proneural"
+"GSE105194_spinal_cord TCGAlgg_IDHwt_IDHmutnc"
+
+
 
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus
