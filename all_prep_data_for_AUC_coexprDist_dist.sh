@@ -34,6 +34,9 @@ all_TAD_files_ds=(
 "GSE73782_PC3_ICE_40kb"
 "GSE105318_DLD1_40kb"
 "GSE105194_spinal_cord_40kb"
+"ENCSR346DCU_LNCaPGSE73782_PC3_40kb"
+"ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb"
+
 )
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus

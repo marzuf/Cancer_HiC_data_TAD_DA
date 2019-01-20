@@ -1,7 +1,7 @@
 ### PREPARE GENE DISTANCE FILE
 
 # DS launched 15.01.2018:
-all_TAD_files_ds=(									# => r
+all_TAD_files_ds=(									# => r ### => r 19.01
 #"MCF-7_40kb"  # run separately for test
 "ENCSR549MGQ_T47D_40kb"
 "MCF-7ENCSR549MGQ_T47D_40kb"
@@ -30,7 +30,7 @@ all_TAD_files_ds=(									# => r
 
 ### PREPARE GENE SAME FAMILY FILE
 
-./all_prep_data_for_AUC_coexprDist_sameFam.sh   
+./all_prep_data_for_AUC_coexprDist_sameFam.sh   ### => r 19.01
 # DS launched 15.01.2018:  									# => done 15.01.2018
 all_TAD_files_ds=(
 #"MCF-7_40kb"  # run separately for test
@@ -57,7 +57,7 @@ all_TAD_files_ds=(
 
 ### PREPARE GENE SAME TAD FILE
 
-./all_prep_data_for_AUC_coexprDist_sameTAD.sh
+./all_prep_data_for_AUC_coexprDist_sameTAD.sh ### => r 19.01
 # DS launched 15.01.2018:									# => done 15.01.2018
 all_TAD_files_ds=(
 #"MCF-7_40kb"  # run separately for test
@@ -83,7 +83,7 @@ all_TAD_files_ds=(
 )
 
 ### PREPARE COEXPR FILE
-# ./all_prep_data_for_AUC_coexprDist_coexpr.sh
+# ./all_prep_data_for_AUC_coexprDist_coexpr.sh   ### => r 19.01
 all_TAD_files_ds=(
 # DS launched 16.01.2018:
 #"ENCSR079VIJ_G401_40kb TCGAkich_norm_kich"

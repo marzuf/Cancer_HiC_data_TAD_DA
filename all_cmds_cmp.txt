@@ -13,6 +13,11 @@ Rscript check_matResol.R GSM2334834_U266_HindIII
 Rscript check_matResol.R GSM2334832_RPMI-8226_HindIII
 Rscript check_matResol.R ENCSR834DXR_SK-N-MC
 Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+
+# launched 20.01.2018
+Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+
 ### missing:
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus
@@ -144,6 +149,33 @@ Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaP pipelineC
 
 
 
+#### added 19.01.2019
+
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3 pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3_ICE pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3_ICE pipelineConsensus
+
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3 GSE73782_PC3_ICE
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+
+Rscript compare_pipeline_signif.R TCGAcoad_msi_mss GSE105318_DLD1 pipelineConsensus
+
+Rscript compare_pipeline_signif.R TCGAgbm_classical_mesenchymal GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAgbm_classical_neural GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAgbm_classical_proneural GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_signif.R TCGAlgg_IDHwt_IDHmutnc GSE105194_spinal_cord pipelineConsensus
+
+
+
+
 
 
 
@@ -258,5 +290,38 @@ Rscript compare_pipeline_ranks.R TCGApaad_wt_mutKRAS Panc1_rep12 pipelineConsens
 
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaP pipelineConsensus
 #  16.01.2019
+
+
+#### added 19.01.2019
+
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3_ICE pipelineConsensus
+
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 GSE73782_PC3_ICE
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+
+
+Rscript compare_pipeline_ranks.R TCGAcoad_msi_mss GSE105318_DLD1 pipelineConsensus
+
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_mesenchymal GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_neural GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_proneural GSE105194_spinal_cord pipelineConsensus
+Rscript compare_pipeline_ranks.R TCGAlgg_IDHwt_IDHmutnc GSE105194_spinal_cord pipelineConsensus
+
+
+
+
+# missing:
+# liver;  astrocytes 2/2; 
+
+
 
 

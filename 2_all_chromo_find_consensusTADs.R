@@ -124,8 +124,8 @@ stopifnot(length(domain_inFiles) == length(all_cl))
 normMeth <- unique(sapply( unlist(domain_inFiles), function(dfile) gsub(paste0(".+_chr.+?_(.+?)", folderSuffix, tadfile_suffixPattern), "\\1", basename(dfile))))
 # CHANGED FOR PC3 19.01.2018
 # stopifnot(length(normMeth) == 1)
-if("ICE" %in% normMeth) normMeth <- "ICE"  # to be compatible with script 3_assign_genes
-# normMeth <- paste0(normMeth,collapse="")
+# if("ICE" %in% normMeth) normMeth <- "ICE"  # to be compatible with script 3_assign_genes
+normMeth <- paste0(normMeth,collapse="")
 stopifnot(length(normMeth) == 1)
 
 # retrieve for each CL the available chromos

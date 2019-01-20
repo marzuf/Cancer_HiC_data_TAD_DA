@@ -55,18 +55,21 @@ all_TAD_files_ds=(
 
 
 # added 19.01.2018
-"GSE73782_PC3_40kb TCGAprad_norm_prad"
-"GSE73782_PC3_ICE_40kb TCGAprad_norm_prad"
-"GSE105318_DLD1_40kb TCGAcoad_msi_mss"
-"GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal"
-"GSE105194_spinal_cord_40kb TCGAgbm_classical_neural"
-"GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural"
-"GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc"
+#"GSE73782_PC3_40kb TCGAprad_norm_prad"
+# "GSE73782_PC3_ICE_40kb TCGAprad_norm_prad"
+# "GSE105318_DLD1_40kb TCGAcoad_msi_mss"
+# "GSE105194_spinal_cord_40kb TCGAgbm_classical_mesenchymal"
+# "GSE105194_spinal_cord_40kb TCGAgbm_classical_neural"
+# "GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural"
+# "GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc"
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus
 
+"ENCSR346DCU_LNCaPGSE73782_PC3_40kb TCGAprad_norm_prad"
+"ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb TCGAprad_norm_prad"
 )
 
+# Rscript create_coexpr_sortNoDup_otherTADfile.R ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb TCGAprad_norm_prad
 
 for ds in "${all_TAD_files_ds[@]}"; do
     

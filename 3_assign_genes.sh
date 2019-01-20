@@ -50,6 +50,8 @@ fi
 
 	if [[ "$clName" ==  "GSE73782_PC3_ICE" ]]; then
 		norm="ICE"
+	elif [[ "$clName" ==  "ENCSR346DCU_LNCaPGSE73782_PC3_ICE" ]]; then
+		norm="KRICE"		
 	else
 		norm="KR"
 	fi
