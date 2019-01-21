@@ -25,7 +25,7 @@ if(length(args) == 1) {
 
 binSizeKb <- 40
 folderSuffix <- paste0("_", binSizeKb, "kb")
-matrixSuffix <- "TopDom\\.matrix"
+matrixSuffix <- "TopDom\\.matrix$"
 
 dsFold <- paste0(ds, folderSuffix)
 stopifnot(dir.exists(dsFold))

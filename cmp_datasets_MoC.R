@@ -61,7 +61,7 @@ cl_to_cmp <- c(
   "ENCSR549MGQ_T47D",
   "MCF-7ENCSR549MGQ_T47D",
   
-  #"DLD1",                              # !!! RUNNING !!!
+  "GSE105318_DLD1",                              # !!! RUNNING !!!
   
   "ENCSR079VIJ_G401",
   "ENCSR401TBQ_Caki2",
@@ -86,12 +86,17 @@ cl_to_cmp <- c(
   "Panc1_rep12",
   
   "ENCSR346DCU_LNCaP",
-  #"GSE73782_PC3",              # !!! RUNNING !!!
-  #"ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
+  "GSE73782_PC3",              # !!! RUNNING !!!
+  "ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
+  "GSE73782_PC3_ICE",              # !!! RUNNING !!!
+  "ENCSR346DCU_LNCaPGSE73782_PC3_ICE",# !!! RUNNING !!!
   
   "ENCSR312KHQ_SK-MEL-5",
   "ENCSR862OGI_RPMI-7951",
   "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951",
+  
+  "GSE105194_spinal_cord",
+  # "GSE105194_cerebellum"   # !!! RUNNING"
   
   "pipelineConsensus"
 )
@@ -331,23 +336,38 @@ for(consTissue in consensusTissues) {
   tissue <- gsub("Consensus", "", consTissue)
   
   if(tissue == "pipeline") {
-    consensus_dt <- all_MoC_dt[ (grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds2_label) )
-                                  ,]
+    # consensus_dt <- all_MoC_dt[ (grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds1_label) | 
+    #                                grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds2_label) )
+    #                               ,]
+    consensus_dt <- all_MoC_dt[ (grepl(paste0("^", consTissue, "$"), all_MoC_dt$ds1_label) | 
+                                   grepl(paste0("^", consTissue, "$"), all_MoC_dt$ds2_label) )
+                                ,]
     curr_tit <- paste0("MoC with ", tissue, " consensus")
     
   } else {
-    consensus_dt <- all_MoC_dt[ (grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds1_label) | grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds2_label) ) &
-                                    (grepl(tolower(tissue), tolower(all_MoC_dt$ds1_label)) & grepl(tolower(tissue), tolower(all_MoC_dt$ds2_label)) )
-                                  ,]
+    # consensus_dt <- all_MoC_dt[ (grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds1_label) | 
+    #                                grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds2_label) ) &
+    #                                 (grepl(tolower(tissue), tolower(all_MoC_dt$ds1_label)) & 
+    #                                    grepl(tolower(tissue), tolower(all_MoC_dt$ds2_label)) )
+    #                               ,]
+    consensus_dt <- all_MoC_dt[ (grepl(paste0("^", consTissue, "$"), all_MoC_dt$ds1_label) | 
+                                   grepl(paste0("^", consTissue, "$"), all_MoC_dt$ds2_label) ) &
+                                  (grepl(tolower(tissue), tolower(all_MoC_dt$ds1_label)) & 
+                                     grepl(tolower(tissue), tolower(all_MoC_dt$ds2_label)) )
+                                ,]
     curr_tit <- paste0("MoC between ", tissue, " cell lines and ", tissue, " consensus")
   }
   
   stopifnot(nrow(consensus_dt) > 0)
   
   # put the consensusDS in newDS1 column
-  consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds1_label), 
+  # consensus_dt$newDS1 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds1_label), 
+  #                               consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
+  # consensus_dt$newDS2 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds2_label), 
+  #                               consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
+  consensus_dt$newDS1 <- ifelse(grepl(paste0("^", consTissue, "$"), consensus_dt$ds1_label), 
                                 consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
-  consensus_dt$newDS2 <- ifelse(grepl(paste0(tissue, "Consensus"), consensus_dt$ds2_label), 
+  consensus_dt$newDS2 <- ifelse(grepl(paste0("^", consTissue, "$"), consensus_dt$ds2_label), 
                                 consensus_dt[, paste0("ds1", xlabType)], consensus_dt[, paste0("ds2", xlabType)])
   if(xlabType == "") {
     consensus_dt$newDS1_label <- sapply(as.character(consensus_dt$newDS1), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
@@ -373,8 +393,11 @@ for(consTissue in consensusTissues) {
     consensus_dt$newDS1_label <- consensus_dt$newDS1
     consensus_dt$newDS2_label <- consensus_dt$newDS2
   }
-  stopifnot(grepl(paste0(tissue, "Consensus"), consensus_dt$newDS1_label))
-  stopifnot(!grepl(paste0(tissue, "Consensus"), consensus_dt$newDS2_label))
+  # stopifnot(grepl(paste0(tissue, "Consensus"), consensus_dt$newDS1_label))
+  # stopifnot(!grepl(paste0(tissue, "Consensus"), consensus_dt$newDS2_label))
+  stopifnot(grepl(paste0("^", consTissue, "$"), consensus_dt$newDS1_label))
+  stopifnot(!grepl(paste0("^", consTissue, "$"), consensus_dt$newDS2_label))
+  
 
   consensus_dt$comp <- paste0(consensus_dt$newDS1, "_", consensus_dt$newDS2)
   stopifnot(sapply(seq_len(nrow(consensus_dt)),function(i) grepl(strsplit(consensus_dt[, paste0("ds1", xlabType)][i], "\n")[[1]][1],

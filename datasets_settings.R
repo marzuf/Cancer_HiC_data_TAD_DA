@@ -5,7 +5,7 @@ cl_labs <- c(
 "MCF-7" = "JR",
 "ENCSR549MGQ_T47D" = "JD",
 
-"DLD1" = "JD",
+"GSE105318_DLD1" = "JD",
 
 "ENCSR079VIJ_G401" = "JD",
 "ENCSR401TBQ_Caki2" = "JD",
@@ -27,9 +27,13 @@ cl_labs <- c(
 
 "ENCSR346DCU_LNCaP" = "JD",
 "GSE73782_PC3" = "JAK",
+"GSE73782_PC3_ICE" = "JAK",
 
 "ENCSR312KHQ_SK-MEL-5" = "JD",
 "ENCSR862OGI_RPMI-7951" = "JD",
+
+"GSE105194_spinal_cord" = "JD",
+  "XXX_cerebellum" = "JD",
 
 "pipelineConsensus" = NA
 )
@@ -40,7 +44,7 @@ cl_names <- c(
 "breastCl1" = "MCF-7",
 "breastCl2" = "ENCSR549MGQ_T47D",
 
-"colorectalCl1" = "DLD1",                     # !!! RUNNING !!!
+"colorectalCl1" = "GSE105318_DLD1",                   
 
 "kidneyCl1" = "ENCSR079VIJ_G401",
 "kidneyCl2" = "ENCSR401TBQ_Caki2",
@@ -61,10 +65,14 @@ cl_names <- c(
 "pancreasCl1" = "Panc1_rep12",
 
 "prostateCl1" = "ENCSR346DCU_LNCaP",
-"prostateCl2" = "GSE73782_PC3",				# !!! RUNNING !!!
+"prostateCl2" = "GSE73782_PC3",		
+"prostateCl2ICE" = "GSE73782_PC3_ICE",
 
 "skinCl1" = "ENCSR312KHQ_SK-MEL-5",
 "skinCl2" = "ENCSR862OGI_RPMI-7951",
+
+"astrocyteCL1" = "GSE105194_spinal_cord",
+"astrocyteCL2" = "XXX_cerebellum",
 
 "pipelineConsensus" = "pipelineConsensus"
 )
@@ -81,7 +89,9 @@ cl_names["lungConsensus"] <- paste0(cl_names["lungCl1"], cl_names["lungCl2"])
 cl_names["myelomaConsensus"] <- paste0(cl_names["myelomaCl1"], cl_names["myelomaCl2"]) 
 cl_names["prostateConsensus"] <- paste0(cl_names["prostateCl1"], cl_names["prostateCl2"]) 		# !!! RUNNING !!!
 cl_names["skinConsensus"] <- paste0(cl_names["skinCl1"], cl_names["skinCl2"]) 
-	
+cl_names["astrocyteConsensus"] <- paste0(cl_names["astrocyteCl1"], cl_names["astrocyteCl2"]) 
+cl_names["prostateConsensusICE"] <- paste0(cl_names["prostateCl1"], cl_names["prostateCl2ICE"]) 		# !!! RUNNING !!!
+
 stopifnot(!duplicated(names(cl_names)))
 stopifnot(!duplicated(cl_names))
 

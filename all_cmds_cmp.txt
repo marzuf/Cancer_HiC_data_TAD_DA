@@ -15,8 +15,14 @@ Rscript check_matResol.R ENCSR834DXR_SK-N-MC
 Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
 
 # launched 20.01.2018
-Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
-Rscript check_matResol.R ENCSR105KFX_SK-N-DZ
+Rscript check_matResol.R GSE105318_DLD1
+Rscript check_matResol.R GSE73782_PC3
+Rscript check_matResol.R GSE73782_PC3_ICE
+Rscript check_matResol.R GSE105194_spinal_cord
+
+
+
+
 
 ### missing:
 # missing:
@@ -166,6 +172,15 @@ Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DC
 Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
 
 
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaP 
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaP 
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaP ENCSR346DCU_LNCaPGSE73782_PC3_ICE 
+Rscript compare_pipeline_signif.R TCGAprad_norm_prad ENCSR346DCU_LNCaP ENCSR346DCU_LNCaPGSE73782_PC3
+
+
+
+
+
 Rscript compare_pipeline_signif.R TCGAcoad_msi_mss GSE105318_DLD1 pipelineConsensus
 
 Rscript compare_pipeline_signif.R TCGAgbm_classical_mesenchymal GSE105194_spinal_cord pipelineConsensus
@@ -300,13 +315,20 @@ Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3_ICE pipelineConsensus
 
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 GSE73782_PC3_ICE
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaP 
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
 
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad GSE73782_PC3_ICE ENCSR346DCU_LNCaP 
+
 
 Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaPGSE73782_PC3 ENCSR346DCU_LNCaPGSE73782_PC3_ICE
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaP ENCSR346DCU_LNCaPGSE73782_PC3_ICE 
+Rscript compare_pipeline_ranks.R TCGAprad_norm_prad ENCSR346DCU_LNCaP ENCSR346DCU_LNCaPGSE73782_PC3
+
+
 
 
 Rscript compare_pipeline_ranks.R TCGAcoad_msi_mss GSE105318_DLD1 pipelineConsensus

@@ -2,6 +2,8 @@
 
 # ./draw_matrix.sh
 
+# cp DRAW_ENCODE_MATRIX/*/*_chr1_* DRAW_ENCODE_MATRIX/chr1/
+
 #Rscript draw_matrix.R \
 #-m /mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_aggregMaps/AGGREG_MAPS_RESCALE_TOTCOUNT_NORMmat/chr21/chr21_aggregMap.txt \
 #-o DRAW_METATAD/RESCALE_TOTCOUNT_NORMmat/chr21_draw_test_meanInterCount_hierarchLev25_35280001_40560000.png \
@@ -30,6 +32,7 @@ all_chromos=( "chr1" "chr9" "chr21" )
 #all_chromos=( "chr5" )
 #all_chromos=( "chr"{1..22} "chrX" ) 
 
+
 # all_dataset_id=(
 # "ENCSR549MGQ_T47D"
 # "K562"
@@ -54,7 +57,9 @@ all_dataset_id=(
 "GSE105194_spinal_cord"
 )
 
-
+all_dataset_id=(
+"GSE73782_PC3_ICE"
+)
 
 for dataID in "${all_dataset_id[@]}"; do
 

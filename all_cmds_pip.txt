@@ -82,10 +82,10 @@ Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=>
 ./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
 
 # NB: to check which chromosomes with genes assigned: 						#=> 
-cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
-cut -f1 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
-cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
-cut -f2 MCF-7ENCSR549MGQ_T47D_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+cut -f1 XX/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 XXX/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 XXX/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 XX/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
 ./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   		# => 

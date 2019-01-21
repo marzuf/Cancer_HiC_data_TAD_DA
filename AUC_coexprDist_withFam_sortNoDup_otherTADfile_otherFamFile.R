@@ -3,7 +3,7 @@ cat(paste0("> Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile
 
 options(scipen=100)
 
-buildTable <- FALSE
+buildTable <- TRUE
 
 printAndLog <- function(text, logFile = ""){
   cat(text)

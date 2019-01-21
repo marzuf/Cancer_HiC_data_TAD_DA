@@ -51,7 +51,9 @@ dir.create(outFold, recursive = TRUE)
 source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
 head(score_DT)
 
-source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+# source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+source(file.path("utils_fct.R"))
+source(file.path("colors_utils.R"))
 
 dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
 length(dataset_proc_colors)
@@ -195,6 +197,17 @@ for( i in seq_along(all_comps) ) {
   mynames <- all_auc_DT$dataset
   
   curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
+  
+  cat(curr_colors)
+  cat("\n")
+  curr_colors
+  cat("\n")
+  cat(mynames)
+  cat("\n")
+  cat(mynames[9:11])
+  cat("\n")
+  cat(which(is.na(curr_colors)))
+  cat("\n")
   stopifnot(!is.na(curr_colors))
   
   outFile <- file.path(outFold, paste0(xvar, "_", gsub(" ", "", labpartX),"_", yvar, "_", gsub(" ", "", labpartY), ".", plotType))

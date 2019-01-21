@@ -41,7 +41,7 @@ cl_to_cmp <- c(
   "ENCSR549MGQ_T47D",
   "MCF-7ENCSR549MGQ_T47D",
   
-  #"DLD1",                              # !!! RUNNING !!!
+  "GSE105318_DLD1",                              # !!! RUNNING !!!
   
   "ENCSR079VIJ_G401",
   "ENCSR401TBQ_Caki2",
@@ -66,15 +66,19 @@ cl_to_cmp <- c(
   "Panc1_rep12",
   
   "ENCSR346DCU_LNCaP",
-  #"GSE73782_PC3",              # !!! RUNNING !!!
-  #"ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
+  "GSE73782_PC3",              # !!! RUNNING !!!
+  "ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
+  "GSE73782_PC3_ICE",              # !!! RUNNING !!!
+  "ENCSR346DCU_LNCaPGSE73782_PC3_ICE",# !!! RUNNING !!!
   
   "ENCSR312KHQ_SK-MEL-5",
   "ENCSR862OGI_RPMI-7951",
   "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951",
   
-  "pipelineConsensus"
+  "GSE105194_spinal_cord",
+  # "GSE105194_cerebellum"   # !!! RUNNING"
   
+  "pipelineConsensus"
 )
 stopifnot(cl_to_cmp %in% cl_names)
 stopifnot(dir.exists(paste0(cl_to_cmp, folderSuffix)))

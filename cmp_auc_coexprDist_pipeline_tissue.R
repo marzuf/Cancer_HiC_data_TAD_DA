@@ -200,9 +200,9 @@ cat(paste0("... written: ", outFile, "\n"))
 ############################################################################################## BARPLOT WITH ONE AUC RATIOS
 ##############################################################################################
 
-var_names <- c(aucCoexprDist = "% increase AUC coexprDist (tissue specific)",
+var_names <- c(aucCoexprDist = "% increase AUC coexprDist (tissue-specific)",
                old_aucCoexprDist = "% increase AUC coexprDist (pipeline consensus)",
-               aucCoexprDistSameFam = "% increase AUC coexprDist (same fam.; tissue specific)",
+               aucCoexprDistSameFam = "% increase AUC coexprDist (same fam.; tissue-specific)",
                old_aucCoexprDistSameFam = "% increase AUC coexprDist (same fam.; pipeline consensus)"
                )
 

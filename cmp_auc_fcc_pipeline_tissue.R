@@ -146,7 +146,7 @@ cat(paste0("... written: ", outFile, "\n"))
 ############################################################################################## BARPLOT WITH ONE AUC RATIOS
 ##############################################################################################
 
-var_names <- c(aucFCC = "% increase AUC FCC (tissue specific)",
+var_names <- c(aucFCC = "% increase AUC FCC (tissue-specific)",
                old_aucFCC = "% increase AUC FCC (pipeline consensus)"
                )
 
