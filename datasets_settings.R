@@ -49,12 +49,12 @@ cl_names <- c(
 "kidneyCl1" = "ENCSR079VIJ_G401",
 "kidneyCl2" = "ENCSR401TBQ_Caki2",
 
-"liver" = "HepG2",							# !!! RUNNING !!!
+"liverCl1" = "GSE105381_HepG2",		
 
 "lungCl1" = "ENCSR444WCZ_A549",
 "lungCl2" = "NCI-H460",
 
-"lymphoblast" = "K562",
+"lymphoblastCl1" = "K562",
 
 "myelomaCl1" = "GSM2334834_U266_HindIII",
 "myelomaCl2" = "GSM2334832_RPMI-8226_HindIII",
@@ -72,7 +72,7 @@ cl_names <- c(
 "skinCl2" = "ENCSR862OGI_RPMI-7951",
 
 "astrocyteCL1" = "GSE105194_spinal_cord",
-"astrocyteCL2" = "XXX_cerebellum",
+"astrocyteCL2" = "GSE105194_cerebellum",
 
 "pipelineConsensus" = "pipelineConsensus"
 )

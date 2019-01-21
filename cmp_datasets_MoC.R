@@ -9,7 +9,7 @@ options(scipen=100)
 cat("> START: cmp_datasets_MoC.R\n")
 # Rscript cmp_datasets_MoC.R
 
-buildTable <- TRUE
+buildTable <- F
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
@@ -61,13 +61,13 @@ cl_to_cmp <- c(
   "ENCSR549MGQ_T47D",
   "MCF-7ENCSR549MGQ_T47D",
   
-  "GSE105318_DLD1",                              # !!! RUNNING !!!
+  "GSE105318_DLD1",                              
   
   "ENCSR079VIJ_G401",
   "ENCSR401TBQ_Caki2",
   "ENCSR079VIJ_G401ENCSR401TBQ_Caki2",
   
-  #"HepG2",                             # !!! RUNNING !!!
+  "GSE105381_HepG2",                            
   
   "ENCSR444WCZ_A549",
   "NCI-H460",
@@ -86,17 +86,17 @@ cl_to_cmp <- c(
   "Panc1_rep12",
   
   "ENCSR346DCU_LNCaP",
-  "GSE73782_PC3",              # !!! RUNNING !!!
-  "ENCSR346DCU_LNCaPGSE73782_PC3",# !!! RUNNING !!!
-  "GSE73782_PC3_ICE",              # !!! RUNNING !!!
-  "ENCSR346DCU_LNCaPGSE73782_PC3_ICE",# !!! RUNNING !!!
+  "GSE73782_PC3",              
+  "ENCSR346DCU_LNCaPGSE73782_PC3",
+  "GSE73782_PC3_ICE",             
+  "ENCSR346DCU_LNCaPGSE73782_PC3_ICE",
   
   "ENCSR312KHQ_SK-MEL-5",
   "ENCSR862OGI_RPMI-7951",
   "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951",
   
   "GSE105194_spinal_cord",
-  # "GSE105194_cerebellum"   # !!! RUNNING"
+  "GSE105194_cerebellum",  
   
   "pipelineConsensus"
 )
@@ -331,9 +331,12 @@ consensusTissues <- tmpDS[grepl("Consensus", tmpDS)]
 
 if(length(consensusTissues) > 0) consTissue=consensusTissues[1]
 
+consTissue="prostateConsensusICE"
+
 for(consTissue in consensusTissues) {
   
-  tissue <- gsub("Consensus", "", consTissue)
+  # added $ for matching prostateConsensusICE
+  tissue <- gsub("Consensus.*$", "", consTissue)
   
   if(tissue == "pipeline") {
     # consensus_dt <- all_MoC_dt[ (grepl(paste0(tissue, "Consensus"), all_MoC_dt$ds1_label) | 
@@ -357,6 +360,10 @@ for(consTissue in consensusTissues) {
                                 ,]
     curr_tit <- paste0("MoC between ", tissue, " cell lines and ", tissue, " consensus")
   }
+  
+  cat(consTissue, "\n")
+  
+  all_MoC_dt[1:10,]
   
   stopifnot(nrow(consensus_dt) > 0)
   

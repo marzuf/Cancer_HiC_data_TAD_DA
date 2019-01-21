@@ -8,7 +8,7 @@ scriptSameTAD="create_sameTAD_sortNoDup_otherTADfile.R"
 
 # DS launched 15.01.2018:
 all_TAD_files_ds=(
-#"MCF-7_40kb"  # run separately for test
+# "MCF-7_40kb"  # run separately for test
 # "ENCSR549MGQ_T47D_40kb"
 # "MCF-7ENCSR549MGQ_T47D_40kb"
 # "K562_40kb"
@@ -30,14 +30,16 @@ all_TAD_files_ds=(
 # "ENCSR105KFX_SK-N-DZ_40kb"
 
 # added 19.01.2018
-"GSE73782_PC3_40kb"
-"GSE73782_PC3_ICE_40kb"
-"GSE105318_DLD1_40kb"
-"GSE105194_spinal_cord_40kb"
-"ENCSR346DCU_LNCaPGSE73782_PC3_40kb"
-"ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb"
+# "GSE73782_PC3_40kb"
+# "GSE73782_PC3_ICE_40kb"
+# "GSE105318_DLD1_40kb"
+# "GSE105194_spinal_cord_40kb"
+# "ENCSR346DCU_LNCaPGSE73782_PC3_40kb"
+# "ENCSR346DCU_LNCaPGSE73782_PC3_ICE_40kb"
 
-
+# TO RUN 21.01.2018
+"GSE105194_cerebellum_40kb"
+"GSE105194_spinal_cordGSE105194_cerebellum_40kb"
 )
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus

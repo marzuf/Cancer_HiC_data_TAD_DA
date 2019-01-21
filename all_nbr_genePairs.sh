@@ -4,6 +4,12 @@
 
 # Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
 
+# Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
+# Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
+# Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
+# Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
+
+
 start_time=$(date -R)   
 
 scriptGenePairs="nbr_genePairs_by_dist.R"

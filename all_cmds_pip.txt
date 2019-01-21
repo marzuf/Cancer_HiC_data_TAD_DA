@@ -2,12 +2,56 @@ ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 
 
 #***********************************************************
-# XXXX - liver
+# GSE105381_HepG2 - liver
 #***********************************************************
 
 
 
+TCGAlihc_lihc_mutCTNNB1
 
+>>>>> GSE105381_HepG2:  TCGAlihc_wt_mutCTNNB1
+./1_all_chromo_hic_to_TADs.sh GSE105381_HepG2
+./3_assign_genes.sh GSE105381_HepG2
+Rscript check_matResol.R GSE105381_HepG2_40kb
+Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr1_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr1_GSE105381_HepG2_chr1_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr1
+Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr9_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr9_GSE105381_HepG2_chr9_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr9
+Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr21_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr21_GSE105381_HepG2_chr21_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr21
+./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
+Rscript check_TCGA_fpkm.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
+Rscript check_step17_files.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
+Rscript compare_pipeline_signif.R TCGAlihc_wt_mutCTNNB1 GSE105381_HepG2 pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAlihc_wt_mutCTNNB1 GSE105381_HepG2 pipelineConsensus 
+Rscript create_coexpr_sortNoDup_otherTADfile.R GSE105381_HepG2 TCGAlihc_wt_mutCTNNB1
+Rscript create_dist_sortNoDup_otherTADfile.R GSE105381_HepG2_40kb
+Rscript prep_gene_families_TAD_data_otherTADfile.R GSE105381_HepG2_40kb
+Rscript create_sameFamily_sortNoDup_otherFamFile.R GSE105381_HepG2_40kb
+Rscript create_sameTAD_sortNoDup_otherTADfile.R GSE105381_HepG2_40kb
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
+Rscript nbr_genePairs_by_dist.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
+Rscript cmp_datasets_nbrTADs.R
+Rscript cmp_datasets_resol.R
+Rscript cmp_datasets_MoC.R
+Rscript cmp_datasets_matching.RRscript cmp_auc_coexprDist_pipeline_tissue.R
+Rscript cmp_auc_fcc_coexprDist_pipeline_tissue.R
+Rscript cmp_auc_fcc_pipeline_tissue.R
+Rscript compare_resol_vs_MoC.RRscript compare_resol_vs_otherStats.R
+*** DONE ***
+
+
+# hic to TADs for GSE105381_HepG2
+./1_all_chromo_hic_to_TADs.sh GSE105381_HepG2				=> r
+# => at this point: GSE105381_HepG2_40kb/FINAL_DOMAINS
+
+# ./3_assign_genes.sh GSE105381_HepG2  					=>  
+# NB: to check which chromosomes with genes assigned: 		=>  
+cut -f1 GSE105381_HepG2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSE105381_HepG2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSE105381_HepG2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSE105381_HepG2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+
+./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1   						# =>  
+Rscript check_TCGA_fpkm.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1  				# =>  
+Rscript check_step17_files.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1			  	# =>  
 
 
 #***********************************************************
@@ -50,47 +94,144 @@ Rscript check_step17_files.R GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc		
 # XXXX - astrocyte cerebellum 2/2
 #***********************************************************
 
-TCGAgbm_classical_mesenchymal  TCGAgbm_classical_neural  TCGAgbm_classical_proneural  TCGAlgg_IDHwt_IDHmutnc
+# >>>>
+
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript compare_pipeline_signif.R TCGAgbm_classical_mesenchymal GSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_mesenchymal GSE105194_cerebellum pipelineConsensus 
 
 
-# hic to TADs for GSE105318_DLD1
-./1_all_chromo_hic_to_TADs.sh XXXX
-# => at this point: XXX/FINAL_DOMAINS
 
-# ./3_assign_genes.sh XXX  					=> 
+
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript compare_pipeline_signif.R TCGAgbm_classical_proneural GSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_proneural GSE105194_cerebellum pipelineConsensus 
+
+
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript compare_pipeline_signif.R TCGAgbm_classical_neural GSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_neural GSE105194_cerebellum pipelineConsensus 
+
+
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+Rscript compare_pipeline_signif.R TCGAlgg_IDHwt_IDHmutnc GSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAlgg_IDHwt_IDHmutnc GSE105194_cerebellum pipelineConsensus 
+
+
+
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+
+Rscript nbr_genePairs_by_dist.R GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript nbr_genePairs_by_dist.R GSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript nbr_genePairs_by_dist.R GSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript nbr_genePairs_by_dist.R GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+
+#<<<<<<<<
+
+
+
+# hic to TADs for GSE105194_cerebellum
+./1_all_chromo_hic_to_TADs.sh GSE105194_cerebellum 									# => done 21.01.2019 !
+# => at this point: GSE105194_cerebellum_40kb/FINAL_DOMAINS
+
+./3_assign_genes.sh GSE105194_cerebellum 									# => done 21.01.2019 !
 # NB: to check which chromosomes with genes assigned: 		=> 
-cut -f1 XX/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
-cut -f1 XXX/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
-cut -f2 XXX/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
-cut -f2 XXX/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+cut -f1 GSE105194_cerebellum_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSE105194_cerebellum_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSE105194_cerebellum_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSE105194_cerebellum_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
+./run_pipeline.sh GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal   						# => r
+Rscript check_TCGA_fpkm.R GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal  				# => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal			  	# => 
+
+./run_pipeline.sh GSE105194_cerebellum_40kb TCGAgbm_classical_neural   						# => r
+Rscript check_TCGA_fpkm.R GSE105194_cerebellum_40kb TCGAgbm_classical_neural  					# => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_neural			  	# => 
+
+./run_pipeline.sh GSE105194_cerebellum_40kb TCGAgbm_classical_proneural   						# => r
+Rscript check_TCGA_fpkm.R GSE105194_cerebellum_40kb TCGAgbm_classical_proneural  				# => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAgbm_classical_proneural			  	# => 
+
+./run_pipeline.sh GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc   						# => r
+Rscript check_TCGA_fpkm.R GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc  				# => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc			  	# => 
 
 
 
 #***********************************************************
-# GSE105194_spinal_cordXXXXX - astrocyte consensus
+# GSE105194_spinal_cordGSE105194_cerebellum - astrocyte consensus
 #***********************************************************
 
-TCGAgbm_classical_mesenchymal  TCGAgbm_classical_neural  TCGAgbm_classical_proneural  TCGAlgg_IDHwt_IDHmutnc
+# >>>>
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript compare_pipeline_signif.R TCGAgbm_classical_mesenchymal GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_mesenchymal GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
 
+
+
+
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript compare_pipeline_signif.R TCGAgbm_classical_proneural GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_proneural GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+
+
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript compare_pipeline_signif.R TCGAgbm_classical_neural GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAgbm_classical_neural GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+
+
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+Rscript compare_pipeline_signif.R TCGAlgg_IDHwt_IDHmutnc GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+Rscript compare_pipeline_ranks.R TCGAlgg_IDHwt_IDHmutnc GSE105194_spinal_cordGSE105194_cerebellum pipelineConsensus 
+
+
+
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+
+Rscript nbr_genePairs_by_dist.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal
+Rscript nbr_genePairs_by_dist.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural
+Rscript nbr_genePairs_by_dist.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural
+Rscript nbr_genePairs_by_dist.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc
+# <<<<<
 
 
 # consensus between breast cancer cell lines	
-Rscript 2_all_chromo_find_consensusTADs.R  MCF-7_40kb ENCSR549MGQ_T47D_40kb 	=> 
+Rscript 2_all_chromo_find_consensusTADs.R  GSE105194_spinal_cord_40kb GSE105194_cerebellum_40kb 	# => done 21.01.2019 !
 
-# assign genes to TADs for breast consensus MCF-7ENCSR549MGQ_T47D				=> 
-./3_assign_genes.sh MCF-7ENCSR549MGQ_T47D
+# assign genes to TADs for breast consensus GSE105194_spinal_cordGSE105194_cerebellum_40kb				# => done 21.01.2019 !
+./3_assign_genes.sh GSE105194_spinal_cordGSE105194_cerebellum
 
-# NB: to check which chromosomes with genes assigned: 						#=> 
-cut -f1 XX/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
-cut -f1 XXX/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
-cut -f2 XXX/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
-cut -f2 XX/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
+# NB: to check which chromosomes with genes assigned: 												# =>  done 21.01.2019 ! 
+cut -f1 GSE105194_spinal_cordGSE105194_cerebellum_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
+cut -f1 GSE105194_spinal_cordGSE105194_cerebellum_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
+cut -f2 GSE105194_spinal_cordGSE105194_cerebellum_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
+cut -f2 GSE105194_spinal_cordGSE105194_cerebellum_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
 
-./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   		# => 
-Rscript check_TCGA_fpkm.R MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # => 
-Rscript check_step17_files.R MCF-7_40kb TCGAbrca_lum_bas			  	# => 
+./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal   		# => r
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal   # => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal			  	# => 
+
+./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural   		# => r
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural   # => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural			  	# => 
+
+
+./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural   		# => r
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural   # => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural			  	# => 
+
+
+./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc   		# => r
+Rscript check_TCGA_fpkm.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc   # => done 21.01.2019 !
+Rscript check_step17_files.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc			  	# => 
 
 
 #***********************************************************

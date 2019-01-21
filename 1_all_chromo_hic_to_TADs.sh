@@ -33,8 +33,8 @@ echo "*** START ***"
 echo "... > Cell line: $clName"
 echo "... > Chromosome(s): ${all_chromo[*]}"
 
-step1=0		# extract chromo matrix from hic file # <cell_line>/NORM_MAT
-step2=0		# convert Rao format to TopDom format # <cell_line>/TopDom_MAT
+step1=1		# extract chromo matrix from hic file # <cell_line>/NORM_MAT
+step2=1		# convert Rao format to TopDom format # <cell_line>/TopDom_MAT
 step3=1		# run TopDom # <cell_line>/TopDom_FILES
 step4=1     # convert TopDom BED format to FINAL DOMAINS BED format # <cell_line>/FINAL_DOMAINS
 
