@@ -1,6 +1,9 @@
 cp AUC_COEXPRDIST_WITHFAM_SORTNODUP/*/*_hgnc/hgnc_family_short/*_sameTAD_*sameFamSameTAD*vectDist.png AUC_COEXPRDIST_WITHFAM_SORTNODUP/.
 cp DRAW_ENCODE_MATRIX/*/*_chr21_* DRAW_ENCODE_MATRIX/chr21   
 cp COMPARE_PIPELINE_SIGNIF/*/*/*.png COMPARE_PIPELINE_SIGNIF/.
+cp COMPARE_PIPELINE_RANKS/*/*/*.png COMPARE_PIPELINE_RANKS/.
+
+cp AUC_COEXPRDIST_WITHFAM_SORTNODUP/*/*/*/*_sameTAD_diffTAD_sameFamSameTAD_sameFamDiffTAD_loessFit_vectDist.png AUC_COEXPRDIST_WITHFAM_SORTNODUP
 
 # needed before cmp_datasets_resol.R        # launched 15.01.2019
 Rscript check_matResol.R MCF-7 
@@ -25,6 +28,9 @@ Rscript check_matResol.R GSE73782_PC3_ICE
 Rscript check_matResol.R GSE105194_spinal_cord
 
 
+# launched 21.01.2019
+Rscript check_matResol.R GSE105194_spinal_cordGSE105194_cerebellum
+Rscript check_matResol.R GSE105194_cerebellum
 
 
 

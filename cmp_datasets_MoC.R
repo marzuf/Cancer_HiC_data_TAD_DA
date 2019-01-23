@@ -9,7 +9,7 @@ options(scipen=100)
 cat("> START: cmp_datasets_MoC.R\n")
 # Rscript cmp_datasets_MoC.R
 
-buildTable <- F
+buildTable <- TRUE
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
@@ -31,7 +31,7 @@ logFile <- file.path(outFold, "cmp_datasets_MoC_logFile.txt")
 if(!SSHFS) file.remove(logFile)
 if(SSHFS) logFile <- ""
 
-plotType <- "png"
+plotType <- "svg"
 widthMoCmat <- 26
 heightMoCmat <- 14
 widthBoxplot <- 10
@@ -56,6 +56,7 @@ xlabType <- "_label"
 stopifnot(xlabType %in% c("", "_label"))
 
 ### SELECT WHICH CELL LINES TO INCLUDE IN THE COMPARISONS
+# 30 (incl. pipCons)
 cl_to_cmp <- c(
   "MCF-7",
   "ENCSR549MGQ_T47D",
@@ -97,6 +98,7 @@ cl_to_cmp <- c(
   
   "GSE105194_spinal_cord",
   "GSE105194_cerebellum",  
+  "GSE105194_spinal_cordGSE105194_cerebellum",
   
   "pipelineConsensus"
 )

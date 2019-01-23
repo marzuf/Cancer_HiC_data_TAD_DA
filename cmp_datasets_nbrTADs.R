@@ -36,6 +36,7 @@ stopifnot(xlabType %in% c("ds1", "ds_label"))
 
 
 ### SELECT WHICH CELL LINES TO INCLUDE IN THE COMPARISONS
+# in total (incl. pipCon): 30
 cl_to_cmp <- c(
   "MCF-7",
   "ENCSR549MGQ_T47D",
@@ -77,6 +78,7 @@ cl_to_cmp <- c(
   
   "GSE105194_spinal_cord",
   "GSE105194_cerebellum",   
+  "GSE105194_spinal_cordGSE105194_cerebellum",
   
   "pipelineConsensus"
 )

@@ -31,7 +31,7 @@ logFile <- file.path(outFold, "cmp_datasets_matching_logFile.txt")
 if(!SSHFS) system(paste0("rm -f ", logFile))
 if(SSHFS) logFile <- ""
 
-plotType <- "png"
+plotType <- "svg"
 widthMat <- 26
 heightMat <- 14
 widthBoxplot <- 10
@@ -59,6 +59,7 @@ stopifnot(xlabType %in% c("", "_label"))
 
 
 ### SELECT WHICH CELL LINES TO INCLUDE IN THE COMPARISONS
+# 30 incl. pipCons
 cl_to_cmp <- c(
   "MCF-7",
   "ENCSR549MGQ_T47D",
@@ -100,10 +101,16 @@ cl_to_cmp <- c(
   
   "GSE105194_spinal_cord",
   "GSE105194_cerebellum",  
+  "GSE105194_spinal_cordGSE105194_cerebellum",
   
   "pipelineConsensus"
 )
+cat(cl_to_cmp[!cl_to_cmp %in% cl_names], "\n")
+
+
 stopifnot(cl_to_cmp %in% cl_names)
+
+
 stopifnot(dir.exists(paste0(cl_to_cmp, folderSuffix)))
 
 all_cmps1 <- combn(cl_to_cmp, m = 2)

@@ -7,51 +7,23 @@ ll /mnt/ndata/Yuanlong/2.Results/1.Juicer/
 
 
 
-TCGAlihc_lihc_mutCTNNB1
 
->>>>> GSE105381_HepG2:  TCGAlihc_wt_mutCTNNB1
-./1_all_chromo_hic_to_TADs.sh GSE105381_HepG2
-./3_assign_genes.sh GSE105381_HepG2
-Rscript check_matResol.R GSE105381_HepG2_40kb
-Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr1_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr1_GSE105381_HepG2_chr1_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr1
-Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr9_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr9_GSE105381_HepG2_chr9_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr9
-Rscript draw_matrix.R -m GSE105381_HepG2_40kb/TopDom_MAT/GSE105381_HepG2_chr21_KR_40kb.hic.TopDom.matrix -o DRAW_ENCODE_MATRIX/GSE105381_HepG2_40kb/chr21_GSE105381_HepG2_chr21_KR_40kb.hic.TopDom.matrix.png -k 3 -b 40000 -c chr21
-./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
-Rscript check_TCGA_fpkm.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
-Rscript check_step17_files.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
-Rscript compare_pipeline_signif.R TCGAlihc_wt_mutCTNNB1 GSE105381_HepG2 pipelineConsensus 
-Rscript compare_pipeline_ranks.R TCGAlihc_wt_mutCTNNB1 GSE105381_HepG2 pipelineConsensus 
-Rscript create_coexpr_sortNoDup_otherTADfile.R GSE105381_HepG2 TCGAlihc_wt_mutCTNNB1
-Rscript create_dist_sortNoDup_otherTADfile.R GSE105381_HepG2_40kb
-Rscript prep_gene_families_TAD_data_otherTADfile.R GSE105381_HepG2_40kb
-Rscript create_sameFamily_sortNoDup_otherFamFile.R GSE105381_HepG2_40kb
-Rscript create_sameTAD_sortNoDup_otherTADfile.R GSE105381_HepG2_40kb
-Rscript AUC_coexprDist_withFam_sortNoDup_otherTADfile_otherFamFile.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
-Rscript nbr_genePairs_by_dist.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1
-Rscript cmp_datasets_nbrTADs.R
-Rscript cmp_datasets_resol.R
-Rscript cmp_datasets_MoC.R
-Rscript cmp_datasets_matching.RRscript cmp_auc_coexprDist_pipeline_tissue.R
-Rscript cmp_auc_fcc_coexprDist_pipeline_tissue.R
-Rscript cmp_auc_fcc_pipeline_tissue.R
-Rscript compare_resol_vs_MoC.RRscript compare_resol_vs_otherStats.R
-*** DONE ***
 
 
 # hic to TADs for GSE105381_HepG2
-./1_all_chromo_hic_to_TADs.sh GSE105381_HepG2				=> r
+./1_all_chromo_hic_to_TADs.sh GSE105381_HepG2				=> done 21.01.2019
 # => at this point: GSE105381_HepG2_40kb/FINAL_DOMAINS
 
-# ./3_assign_genes.sh GSE105381_HepG2  					=>  
-# NB: to check which chromosomes with genes assigned: 		=>  
+# ./3_assign_genes.sh GSE105381_HepG2  					=>  done 22.01.2019
+# NB: to check which chromosomes with genes assigned: 		=>  done 22.01.2019
 cut -f1 GSE105381_HepG2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | paste -sd" "
 cut -f1 GSE105381_HepG2_40kb/genes2tad/all_assigned_regions.txt | sort | uniq | wc -l
 cut -f2 GSE105381_HepG2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | paste -sd" "
 cut -f2 GSE105381_HepG2_40kb/genes2tad/all_genes_positions.txt | sort | uniq | wc -l
 
-./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1   						# =>  
-Rscript check_TCGA_fpkm.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1  				# =>  
-Rscript check_step17_files.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1			  	# =>  
+./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1   						# =>  done 22.01.2019
+Rscript check_TCGA_fpkm.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1  				# =>  done 22.01.2019
+Rscript check_step17_files.R GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1			  	# =>  done 22.01.2019
 
 
 #***********************************************************

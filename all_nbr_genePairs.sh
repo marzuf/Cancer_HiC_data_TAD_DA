@@ -71,6 +71,19 @@ all_TAD_files_ds=(
 "GSE105194_spinal_cord_40kb TCGAgbm_classical_neural"
 "GSE105194_spinal_cord_40kb TCGAgbm_classical_proneural"
 "GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc"
+
+"GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1"
+
+"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
+"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural"
+"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
+"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
+
+"GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
+"GSE105194_cerebellum_40kb TCGAgbm_classical_neural"
+"GSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
+"GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
+
 # missing:
 # prostate 2/2; prostate consensus; colorectal; liver; astrocytes 1/2; astrocytes 2/2; astrocyte consensus
 )

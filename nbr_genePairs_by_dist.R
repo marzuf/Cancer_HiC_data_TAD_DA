@@ -16,6 +16,9 @@ myWidth <- myHeight
 plotCex <- 1.2
 
 # Rscript nbr_genePairs_by_dist.R ENCSR079VIJ_G401_40kb TCGAkich_norm_kich
+# Rscript nbr_genePairs_by_dist.R GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAkich_norm_kich
+
+
 hicds <- "ENCSR079VIJ_G401_40kb"
 exprds <- "TCGAkich_norm_kich"
 args <- commandArgs(trailingOnly = TRUE)

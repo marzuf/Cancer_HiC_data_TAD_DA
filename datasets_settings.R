@@ -1,6 +1,9 @@
 
 topdomPattern <- "_final_domains.txt$"
 
+# 22 without the consensus
+# total ds = 30
+
 cl_labs <- c(
 "MCF-7" = "JR",
 "ENCSR549MGQ_T47D" = "JD",
@@ -10,7 +13,7 @@ cl_labs <- c(
 "ENCSR079VIJ_G401" = "JD",
 "ENCSR401TBQ_Caki2" = "JD",
 
-"HepG2" = "JD",
+"GSE105381_HepG2" = "JD",
 
 "ENCSR444WCZ_A549" = "JD",
 "NCI-H460" = "JD",
@@ -33,7 +36,7 @@ cl_labs <- c(
 "ENCSR862OGI_RPMI-7951" = "JD",
 
 "GSE105194_spinal_cord" = "JD",
-  "XXX_cerebellum" = "JD",
+  "GSE105194_cerebellum" = "JD",
 
 "pipelineConsensus" = NA
 )
@@ -71,8 +74,8 @@ cl_names <- c(
 "skinCl1" = "ENCSR312KHQ_SK-MEL-5",
 "skinCl2" = "ENCSR862OGI_RPMI-7951",
 
-"astrocyteCL1" = "GSE105194_spinal_cord",
-"astrocyteCL2" = "GSE105194_cerebellum",
+"astrocyteCl1" = "GSE105194_spinal_cord",
+"astrocyteCl2" = "GSE105194_cerebellum",
 
 "pipelineConsensus" = "pipelineConsensus"
 )

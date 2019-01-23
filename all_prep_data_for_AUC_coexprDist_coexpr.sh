@@ -79,6 +79,8 @@ all_TAD_files_ds=(
 "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
 "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
 
+"GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1"
+
 )
 
 

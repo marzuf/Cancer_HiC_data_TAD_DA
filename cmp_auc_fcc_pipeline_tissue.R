@@ -22,6 +22,7 @@ myHeight <- ifelse(plotType == "png", 300, 7)
 myWidth <- myHeight
 myGGheight <- ifelse(plotType == "png", 300, 7)
 myGGwidth <- ifelse(plotType == "png", 500, 10)
+myGGwidth <- ifelse(plotType == "png", 500, 10)
 plotCex <- 1.2
 
 outFold <- file.path("CMP_AUC_FCC_PIPELINE_TISSUE")
@@ -188,11 +189,14 @@ for(fcc in c("aucFCC", "old_aucFCC")) {
   # my_labels <- my_breaks + 1
   my_labels <- my_breaks
   
+  nDS <- length(unique(as.character(plotDT$datasetLabel)))
+  mySub <- paste0("(# datasets = ", nDS, ")")
+  
   # p_AUC <- ggplot(plotDT, aes_string(x = paste0("dataset"), y = paste0(fcc))) +
     p_AUC <- ggplot(plotDT, aes_string(x = paste0("datasetLabel"), y = paste0(fcc))) +
     geom_bar(stat="identity", position="dodge", width = 0.7, fill = colFill) +
     scale_x_discrete(name="")+
-    ggtitle(label=myTit) +
+    ggtitle(label=myTit, subtitle = mySub) +
 #    scale_y_continuous(name=paste0(myylab),
 #                       breaks = my_breaks,
 #                       labels = my_labels)+
@@ -209,10 +213,11 @@ for(fcc in c("aucFCC", "old_aucFCC")) {
       # top, right, bottom and left
       #    plot.margin = unit(c(1, 1, 4.5, 1), "lines"),
       plot.title = element_text(hjust = 0.5, face = "bold", size=16),
+      plot.subtitle = element_text(hjust = 0.5),
       panel.grid = element_blank(),
       # panel.grid.major = element_line(colour = "lightpink"),
       # strip.text.x = element_text(size = 6),
-      axis.text.x = element_text( hjust=1,vjust = 0.5, size=10, angle = 90, color = curr_colors),
+      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = curr_colors),
       axis.line.x = element_line(size = .2, color = "black"),
       axis.line.y = element_line(size = .3, color = "black"),
       #    axis.ticks.x = element_blank(),
