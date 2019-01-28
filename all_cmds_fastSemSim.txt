@@ -1,7 +1,7 @@
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R K562_40kb # r 24.01.2019
 
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR079VIJ_G401_40kb  # r 24.01.2019
-Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR401TBQ_Caki2_40kb # r 24.01.2019
+Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR401TBQ_Caki2_40kb # done 28.01.2019
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb  # r 24.01.2019
 
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R GSE105381_HepG2_40kb  # r 24.01.2019
@@ -9,7 +9,7 @@ Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R GSE105381_HepG2_40
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R GSE105194_spinal_cordGSE105194_cerebellum_40kb # r 24.01.2019
 
 
-Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R GSE105318_DLD1_40kb
+Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R GSE105318_DLD1_40kb # r 29.01.2019
 
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR312KHQ_SK-MEL-5_40kb
 Rscript all_entrez_fastSemSim_otherTADfile_correctDist_TCGA.R ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb

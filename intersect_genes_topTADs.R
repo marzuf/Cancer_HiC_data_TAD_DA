@@ -1,80 +1,78 @@
 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 15 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 15 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 pipelineConsensus
-
-# # Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb 
-
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 1 ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 1 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 1 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 10 ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 10 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb NCI-H460_40kb ENCSR444WCZ_A549NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 10 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb NCI-H460_40kb ENCSR444WCZ_A549NCI-H460_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 3 ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 3 pipelineConsensus
+# 
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 3 pipelineConsensus
 # 
 # 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549NCI-H460_40kb
+# Rscript intersect_genes_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 5 ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_genes_topTADs.R TCGAkich_norm_kich 5 pipelineConsensus
 # 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
+# Rscript intersect_genes_topTADs.R TCGAskcm_wt_mutCTNNB1 5 pipelineConsensus
 
 # tail -n+2 TCGAskcm_wt_mutCTNNB1_ENCSR312KHQ_SK-MEL-5_40kb_3.txt | \
 # cut -f1 | \
@@ -155,14 +153,14 @@
 startTime <- Sys.time()
 
 require(foreach)
-require(IRanges)
+
 source("utils_fct.R")
 
 setDir=""
 setDir <- "~/media/electron"
 setDir="" 
 
-outFolder <- file.path("INTERSECT_topTADs")
+outFolder <- file.path("INTERSECT_GENES_topTADs")
 dir.create(outFolder, recursive = TRUE)
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -201,24 +199,14 @@ all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
     
     # file with assignment from entrez to all regions
     gene2tadDT_file <- paste0(setDir, 
-                              "/mnt/ed4/marie/gene_data_final/consensus_TopDom_covThresh_r0.6_t80000_v0_w-1_final/genes2tad/all_genes_positions.txt")
-    TADposDT_file <- paste0(setDir, 
-                              "/mnt/ed4/marie/gene_data_final/consensus_TopDom_covThresh_r0.6_t80000_v0_w-1_final/genes2tad/all_assigned_regions.txt") 
-    
+                              "/mnt/ed4/marie/gene_data_final/consensus_TopDom_covThresh_r0.6_t80000_v0_w-1_final/genes2tad/all_genes_positions.txt") 
   } else {
     stopifnot(dir.exists(hicds))
     pipOutDir <- file.path("PIPELINE", "OUTPUT_FOLDER", hicds, exprds)
     gene2tadDT_file <- file.path(hicds, "genes2tad/all_genes_positions.txt")
-    TADposDT_file <- file.path(hicds, "genes2tad/all_assigned_regions.txt")
   }
   stopifnot(file.exists(gene2tadDT_file))
   g2tDT <- read.delim(gene2tadDT_file, stringsAsFactors = FALSE, header=F, col.names=c("entrezID", "chromo", "start", "end", "region"))
-  
-  stopifnot(file.exists(TADposDT_file))
-  TADposDT <- read.delim(TADposDT_file, stringsAsFactors = FALSE, header=F, col.names=c("chromo","region", "start", "end"))
-  stopifnot(is.numeric(TADposDT$start))
-  TADposDT <- TADposDT[grepl("_TAD", TADposDT$region),]
-  stopifnot(nrow(TADposDT) > 0)
   
   stopifnot(g2tDT$entrezID %in% entrezDT$entrezID)
   g2t2sDT <- merge(g2tDT[, c("entrezID", "region")], entrezDT[,c("entrezID", "symbol")], by="entrezID", all.x = TRUE, all.y = FALSE )
@@ -277,165 +265,82 @@ all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
   topTADs_genesDT <- topTADs_genesDT[order(topTADs_genesDT$top_pvals, topTADs_genesDT$top_tads, topTADs_genesDT$symbol),]
   head(topTADs_genesDT)
   
-  list(topTADs_genesDT=topTADs_genesDT,
-       TADposDT=TADposDT,
-       gene2tadDT = g2tDT)
+  topTADs_genesDT
 }
 names(all_topTADsGenes) <- all_hicds
 str(all_topTADsGenes)
 
-outFile <- file.path(outFolder, "all_topTADsGenes.Rdata")
-save(all_topTADsGenes, file = outFile)
+intersectGenes <- Reduce(intersect, lapply(all_topTADsGenes, function(x) x[["symbol"]]))
+
+filtered_topTADsGenes <- lapply(all_topTADsGenes, function(x) x[x[["symbol"]] %in% intersectGenes,, drop=F])
+filtered_topTADsGenes <- lapply(filtered_topTADsGenes, function(x) x[order(x[["symbol"]]),])
+
+filtered_topTADsGenesDT <- do.call('cbind', filtered_topTADsGenes)
+
+all_symbolsDT <- filtered_topTADsGenesDT[, grepl("\\.symbol$", colnames(filtered_topTADsGenesDT)), drop=F]
+stopifnot(apply(all_symbolsDT, 1, function(x) length(unique(x)) == 1))
+all_symbols <- as.character(all_symbolsDT[,1])
+filtered_topTADsGenesDT[, grepl("\\.symbol$", colnames(filtered_topTADsGenesDT))] <- NULL
+rownames(filtered_topTADsGenesDT) <- all_symbols
+head(filtered_topTADsGenesDT)
+
+all_ranksDT <- filtered_topTADsGenesDT[, grepl("\\.tad_rank$", colnames(filtered_topTADsGenesDT)), drop=F]
+filtered_topTADsGenesDT$rank_mean <- rowMeans(all_ranksDT)
+head(filtered_topTADsGenesDT)
+filtered_topTADsGenesDT$gene <- as.character(rownames(filtered_topTADsGenesDT))
+
+filtered_topTADsGenesDT[, grepl("\\.tad_rank$", colnames(filtered_topTADsGenesDT))] <- NULL
+
+
+filtered_topTADsGenesDT <- filtered_topTADsGenesDT[, c(which(colnames(filtered_topTADsGenesDT) == "gene"),
+                                                       which(colnames(filtered_topTADsGenesDT) == "rank_mean"),
+                                                       which(! colnames(filtered_topTADsGenesDT) %in% c("gene", "rank_mean"))), drop=F]
+
+if(length(all_hicds) == 1) {
+  toptads_col <- colnames(filtered_topTADsGenesDT)[grepl("\\.top_tads", colnames(filtered_topTADsGenesDT))]
+  stopifnot( toptads_col %in% colnames(filtered_topTADsGenesDT) )
+  filtered_topTADsGenesDT <- filtered_topTADsGenesDT[order(filtered_topTADsGenesDT$rank_mean, 
+                                                           filtered_topTADsGenesDT[,toptads_col],
+                                                           filtered_topTADsGenesDT$gene),, drop=F ]
+} else {
+  filtered_topTADsGenesDT <- filtered_topTADsGenesDT[order(filtered_topTADsGenesDT$gene, filtered_topTADsGenesDT$rank_mean),, drop=F ]
+}
+head(filtered_topTADsGenesDT)
+
+cat("\n\n\n")
+
+write.table(head(filtered_topTADsGenesDT), col.names=T, row.names=F, sep="\t", quote=F, file="")
+
+outFile <- file.path(outFolder, 
+                     paste0(exprds, "_", paste0(all_hicds, collapse=""), "_", topThresh, ".txt"))
+
+write.table(filtered_topTADsGenesDT, col.names=T, row.names=F, sep="\t", quote=F, file=outFile)
+
 cat(paste0("... written: ", outFile, "\n"))
-      # load(outFile)
-      # load("INTERSECT_topTADs/all_topTADsGenes.Rdata")
-      # str(all_topTADsGenes)
 
-i=1
-require(IRanges)
+listFile <- file.path(outFolder, 
+                     paste0(exprds, "_geneList_", paste0(all_hicds, collapse=""), "_", topThresh, ".txt"))
+file.remove(listFile)
+
 for(i in seq_along(all_topTADsGenes)) {
-  
-  ref_ds <- names(all_topTADsGenes)[i]
-  
-  signifTADs <- unique(as.character(all_topTADsGenes[[i]][["topTADs_genesDT"]][, "top_tads"]))
-  
-  signifTADs_posDT <- all_topTADsGenes[[i]][["TADposDT"]]
-  signifTADs_posDT$region <- as.character(signifTADs_posDT$region)
-  
-  stopifnot(signifTADs %in% signifTADs_posDT$region)
-  
-  query_signifTADs_IR <- IRanges(start = signifTADs_posDT$start, 
-                           width = (signifTADs_posDT$end - signifTADs_posDT$start + 1), 
-                           names=signifTADs_posDT$region)
-  
-  for(j in seq_along(all_topTADsGenes)[-i]) {
-    
-    obj_ds <- names(all_topTADsGenes)[j]
-    
-    objectTADs_posDT <- all_topTADsGenes[[j]][["TADposDT"]]
-    objectTADs_posDT$region <- as.character(objectTADs_posDT$region)
-    
-    object_allTADs_IR <- IRanges(start = objectTADs_posDT$start, 
-                                   width = (objectTADs_posDT$end - objectTADs_posDT$start + 1), 
-                                   names=objectTADs_posDT$region)
-    
-    TADoverlap <- findOverlaps(query=query_signifTADs_IR, 
-                               subject=object_allTADs_IR)
-    
-    TADoverlapRanges <- overlapsRanges(query=query_signifTADs_IR, 
-                                       subject = object_allTADs_IR)
-    
-    outFile <- file.path(outFolder, paste0(ref_ds, "_", obj_ds, "_TADoverlap.Rdata"))
-    save(TADoverlap, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
-
-    outFile <- file.path(outFolder, paste0(ref_ds, "_", obj_ds, "_TADoverlapRanges.Rdata"))
-    save(TADoverlapRanges, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
-    
-    
-  }
-  
+  txt <- paste0("\n> ", exprds, "\t", names(all_topTADsGenes)[i], ":\n")
+  printAndLog(txt, logFile = listFile)
+  tmpDT <- data.frame(all_topTADsGenes[i])
+  tmpDT <- tmpDT[order(as.numeric(as.character(tmpDT[, grepl("\\.tad_rank", colnames(tmpDT))])), 
+                       as.character(tmpDT[, grepl("\\.top_tads", colnames(tmpDT))]), as.character(tmpDT[, grepl("\\.symbol", colnames(tmpDT))])),]
+  txt <- paste0(paste0(tmpDT[, grepl("\\.symbol", colnames(tmpDT))], collapse=","), "\n")
+  printAndLog(txt, logFile = listFile)
+  txt <- paste0(paste0(unique(as.character(tmpDT[, grepl("\\.top_tads", colnames(tmpDT))])), collapse=","), "\n")
+  printAndLog(txt, logFile = listFile)
 }
 
-
-
-# ov <- findOverlaps(query, subject, type="within", maxgap=1L)
-# ov
-# 
-# overlapsRanges(query, subject, ov)
-
-
-
-
-
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# intersectGenes <- Reduce(intersect, lapply(all_topTADsGenes, function(x) x[["symbol"]]))
-# 
-# filtered_topTADsGenes <- lapply(all_topTADsGenes, function(x) x[x[["symbol"]] %in% intersectGenes,, drop=F])
-# filtered_topTADsGenes <- lapply(filtered_topTADsGenes, function(x) x[order(x[["symbol"]]),])
-# 
-# filtered_topTADsGenesDT <- do.call('cbind', filtered_topTADsGenes)
-# 
-# all_symbolsDT <- filtered_topTADsGenesDT[, grepl("\\.symbol$", colnames(filtered_topTADsGenesDT)), drop=F]
-# stopifnot(apply(all_symbolsDT, 1, function(x) length(unique(x)) == 1))
-# all_symbols <- as.character(all_symbolsDT[,1])
-# filtered_topTADsGenesDT[, grepl("\\.symbol$", colnames(filtered_topTADsGenesDT))] <- NULL
-# rownames(filtered_topTADsGenesDT) <- all_symbols
-# head(filtered_topTADsGenesDT)
-# 
-# all_ranksDT <- filtered_topTADsGenesDT[, grepl("\\.tad_rank$", colnames(filtered_topTADsGenesDT)), drop=F]
-# filtered_topTADsGenesDT$rank_mean <- rowMeans(all_ranksDT)
-# head(filtered_topTADsGenesDT)
-# filtered_topTADsGenesDT$gene <- as.character(rownames(filtered_topTADsGenesDT))
-# 
-# filtered_topTADsGenesDT[, grepl("\\.tad_rank$", colnames(filtered_topTADsGenesDT))] <- NULL
-# 
-# 
-# filtered_topTADsGenesDT <- filtered_topTADsGenesDT[, c(which(colnames(filtered_topTADsGenesDT) == "gene"),
-#                                                        which(colnames(filtered_topTADsGenesDT) == "rank_mean"),
-#                                                        which(! colnames(filtered_topTADsGenesDT) %in% c("gene", "rank_mean"))), drop=F]
-# 
-# if(length(all_hicds) == 1) {
-#   toptads_col <- colnames(filtered_topTADsGenesDT)[grepl("\\.top_tads", colnames(filtered_topTADsGenesDT))]
-#   stopifnot( toptads_col %in% colnames(filtered_topTADsGenesDT) )
-#   filtered_topTADsGenesDT <- filtered_topTADsGenesDT[order(filtered_topTADsGenesDT$rank_mean, 
-#                                                            filtered_topTADsGenesDT[,toptads_col],
-#                                                            filtered_topTADsGenesDT$gene),, drop=F ]
-# } else {
-#   filtered_topTADsGenesDT <- filtered_topTADsGenesDT[order(filtered_topTADsGenesDT$gene, filtered_topTADsGenesDT$rank_mean),, drop=F ]
-# }
-# head(filtered_topTADsGenesDT)
-# 
-# cat("\n\n\n")
-# 
-# write.table(head(filtered_topTADsGenesDT), col.names=T, row.names=F, sep="\t", quote=F, file="")
-# 
-# outFile <- file.path(outFolder, 
-#                      paste0(exprds, "_", paste0(all_hicds, collapse=""), "_", topThresh, ".txt"))
-# 
-# write.table(filtered_topTADsGenesDT, col.names=T, row.names=F, sep="\t", quote=F, file=outFile)
-# 
-# cat(paste0("... written: ", outFile, "\n"))
-# 
-# listFile <- file.path(outFolder, 
-#                      paste0(exprds, "_geneList_", paste0(all_hicds, collapse=""), "_", topThresh, ".txt"))
-# file.remove(listFile)
-# 
-# for(i in seq_along(all_topTADsGenes)) {
-#   txt <- paste0("\n> ", exprds, "\t", names(all_topTADsGenes)[i], ":\n")
-#   printAndLog(txt, logFile = listFile)
-#   tmpDT <- data.frame(all_topTADsGenes[i])
-#   tmpDT <- tmpDT[order(as.numeric(as.character(tmpDT[, grepl("\\.tad_rank", colnames(tmpDT))])), 
-#                        as.character(tmpDT[, grepl("\\.top_tads", colnames(tmpDT))]), as.character(tmpDT[, grepl("\\.symbol", colnames(tmpDT))])),]
-#   txt <- paste0(paste0(tmpDT[, grepl("\\.symbol", colnames(tmpDT))], collapse=","), "\n")
-#   printAndLog(txt, logFile = listFile)
-#   txt <- paste0(paste0(unique(as.character(tmpDT[, grepl("\\.top_tads", colnames(tmpDT))])), collapse=","), "\n")
-#   printAndLog(txt, logFile = listFile)
-# }
-# 
-# txt <- paste0("\n> ", exprds, "\t", "intersect", ":\n")
-# printAndLog(txt, logFile = listFile)
-# txt <- paste0(paste0(filtered_topTADsGenesDT$gene, collapse=","), "\n>")
-# printAndLog(txt, logFile = listFile)
-# ######################################################################################
-# cat(paste0("... written: ", outFile, "\n"))
-# cat(paste0("... written: ", listFile, "\n"))
+txt <- paste0("\n> ", exprds, "\t", "intersect", ":\n")
+printAndLog(txt, logFile = listFile)
+txt <- paste0(paste0(filtered_topTADsGenesDT$gene, collapse=","), "\n>")
+printAndLog(txt, logFile = listFile)
+######################################################################################
+cat(paste0("... written: ", outFile, "\n"))
+cat(paste0("... written: ", listFile, "\n"))
 cat("*** DONE\n")
 cat(paste0(startTime, "\n", Sys.time(), "\n"))
 

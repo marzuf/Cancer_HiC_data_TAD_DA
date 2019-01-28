@@ -398,9 +398,9 @@ lines(distVect, sameTAD_short_fit, col = sameTADcol)
 lines(distVect, sameTAD_short_fit_CIlow, col = sameTADcol, lty=2)
 lines(distVect, sameTAD_short_fit_CIhigh, col = sameTADcol,lty=2)
 
-lines(distVect, diffTAD_short_fit, col = sameTADcol)
-lines(distVect, diffTAD_short_fit_CIlow, col = sameTADcol,lty=2)
-lines(distVect, diffTAD_short_fit_CIhigh, col = sameTADcol,lty=2)
+lines(distVect, diffTAD_short_fit, col = diffTADcol)
+lines(distVect, diffTAD_short_fit_CIlow, col = diffTADcol,lty=2)
+lines(distVect, diffTAD_short_fit_CIhigh, col = diffTADcol,lty=2)
 
 legend("topright", 
        legend=c(paste0("sameTAD\n(AUC=", round(auc_sameTAD_short_distVect, 2), ")"), paste0("diffTAD\n(AUC=", round(auc_diffTAD_short_distVect, 2))), 
