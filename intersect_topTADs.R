@@ -169,6 +169,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 all_hicds <- c("ENCSR312KHQ_SK-MEL-5_40kb", "ENCSR862OGI_RPMI-7951_40kb", "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb")
 exprds <- "TCGAskcm_wt_mutCTNNB1"
+topThresh <- 1
 topThresh <- 5
 all_hicds <- c("ENCSR444WCZ_A549_40kb", "NCI-H460_40kb" ,"ENCSR444WCZ_A549_NCI-H460_40kb", "pipelineConsensus")
 exprds <- "TCGAluad_mutKRAS_mutEGFR"
@@ -228,9 +229,17 @@ all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
   g2t2sDT$region <- as.character(g2t2sDT$region)
   g2t2sDT$symbol <- as.character(g2t2sDT$symbol)
   
+  # subset the genes used in the pipeline
   stopifnot(dir.exists(pipOutDir))
-  stopifnot(dir.exists(file.path(pipOutDir, script11_name)))
+  stopifnot(dir.exists(file.path(pipOutDir, script0_name)))
+  # geneList: values are entrez, names can be ENSEMBL, entrez, etc.
+  geneList_file <- file.path(pipOutDir, script0_name, "pipeline_geneList.Rdata")
+  stopifnot(file.exists(geneList_file))
+  geneList <- eval(parse(text = load(geneList_file)))
+  stopifnot(geneList %in% g2tDT$entrezID)
+  g2tDT <- g2tDT[g2tDT$entrezID %in% geneList,]
   
+  stopifnot(dir.exists(file.path(pipOutDir, script11_name)))
   tad_pvalFile <- file.path(pipOutDir, script11_name, "emp_pval_combined.Rdata")
   stopifnot(file.exists(tad_pvalFile))
   tad_pvals <- eval(parse(text = load(tad_pvalFile)))
@@ -270,7 +279,8 @@ all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
   
   colnames(topGenesDT)[colnames(topGenesDT) == "region"] <- "top_tads"
   
-  topTADs_genesDT <- merge(topTADsDT, topGenesDT[, c("top_tads", "symbol")], by = "top_tads", all.x=TRUE, all.y=TRUE)
+  topTADs_genesDT <- merge(topTADsDT, topGenesDT[, c("top_tads", "symbol")], 
+                           by = "top_tads", all.x=TRUE, all.y=TRUE)
   
   topTADs_genesDT$top_tads <- as.character(topTADs_genesDT$top_tads)
   topTADs_genesDT$symbol <- as.character(topTADs_genesDT$symbol)
@@ -284,15 +294,20 @@ all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
 names(all_topTADsGenes) <- all_hicds
 str(all_topTADsGenes)
 
+# outFolder <- "INTERSECT_topTADs"
 outFile <- file.path(outFolder, "all_topTADsGenes.Rdata")
 save(all_topTADsGenes, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
+      # outFile = "INTERSECT_topTADs/all_topTADsGenes.Rdata"
       # load(outFile)
       # load("INTERSECT_topTADs/all_topTADsGenes.Rdata")
       # str(all_topTADsGenes)
 
+# names(all_topTADsGenes[[1]])
+# [1] "topTADs_genesDT" "TADposDT"        "gene2tadDT" 
+
 i=1
-require(IRanges)
+j=2
 for(i in seq_along(all_topTADsGenes)) {
   
   ref_ds <- names(all_topTADsGenes)[i]
@@ -301,12 +316,19 @@ for(i in seq_along(all_topTADsGenes)) {
   
   signifTADs_posDT <- all_topTADsGenes[[i]][["TADposDT"]]
   signifTADs_posDT$region <- as.character(signifTADs_posDT$region)
-  
   stopifnot(signifTADs %in% signifTADs_posDT$region)
+  signifTADs_posDT <- signifTADs_posDT[signifTADs_posDT$region %in% signifTADs,]
+  
+  ref_g2tDT <- all_topTADsGenes[[i]][["gene2tadDT"]]
   
   query_signifTADs_IR <- IRanges(start = signifTADs_posDT$start, 
                            width = (signifTADs_posDT$end - signifTADs_posDT$start + 1), 
                            names=signifTADs_posDT$region)
+  
+  
+  query_signifTADs_GR <- GRanges(ranges = query_signifTADs_IR,
+                                 seqnames=gsub("(chr.+)_TAD.+", "\\1", signifTADs_posDT$region))
+  
   
   for(j in seq_along(all_topTADsGenes)[-i]) {
     
@@ -315,15 +337,110 @@ for(i in seq_along(all_topTADsGenes)) {
     objectTADs_posDT <- all_topTADsGenes[[j]][["TADposDT"]]
     objectTADs_posDT$region <- as.character(objectTADs_posDT$region)
     
+    obj_g2tDT <- all_topTADsGenes[[j]][["gene2tadDT"]]
+    
     object_allTADs_IR <- IRanges(start = objectTADs_posDT$start, 
                                    width = (objectTADs_posDT$end - objectTADs_posDT$start + 1), 
                                    names=objectTADs_posDT$region)
     
-    TADoverlap <- findOverlaps(query=query_signifTADs_IR, 
-                               subject=object_allTADs_IR)
+    object_allTADs_GR <- GRanges(ranges = object_allTADs_IR,
+                                   seqnames=gsub("(chr.+)_TAD.+", "\\1", objectTADs_posDT$region))
     
+    
+    TADoverlap_hits <- findOverlaps(query=query_signifTADs_GR, 
+                               subject=object_allTADs_GR)
+    
+    TADoverlaps <- pintersect(query_signifTADs_IR[queryHits(TADoverlap_hits)], 
+                           object_allTADs_IR[subjectHits(TADoverlap_hits)])
+    
+    queryTADs <- names(query_signifTADs_IR[queryHits(TADoverlap_hits)])
+    objectTADs <- names(object_allTADs_IR[subjectHits(TADoverlap_hits)])
+    stopifnot( length(queryTADs) == length(objectTADs) )
+    
+    # ensure the matching is done intrachromosomally
+    queryTADs_chr <- gsub("(chr.+)_.+", "\\1", queryTADs)
+    objectTADs_chr <- gsub("(chr.+)_.+", "\\1", objectTADs)
+    stopifnot( queryTADs_chr == objectTADs_chr)
+    
+    # retrieve the number of common genes for each match
+    # take the reference TADs that have a match
+    queryTADs_withMatch <- unique(queryTADs)
+    
+    txt <- paste0("... signif. queryTADs with overlapping objectTADs:\t")
+    printAndLog(txt, logFile)
+    txt <- paste0(length(queryTADs_withMatch), "/", length(query_signifTADs_GR), "\n")
+    printAndLog(txt, logFile)
+    
+    # for each TAD, 1) retrieve the genes that belong to it
+    queryTADs_withMatch_genes <- lapply(queryTADs_withMatch, function(curr_tad){
+      stopifnot( curr_tad %in% ref_g2tDT$region )
+      as.character(ref_g2tDT$entrezID[ref_g2tDT$region == curr_tad])
+    })
+    names(queryTADs_withMatch_genes) <- queryTADs_withMatch
+    
+    queryTADs_withMatch <- queryTADs_withMatch[1:3]
+    
+    # for each TAD, 2) retrieve the genes of that TAD that matches with it
+    queryTADs_withMatch_matchingObjectTADs <- lapply(queryTADs_withMatch, function(curr_tad){
+          
+          ref_genes <- queryTADs_withMatch_genes[[curr_tad]]
+          
+          matching_objectTADs <- objectTADs[queryTADs == curr_tad]
+          stopifnot(length(matching_objectTADs) > 0)
+          
+          matching_objectTADs_genes <- lapply(matching_objectTADs, function(obj_tad){
+            stopifnot( obj_tad %in% obj_g2tDT$region )
+            genes_in_matchingTADs <- as.character(obj_g2tDT$entrezID[obj_g2tDT$region == obj_tad])
+            nbr_intersectGenes_in_matchingTADs <- sum(genes_in_matchingTADs %in% ref_genes)
+            list(matchingTADs_genes = genes_in_matchingTADs,
+                 matchingTADs_nIntersect = nbr_intersectGenes_in_matchingTADs)
+          })
+          names(matching_objectTADs_genes) <- matching_objectTADs
+          matching_objectTADs_genes
+        
+          # list(matching_objectTADs=matching_objectTADs,
+          #      matching_objectTADs_genes=matching_objectTADs_genes)
+    })
+    names(queryTADs_withMatch_matchingObjectTADs) <- queryTADs_withMatch
+    
+    ### VERSION 1 -> MATCHING TAD IS THE ONE WITH MOST INTERSECT GENES
+    
+    # e.g. for the query chr10_TAD1 -> match 2 objectTADs
+    # > queryTADs_withMatch_matchingObjectTADs[["chr10_TAD1"]]
+    # $chr10_TAD1
+    # $chr10_TAD1$matchingTADs_genes
+    # [1] "347688"    "439945"    "10771"     "100421369"
+    # 
+    # $chr10_TAD1$matchingTADs_nIntersect
+    # [1] 4
+    # 
+    # 
+    # $chr10_TAD2
+    # $chr10_TAD2$matchingTADs_genes
+    # [1] "22982"     "100847086" "414235"   
+    # 
+    # $chr10_TAD2$matchingTADs_nIntersect
+    # [1] 3
+    # => filter to retain max intersect
+    
+    
+    
+    
+    # for each TAD, 3) retain the object TADs with highest number of intersect genes
+    
+    # for each TAD, 4) add information query_TAD|size_qT|# genes_qT|object_TAD|size_OT|#genes_oT|#intersect_genes|size_overlap
+    
+    
+    
+    percentOverlap <- width(overlaps) / width(testGR[subjectHits(hits)])
+    hits <- hits[percentOverlap > 0.5]                       
+
+        
     TADoverlapRanges <- overlapsRanges(query=query_signifTADs_IR, 
                                        subject = object_allTADs_IR)
+    
+    length(query_signifTADs_IR) == TADoverlap@nLnode
+    length(object_allTADs_IR) == TADoverlap@nRnode
     
     outFile <- file.path(outFolder, paste0(ref_ds, "_", obj_ds, "_TADoverlap.Rdata"))
     save(TADoverlap, file = outFile)
