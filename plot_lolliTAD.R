@@ -8,6 +8,9 @@ cat(paste0("> START ", script_name,  "\n"))
 # TO PLOT TADS FROM PIPELINE CONSENSUS: plot_lolliTAD_pipelineConsensus.R
 # Rscript plot_lolliTAD.R TCGAluad_mutKRAS_mutEGFR NCI-H460_40kb chr7_TAD98
 
+# Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR312KHQ_SK-MEL-5_40kb chr11_TAD130
+# Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR862OGI_RPMI-7951_40kb chr11_TAD108
+
 SSHFS <- F
 setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "/media/electron", "")
