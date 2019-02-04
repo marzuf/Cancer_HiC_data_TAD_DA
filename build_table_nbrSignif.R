@@ -22,6 +22,9 @@ myWidthGG <- 10
 myHeight <- ifelse(plotType == "png", 300, 7)
 myWidth <- myHeight
 
+barCol <- "royalblue"
+plotCex <- 1.2
+
 buildTable <- TRUE
 
 registerDoMC(ifelse(SSHFS, 2, 30))
@@ -31,6 +34,17 @@ if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 logFile <- ""
 
 source("utils_fct.R")
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
+head(score_DT)
+
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+source( file.path("colors_utils.R"))
+
+dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
+length(dataset_proc_colors)
+
+my_colors_leg <- my_colors
+
 
 outFold <- "BUILD_TABLE_NBR_SIGNIF"
 system(paste0("mkdir -p ", outFold))
@@ -168,25 +182,158 @@ if(buildTable) {
    
   } # end iterating over hic_ds
 
-  
-
-  
   outFile <- file.path(outFold, "all_ds_DT.Rdata")
   save(all_ds_DT, file = outFile)
   cat(paste0("... written: ", outFile, "\n"))
-  
-  # outDT <- all_ds_DT
-  # numericCols <- which(apply(outDT, 2, function(x) all(is.numeric(x))))
-  # outDT[, numericCols] <- apply(outDT[, numericCols], 2, round, 4)
-  # outFile <- file.path(outFold, "nbr_signif_pvalThresh_all_datasets.txt")
-  # write.table(outDT, file = outFile, sep="\t", quote=F, col.names=T, row.names=F, append=F)
-  # cat(paste0("... written: ", outFile, "\n"))
-  
+
 } else {
   outFile <- file.path(outFold, "all_ds_DT.Rdata")
   stopifnot(file.exists(outFile))
   all_ds_DT <- eval(parse(text = load(outFile)))
 }
+
+rownames(all_ds_DT) <- NULL
+outDT <- all_ds_DT
+numericCols <- which(apply(outDT, 2, function(x) all(is.numeric(x))))
+outDT[, numericCols] <- apply(outDT[, numericCols], 2, round, 4)
+outFile <- file.path(outFold, "all_ds_DT.txt")
+write.table(outDT, file = outFile, sep="\t", quote=F, col.names=T, row.names=F, append=F)
+cat(paste0("... written: ", outFile, "\n"))
+
+stopifnot("expr_dataset" %in% colnames(all_ds_DT))
+stopifnot("hic_dataset" %in% colnames(all_ds_DT))
+
+load("BUILD_TABLE_NBR_SIGNIF/all_ds_DT.Rdata")
+plotDT <- all_ds_DT
+mynames <- plotDT$expr_dataset
+plotDT$dataset <- paste0(plotDT$hic_dataset, "\n", plotDT$expr_dataset)
+plotDT$expr_dataset <- plotDT$hic_dataset <- NULL
+
+all_cols <- colnames(plotDT)[ colnames(plotDT) != "dataset" ]
+
+variable_tit <- c(
+"nbrTADs" = "# tot. TADs",
+"nbrTADsSignif_adjPvalThresh0.01" = paste0("# signif. TADs (p-val <= 0.01)"),
+"nbrTADsSignif_adjPvalThresh0.05" = paste0("# signif. TADs (p-val <= 0.05)"),
+"nbrGenes" = "# tot. genes",
+"nbrGenesSignif_adjPvalThresh0.01" = paste0("# signif. genes (p-val <= 0.01)"),
+"nbrGenesSignif_adjPvalThresh0.05"= paste0("# signif. genes (p-val <= 0.05)"),
+"ratioAUC_FCC" = paste0("% increase AUC FCC"),
+"ratioAUC_coexprDist"= paste0("% increase AUC coexpr. dist.")
+)                       
+
+
+curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
+stopifnot(!is.na(curr_colors))
+
+plotDT$exprcols <- curr_colors
+
+ref_col <- all_cols[1]
+# BARPlOT EACH COLUMNM
+###############################
+### BARPLOT REF VARIABLE (ref_col)
+###############################
+for(ref_col in all_cols){
+  
+  cat(paste0("... start ", ref_col, "\n"))
+  
+  stopifnot(is.numeric(plotDT[, ref_col]))
+  stopifnot(ref_col %in% names(variable_tit))
+  
+  barDT <- plotDT[, c("dataset", ref_col, "exprcols")]
+  
+  plotTit <- paste0(variable_tit[ref_col])
+  
+  stopifnot(nrow(barDT) == length(unique(barDT$dataset)))
+  mySub <- paste0("(# datasets = ", nrow(barDT))
+  
+  myxlab <- paste0("")
+  myylab <- paste0(variable_tit[ref_col])
+  
+  barDT <- barDT[order(barDT[, ref_col], decreasing = T),]
+  barDT$dataset <- factor(barDT$dataset, levels = as.character(barDT$dataset))
+
+  p_ref <- ggplot(barDT, aes_string(x = "dataset", y = ref_col)) +
+    ggtitle(plotTit, subtitle = mySub)+
+    geom_bar(stat="identity", position = "dodge", fill = barCol)+
+    scale_x_discrete(name=myxlab)+
+    scale_y_continuous(name=myylab,
+                       breaks = scales::pretty_breaks(n = 10))+
+    labs(fill = "")+
+    theme( # Increase size of axis lines
+      # top, right, bottom and left
+      plot.margin = unit(c(1, 1, 1, 1), "lines"),
+      plot.title = element_text(hjust = 0.5, face = "bold", size=16),
+      plot.subtitle = element_text(hjust = 0.5, face = "italic", size=10),
+      panel.grid = element_blank(),
+      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = barDT$exprcols),
+      axis.line.x = element_line(size = .2, color = "black"),
+      axis.line.y = element_line(size = .3, color = "black"),
+      # axis.ticks.x = element_blank(),
+      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
+      axis.title.y = element_text(color="black", size=12),
+      axis.title.x = element_text(color="black", size=12),
+      panel.border = element_blank(),
+      panel.background = element_rect(fill = "transparent"),
+      legend.background =  element_rect(),
+      legend.key = element_blank()
+    )
+  if(SSHFS) p_ref
+
+  outFile <- file.path(outFold, paste0(ref_col, "_", "barplot.", plotType))
+  ggsave(plot = p_ref, filename = outFile, height=myHeightGG, width = myWidthGG)
+  cat(paste0("... written: ", outFile, "\n"))
+
+  ###############################
+  ### DENSPLOT EACH VARIABLE PAIR (ref_col vs vs_col )
+  ###############################
+  vs_col <- all_cols[all_cols != ref_col ][1]
+  for(vs_col in all_cols[all_cols != ref_col ]){
+    
+    cat(paste0("...... ", ref_col, " vs. ", vs_col,"\n"))
+    
+    stopifnot(vs_col %in% names(variable_tit))
+    stopifnot(is.numeric(plotDT[, vs_col]))
+    densDT <- plotDT[, c("dataset", ref_col, vs_col, "exprcols")]
+    
+    stopifnot(nrow(densDT) == length(unique(densDT$dataset)))
+    
+    myxlab <- paste0(variable_tit[vs_col])
+    myylab <- paste0(variable_tit[ref_col])
+    
+    plotTit <- paste0(myylab, " vs. ", myxlab)
+    mySub <- paste0("(# datasets = ", nrow(densDT))
+    
+    myx <-  plotDT[, vs_col]
+    myy <-  plotDT[, ref_col]
+      
+    outFile <- file.path(outFold, paste0(ref_col, "_", "densplot.", plotType))
+    do.call(plotType, list(outFile, height=myHeight, width=myWidth))    
+    densplot( x = myx, 
+              y = myy,
+              cex.axis = plotCex,
+              cex.lab = plotCex)
+    foo <- dev.off()
+    cat(paste0("... written: ", outFile, "\n"))
+    
+    outFile <- file.path(outFold, paste0(ref_col, "_", "scatterplot.", plotType))
+    do.call(plotType, list(outFile, height=myHeight, width=myWidth))    
+    plot( x = myx, 
+              y = myy,
+              cex.axis = plotCex,
+              cex.lab = plotCex,
+              pch=16, 
+              cex=0.7, 
+              col = plotDT[, "exprcols"])
+    foo <- dev.off()
+    cat(paste0("... written: ", outFile, "\n"))
+    
+    
+  
+  } #end-iterating over vs_col
+
+} # end-iterating over ref_col
+
 
 
 # 

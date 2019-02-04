@@ -11,6 +11,12 @@ cat(paste0("> START ", script_name,  "\n"))
 # Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR312KHQ_SK-MEL-5_40kb chr11_TAD130
 # Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR862OGI_RPMI-7951_40kb chr11_TAD108
 
+# Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR862OGI_RPMI-7951_40kb chr11_TAD108
+# Rscript plot_lolliTAD.R TCGAluad_mutKRAS_mutEGFR ENCSR444WCZ_A549_40kb chr8_TAD37
+
+# Rscript plot_lolliTAD.R TCGAskcm_wt_mutCTNNB1 ENCSR312KHQ_SK-MEL-5_40kb chr1_TAD200
+
+
 SSHFS <- F
 setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "/media/electron", "")

@@ -1,80 +1,10 @@
 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 15 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
+# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
+# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb NCI-H460_40kb ENCSR444WCZ_A549NCI-H460_40kb
+# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 1 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 1 pipelineConsensus
-
-# # Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb 
-
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 1 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 10 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 10 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 10 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb NCI-H460_40kb ENCSR444WCZ_A549NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 3 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 pipelineConsensus
 # 
 # 
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb NCI-H460_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 ENCSR444WCZ_A549NCI-H460_40kb
-# Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 5 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb ENCSR401TBQ_Caki2_40kb ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb
-# Rscript intersect_topTADs.R TCGAkich_norm_kich 5 pipelineConsensus
-# 
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb pipelineConsensus
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
-# Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 5 pipelineConsensus
 
 
 startTime <- Sys.time()
@@ -225,9 +155,8 @@ str(all_topTADsGenes)
 
 ########################################################################### LOAD SAVED DATA
 # outFolder <- "INTERSECT_topTADs"
-outFile <- file.path(outFolder, "all_topTADsGenes.Rdata")
-save(all_topTADsGenes, file = outFile)
-cat(paste0("... written: ", outFile, "\n"))
+# outFile <- file.path(outFolder, "all_topTADsGenes.Rdata")
+# save(all_topTADsGenes, file = outFile)
       # outFile = "INTERSECT_topTADs/all_topTADsGenes.Rdata"
       # load(outFile)
       # load("INTERSECT_topTADs/all_topTADsGenes.Rdata")
@@ -238,7 +167,8 @@ cat(paste0("... written: ", outFile, "\n"))
 
 i=1
 j=2
-for(i in seq_along(all_topTADsGenes)) {
+
+all_maxIntersectOverlap_matchDT <- foreach(i = seq_along(all_topTADsGenes), .combine="rbind") %dopar% {
   
   ref_ds <- names(all_topTADsGenes)[i]
   
@@ -262,7 +192,7 @@ for(i in seq_along(all_topTADsGenes)) {
                                  seqnames=gsub("(chr.+)_TAD.+", "\\1", signifTADs_posDT$region))
   
   
-  for(j in seq_along(all_topTADsGenes)[-i]) {
+  ref_maxIntersectOverlap_matchDT <- foreach(j = seq_along(all_topTADsGenes)[-i], .combine="rbind") %dopar% {
     
     obj_ds <- names(all_topTADsGenes)[j]
     
@@ -417,6 +347,9 @@ for(i in seq_along(all_topTADsGenes)) {
     object_nbrGenes <- sapply(maxIntersectMatchingTAD, function(x) 
       sum(obj_g2tDT$region == x))
     
+    query_matching_ratio <- nIntersectMatchingTAD/query_nbrGenes
+    stopifnot(query_matching_ratio >= 0 & query_matching_ratio <= 1 )
+    
     maxIntersect_matchDT <- data.frame(
       
       expr_ds = exprds,
@@ -431,6 +364,9 @@ for(i in seq_along(all_topTADsGenes)) {
       matching_nbrGenes = object_nbrGenes,
         
       query_matching_intersectGenes = nIntersectMatchingTAD,
+      query_matching_ratio = query_matching_ratio,
+      
+      
       stringsAsFactors = FALSE
     )
     stopifnot(maxIntersect_matchDT$query_matching_intersectGenes <= maxIntersect_matchDT$matching_nbrGenes)
@@ -439,10 +375,10 @@ for(i in seq_along(all_topTADsGenes)) {
     maxIntersect_matchDT$queryTAD <- as.character(maxIntersect_matchDT$queryTAD)
     maxIntersect_matchDT <- maxIntersect_matchDT[order(maxIntersect_matchDT$queryTAD),]
     
-    outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxIntersect_matchDT.txt"))
-    cat("... writte table with max gene intersect\n")
-    write.table(maxIntersect_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
+                # outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxIntersect_matchDT.txt"))
+                # cat("... writte table with max gene intersect\n")
+                # write.table(maxIntersect_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
+                # cat(paste0("... written: ", outFile, "\n"))
         
     ### VERSION 2 -> MATCHING TAD IS THE ONE WITH HIGHEST OVERLAP
         
@@ -479,29 +415,61 @@ for(i in seq_along(all_topTADsGenes)) {
       x[which.max(x$query_matching_overlap),]
     }))
 
-    colnames(maxOverlap_matchDT)[  colnames(maxOverlap_matchDT) == "matchingTAD"] <- "matchingTAD_maxIntersect"
+    colnames(maxOverlap_matchDT)[  colnames(maxOverlap_matchDT) == "matchingTAD"] <- "matchingTAD_maxOverlap"
     
     maxOverlap_matchDT$queryTAD <- as.character(maxOverlap_matchDT$queryTAD)
     maxOverlap_matchDT <- maxOverlap_matchDT[order(maxOverlap_matchDT$queryTAD),]
     
-    outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxOverlap_matchDT.txt"))
-    cat("... writte table with max overlap\n")
-    
-    write.table(maxOverlap_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-    cat(paste0("... written: ", outFile, "\n"))
+                # outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxOverlap_matchDT.txt"))
+                # cat("... writte table with max overlap\n")
+                # write.table(maxOverlap_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
+                # cat(paste0("... written: ", outFile, "\n"))
     
     
     # list(
     #   maxIntersect = maxIntersect_matchDT,
     #   maxOverlap = maxOverlap_matchDT
     # )
-    break
+    #break
     
-  } # end iterating over the j [object dataset]
-  break
-} # end iterating over the i [reference dataset]
+    # expr_ds	query_ds	matching_ds	queryTAD	query_nbrGenes	matchingTAD_maxIntersect	matching_nbrGenes	query_matching_intersectGenes
+    # expr_ds	query_ds	matching_ds	queryTAD	query_size	matchingTAD_maxOverlap	matching_size	query_matching_overlap
+    
+    maxIntersectOverlap_matchDT <- merge(maxIntersect_matchDT, maxOverlap_matchDT, by=c("expr_ds", "query_ds", "matching_ds", "queryTAD"))
+    maxIntersectOverlap_matchDT
+    
+  } # end iterating over the j [object dataset] -> ref_maxIntersectOverlap_matchDT
+  #break
+  ref_maxIntersectOverlap_matchDT
+} # end iterating over the i [reference dataset] -> all_maxIntersectOverlap_matchDT
+
+outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT.Rdata"))
+cat("... writte table with max overlap and intersect\n")
+save(all_maxIntersectOverlap_matchDT,file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
 
 
+outDT <- all_maxIntersectOverlap_matchDT
+
+# outDT <- outDT[order(outDT[, "query_matching_ratio"]),]
+
+
+outDT[, "query_matching_ratio"] <- round(outDT[, "query_matching_ratio"], 4)
+outDT[, "query_matching_overlap"] <- round(outDT[,"query_matching_overlap"], 4)
+
+
+outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT.txt"))
+cat("... writte table with max overlap and intersect\n")
+write.table(outDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
+
+shortDT <- outDT 
+shortDT <- shortDT[, c("expr_ds", "query_ds", "matching_ds", "queryTAD", "matchingTAD_maxIntersect", "query_matching_ratio")]
+shortDT <- shortDT[order(shortDT[, "query_matching_ratio"], decreasing = TRUE),]
+outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT_shortDT.txt"))
+cat("... writte table with max overlap and intersect\n")
+write.table(shortDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
 
 
 cat("*** DONE\n")
