@@ -18,7 +18,7 @@ setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 plotType <- "svg"
 myHeightGG <- 7
-myWidthGG <- 10
+myWidthGG <- 12
 myHeight <- ifelse(plotType == "png", 300, 7)
 myWidth <- myHeight
 
@@ -245,7 +245,7 @@ for(ref_col in all_cols){
   plotTit <- paste0(variable_tit[ref_col])
   
   stopifnot(nrow(barDT) == length(unique(barDT$dataset)))
-  mySub <- paste0("(# datasets = ", nrow(barDT))
+  mySub <- paste0("(# datasets = ", nrow(barDT), ")")
   
   myxlab <- paste0("")
   myylab <- paste0(variable_tit[ref_col])
@@ -302,29 +302,66 @@ for(ref_col in all_cols){
     myylab <- paste0(variable_tit[ref_col])
     
     plotTit <- paste0(myylab, " vs. ", myxlab)
-    mySub <- paste0("(# datasets = ", nrow(densDT))
+    mySub <- paste0("(# datasets = ", nrow(densDT), ")")
     
     myx <-  plotDT[, vs_col]
     myy <-  plotDT[, ref_col]
       
-    outFile <- file.path(outFold, paste0(ref_col, "_", "densplot.", plotType))
+    outFile <- file.path(outFold, paste0(ref_col, "_vs_", vs_col, "densplot.", plotType))
     do.call(plotType, list(outFile, height=myHeight, width=myWidth))    
     densplot( x = myx, 
               y = myy,
+              xlab = myxlab, 
+              ylab = myylab,
+              main = plotTit,
               cex.axis = plotCex,
               cex.lab = plotCex)
+    mtext(side=3, text = mySub)
+    addCorr(x=myx, 
+            y=myy,
+            legPos="bottomright", 
+            corMet="spearman",
+            bty="n") 
+    add_curv_fit(x = myx, 
+                 y=myy,
+                 withR2 = FALSE, R2shiftX = -0.03, R2shiftY = 0, col="grey", lty=2)
     foo <- dev.off()
     cat(paste0("... written: ", outFile, "\n"))
     
-    outFile <- file.path(outFold, paste0(ref_col, "_", "scatterplot.", plotType))
+    outFile <- file.path(outFold, paste0(ref_col, "_vs_", vs_col, "scatterplot.", plotType))
     do.call(plotType, list(outFile, height=myHeight, width=myWidth))    
     plot( x = myx, 
               y = myy,
+          xlab = myxlab,
+          ylab = myylab,
+          main = plotTit,
               cex.axis = plotCex,
               cex.lab = plotCex,
               pch=16, 
               cex=0.7, 
               col = plotDT[, "exprcols"])
+    mtext(side=3, text = mySub)
+    text(x = myx,
+         y = myy,
+         # labels = mynames,
+         labels =  plotDT[, "dataset"],
+         col =  plotDT[, "exprcols"],
+         pos=3, cex = 0.7)
+    addCorr(x=myx, 
+            y=myy,
+            legPos="bottomright", 
+            corMet="spearman",
+            bty="n") 
+    legend("topleft",
+           legend=unique(cancer_subAnnot[mynames]), #names(curr_colors),
+           lty=1,
+           col = unique(curr_colors),
+           lwd = 5,
+           bty="n",
+           cex = 0.7)
+    add_curv_fit(x = myx, 
+                 y=myy,
+                 withR2 = FALSE, R2shiftX = -0.03, R2shiftY = 0, col="grey", lty=2)
     foo <- dev.off()
     cat(paste0("... written: ", outFile, "\n"))
     

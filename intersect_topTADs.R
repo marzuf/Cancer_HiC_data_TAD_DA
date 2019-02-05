@@ -23,6 +23,11 @@ dir.create(outFolder, recursive = TRUE)
 
 args <- commandArgs(trailingOnly = TRUE)
 
+all_hicds <- c("ENCSR444WCZ_A549_40kb", "NCI-H460_40kb", "ENCSR444WCZ_A549NCI-H460_40kb")
+exprds <- "TCGAluad_mutKRAS_mutEGFR"
+topThresh <- 3
+
+
 all_hicds <- c("ENCSR312KHQ_SK-MEL-5_40kb", "ENCSR862OGI_RPMI-7951_40kb", "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb")
 exprds <- "TCGAskcm_wt_mutCTNNB1"
 topThresh <- 1
@@ -54,6 +59,7 @@ head(entrezDT)
 script0_name <- "0_prepGeneData"
 script11_name <- "11_runEmpPvalCombined"
 
+hicds="ENCSR444WCZ_A549_40kb"
 all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
   
   if(hicds == "pipelineConsensus") {
@@ -249,6 +255,9 @@ all_maxIntersectOverlap_matchDT <- foreach(i = seq_along(all_topTADsGenes), .com
     })
     names(queryTADs_withMatch_genes) <- queryTADs_withMatch
     
+    # $chr9_TAD191
+    # [1] "9858"   "138162" "51116"  "3933"   "29991"  "5047"   "402381" "57582"  "157922" "10422"  "138151" "90120"  "169714"
+    
     # queryTADs_withMatch <- queryTADs_withMatch[1:3]
     
     # for each TAD, 2) retrieve the genes of that TAD that matches with it
@@ -276,6 +285,14 @@ all_maxIntersectOverlap_matchDT <- foreach(i = seq_along(all_topTADsGenes), .com
           #      matching_objectTADs_genes=matching_objectTADs_genes)
     })
     names(queryTADs_withMatch_matchingObjectTADs) <- queryTADs_withMatch
+    
+    # queryTADs_withMatch_matchingObjectTADs[["chr9_TAD191"]]
+    # $chr9_TAD178
+    # $chr9_TAD178$matchingTADs_genes
+    # [1] "1289"  "2220"  "2219"  "10439"
+    # 
+    # $chr9_TAD178$matchingTADs_nIntersect
+    # [1] 0
     
     ### VERSION 1 -> MATCHING TAD IS THE ONE WITH MOST INTERSECT GENES
     
