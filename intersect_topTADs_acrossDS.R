@@ -24,9 +24,6 @@ build_signifTADs_allDS_data <- TRUE
 
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
-outFolder <- file.path("INTERSECT_topTADs_ACROSSDS")
-dir.create(outFolder, recursive = TRUE)
-
 topThresh <- 3
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -36,6 +33,10 @@ topThresh <- as.numeric(args[1])
 if(topThresh == 1) {
   warning("topThresh == 1 is ambiguous; will be considered as a nTop not pval thresh !\n")
 }
+
+outFolder <- file.path("INTERSECT_topTADs_ACROSSDS", paste0("top", topThresh))
+dir.create(outFolder, recursive = TRUE)
+
 
 logFile=""
 
@@ -421,33 +422,33 @@ outFile <- file.path(outFolder, "all_matchDT.Rdata")
 save(all_matchDT, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
 
-load("INTERSECT_topTADs_ACROSSDS/all_matchDT.Rdata")
+# outFile <- "INTERSECT_topTADs_ACROSSDS/all_matchDT.Rdata""
+load(outFile)
 
 by(all_matchDT, all_matchDT$query_id, function(subDT) {
   subDT
-
 })
 
-all_matchDT <- all_matchDT[c(1:3,200:205),]
+# all_matchDT <- all_matchDT[c(1:3,200:205),]
 
-by(all_matchDT, list(all_matchDT$query_id, all_matchDT$matching_hicds, all_matchDT$matching_exprds), function(subDT) {
- return(1)
-})
+# by(all_matchDT, list(all_matchDT$query_id, all_matchDT$matching_hicds, all_matchDT$matching_exprds), function(subDT) {
+#  return(1)
+# })
+# 
+# by(all_matchDT, list(all_matchDT$query_id,all_matchDT$matching_hicds ), function(subDT) {
+#   subDT[which.max(subDT$matchingRatio),]
+# })
 
-by(all_matchDT, list(all_matchDT$query_id,all_matchDT$matching_hicds ), function(subDT) {
-  subDT[which.max(subDT$matchingRatio),]
-})
-
-best_matchDT <- do.call(rbind,
+# for a given hicds and exprds -> select the best match TAD
+all_bestMatchDT <- do.call(rbind,
         lapply(split(all_matchDT,list(all_matchDT$query_id,all_matchDT$matching_hicds,all_matchDT$matching_exprds ),drop=T), 
           function(subDT) subDT[which.max(subDT$matchingRatio),]))
-rownames(best_matchDT) <- NULL
+rownames(all_bestMatchDT) <- NULL
 
-
-best_matchDT[
-  best_matchDT$query_id == "ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr7_TAD58" &
-  best_matchDT$matching_hicds == "K562_40kb" &
-  best_matchDT$matching_exprds == "TCGAlaml_wt_mutFLT3" ,
+all_bestMatchDT[
+  all_bestMatchDT$query_id == "ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr7_TAD58" &
+    all_bestMatchDT$matching_hicds == "K562_40kb" &
+    all_bestMatchDT$matching_exprds == "TCGAlaml_wt_mutFLT3" ,
 ]
 all_matchDT[
   all_matchDT$query_id == "ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr7_TAD58" &
@@ -455,6 +456,73 @@ all_matchDT[
     all_matchDT$matching_exprds == "TCGAlaml_wt_mutFLT3" ,
   ]
 
+stopifnot(!duplicated(all_bestMatchDT[, c("query_id", "matching_hicds", "matching_exprds")]))
+
+stopifnot( length(unique(all_bestMatchDT$query_id)) == length(unique(na.omit(all_matchDT)$query_id)))
+
+outFile <- file.path(outFolder, "all_bestMatchDT.Rdata")
+save(all_bestMatchDT, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
+
+stopifnot( length(unique(all_bestMatchDT$query_id)) == nAllTADs)
+
+
+# for DEBUG
+outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata"
+load(outFile)
+all_matchDT[1:5,1:5]
+
+outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_bestMatchDT.Rdata"
+load(outFile)
+all_bestMatchDT[1:5,1:5]
+
+# compute the number of datasets in which signif (with or without counting same exrpds)
+all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
+head(all_nMatchDT)
+colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
+
+diffExprds_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT[all_bestMatchDT$query_exprds != all_bestMatchDT$matching_exprds,])
+head(diffExprds_nMatchDT)
+colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
+
+queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
+
+stopifnot(!duplicated(queryID_matchDT$query_id))
+
+plot_multiDens(list(
+  nMatch_all = queryID_matchDT$all_nMatch,
+  nMatch_diffExprds = queryID_matchDT$diffExprds_nMatch),
+  plotTit="# datasets with matching signif. TAD", legTxt=NULL, legPos="topright", my_ylab="density", my_xlab="")
+
+plotCex=1.2
+
+plot( 
+  x= queryID_matchDT$all_nMatch,
+y = queryID_matchDT$diffExprds_nMatch,
+ylab = paste0("diffExprds_nMatch"),
+xlab = paste0("all_nMatch"),
+cex.lab=plotCex,
+cex.axis=plotCex,
+pch=16,cex=0.7
+)
+
+xvect <- seq_len(max(queryID_matchDT$all_nMatch, na.rm=TRUE))  
+yvect <- sapply(xvect, function(x){
+  sum(queryID_matchDT$all_nMatch >= x)
+})
+plot(x = xvect,
+     y = yvect,
+     xlab = paste0("# datasets in which matching signif. TAD"), 
+     ylab = paste0("# query TAD"),
+     type="l")
+  
+
+plot_multiDens(list(
+  all_matchingRatio = all_matchDT$matchingRatio,
+  best_matchingRatio = all_bestMatchDT$matchingRatio),
+  plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab="")
+
+  
 # ######################################################################################
 # ######################################################################################
 # ######################################################################################
