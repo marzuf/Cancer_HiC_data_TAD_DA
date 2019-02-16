@@ -515,12 +515,49 @@ plot(x = xvect,
      xlab = paste0("# datasets in which matching signif. TAD"), 
      ylab = paste0("# query TAD"),
      type="l")
-  
+### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
+
 
 plot_multiDens(list(
   all_matchingRatio = all_matchDT$matchingRatio,
   best_matchingRatio = all_bestMatchDT$matchingRatio),
   plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab="")
+
+# ######################################################################################
+# ######################################################################################
+
+### Pour chaque hicds/exprds -> % de ces signif TADs qui matchent un nombre "x" de signif TADs d'autres datasets
+
+hicds_exprds_DT <- unique(all_bestMatchDT[, c("query_hicds", "query_exprds")])
+
+i=1
+for(i in seq_len(nrow(hicds_exprds_DT))) {
+  
+  signifTADs <- unique(all_bestMatchDT$query_id[all_bestMatchDT$query_hicds == hicds_exprds_DT$query_hicds[i] &
+                                           all_bestMatchDT$query_exprds == hicds_exprds_DT$query_exprds[i] 
+                                           ])
+  
+  sapply(signifTADs, function(x) {
+    sum(all_bestMatchDT$matching_id == x)
+  })
+  
+}
+
+
+### Pour chaque hicds/exprds, combien de fois ce dataset est dans le best matching TAD des autres datasets
+for(i in seq_len(nrow(hicds_exprds_DT))) {
+  
+sum(all_bestMatchDT$query_hicds == hicds_exprds_DT$query_hicds[i] &
+                                                  all_bestMatchDT$query_exprds == hicds_exprds_DT$query_exprds[i] 
+                                                )
+}
+
+
+
+
+# ######################################################################################
+# ######################################################################################
+
 
   
 # ######################################################################################
