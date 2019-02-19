@@ -486,6 +486,8 @@ head(diffExprds_nMatchDT)
 colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
 
 queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
+stopifnot(!is.na(queryID_matchDT$all_nMatch))
+sum(is.na(queryID_matchDT$diffExprds_nMatch))
 
 stopifnot(!duplicated(queryID_matchDT$query_id))
 
@@ -506,6 +508,22 @@ cex.axis=plotCex,
 pch=16,cex=0.7
 )
 
+plot_cumMatch <- function(dt, tomatch){
+  curr_match <- na.omit(dt[, tomatch])
+  xvect <- seq_len(max(curr_match))
+  yvect <- sapply(xvect, function(x){
+    sum(curr_match >= x)
+  })
+  plot(x = xvect,
+       y = yvect,
+       xlab = paste0("# datasets in which matching signif. TAD"), 
+       ylab = paste0("# query TAD"),
+       type="l")
+  mtext(side=3, text=paste0(tomatch))
+}
+plot_cumMatch(queryID_matchDT, "all_nMatch")
+plot_cumMatch(queryID_matchDT, "diffExprds_nMatch")
+
 xvect <- seq_len(max(queryID_matchDT$all_nMatch, na.rm=TRUE))  
 yvect <- sapply(xvect, function(x){
   sum(queryID_matchDT$all_nMatch >= x)
@@ -518,10 +536,62 @@ plot(x = xvect,
 ### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
 
 
+
 plot_multiDens(list(
   all_matchingRatio = all_matchDT$matchingRatio,
   best_matchingRatio = all_bestMatchDT$matchingRatio),
   plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab="")
+
+
+source("plot_lolliTAD_funct.R")
+top_to_plot = 5
+
+srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
+head(srtd_DT)
+View(srtd_DT)
+i=1
+
+# colnames(all_bestMatchDT)
+# [1] "query_id"        "query_hicds"     "query_exprds"    "queryTAD"        "matching_id"     "matching_hicds" 
+# [7] "matching_exprds" "matchingTAD"     "matchingRatio"
+
+
+for(i in seq_len(top_to_plot)) {
+  
+  plot_list <- list()
+  
+  tad_id <- srtd_DT$query_id[i]
+  
+  plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
+                                  hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
+                                  all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
+  
+  matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
+  stopifnot(!duplicated(matching_ids))
+  
+  matching_ids <- matching_ids[1:3]
+  
+  j <- 2
+  
+  for(matchTAD in matching_ids) {
+    plot_list[[j]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == matchTAD]), 
+                                       hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == matchTAD]), 
+                                       all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == matchTAD]))
+    j <- j+1
+  }
+  
+  all_plots <- do.call(grid.arrange, c(vect_plot,  list(ncol=2, top=textGrob(paste(exprds),
+                                                                             gp=gpar(fontsize=20,font=2)))))
+  # cat("myHeight =", outHeight, "\n")
+  
+  outFile <- file.path(outFold, paste0(exprds, "_", hicds, "_", paste0(all_TADs, collapse = "_"), ".", plotType))
+  ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
+  cat("... written: ", outFile, "\n")
+  
+
+}
+
+
 
 # ######################################################################################
 # ######################################################################################
