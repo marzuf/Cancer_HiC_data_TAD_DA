@@ -5,26 +5,152 @@ startTime <- Sys.time()
 
 cat("> START intersect_topTADs_acrossDS.R \n")
 
+# saved:
+# save(signifTADs_allDS_data, file = outFile)
+# save(all_matchDT, file = outFile)
+# save(all_bestMatchDT, file = outFile)
+# save(ratio_matchingSignifTAD_DT, file = outFile)
+# save(hicds_exprds_asMatch_DT, file = outFile)
+
 SSHFS <- FALSE
+setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 require(foreach)
 require(doMC)
 require(IRanges)
 require(GenomicRanges)
+require(ggplot2)
+
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
+head(score_DT)
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+source( file.path("colors_utils.R"))
+dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
+length(dataset_proc_colors)
+SSHFS <- FALSE
+setDir <- ifelse(SSHFS, "~/media/electron", "")
+
+
 source("utils_fct.R")
+source("plot_lolliTAD_funct.R")
+SSHFS <- FALSE
+setDir <- ifelse(SSHFS, "~/media/electron", "")
+
+
 
 printVar <- function(x){
   cat(paste0(x, " = ", eval(parse(text=x)), "\n"))
 }
+
+
+plot_cumMatch <- function(dt, tomatch){
+  curr_match <- na.omit(dt[, tomatch])
+  xvect <- seq_len(max(curr_match))
+  yvect <- sapply(xvect, function(x){
+    sum(curr_match >= x)
+  })
+  plot(x = xvect,
+       y = yvect,
+       xlab = paste0("# datasets in which matching signif. TAD"), 
+       ylab = paste0("# query TAD"),
+       type="l")
+  mtext(side=3, text=paste0(tomatch))
+}
+
+
+ggplot_barplot_hicdsexprds <- function(barDT, xvar, yvar,
+                                       xcolvar = NULL,
+                                       myxlab="", myylab="", myTit="", mySub="", 
+                                       barCol="dodgerblue3") {
+  if(is.null(xcolvar)) {
+    plotcols <- "black"
+  }else {
+    plotcols <- barDT[,xcolvar]
+  }
+  
+  p_ref <- ggplot(barDT, aes_string(x = xvar, y = yvar)) +
+    ggtitle(myTit, subtitle = mySub)+
+    geom_bar(stat="identity", position = "dodge", fill = barCol)+
+    scale_x_discrete(name=myxlab)+
+    scale_y_continuous(name=myylab,
+                       breaks = scales::pretty_breaks(n = 10))+
+    labs(fill = "")+
+    theme( # Increase size of axis lines
+      # top, right, bottom and left
+      plot.margin = unit(c(1, 1, 1, 1), "lines"),
+      plot.title = element_text(hjust = 0.5, face = "bold", size=16),
+      plot.subtitle = element_text(hjust = 0.5, face = "italic", size=10),
+      panel.grid = element_blank(),
+      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = plotcols),
+      axis.line.x = element_line(size = .2, color = "black"),
+      axis.line.y = element_line(size = .3, color = "black"),
+      # axis.ticks.x = element_blank(),
+      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
+      axis.title.y = element_text(color="black", size=12),
+      axis.title.x = element_text(color="black", size=12),
+      panel.border = element_blank(),
+      panel.background = element_rect(fill = "transparent"),
+      legend.background =  element_rect(),
+      legend.key = element_blank()
+    )
+  return(p_ref)
+}  
+
+ggplot_boxplot_hicdsexprds <- function(barDT, xvar, yvar, colvar,
+                                       myxlab="", myylab="", myTit="", mySub="", 
+                                       barCol="dodgerblue3") {
+  avg_barDT <- aggregate(as.formula(paste0(yvar, "~", xvar)), data = barDT, FUN=mean, na.rm=TRUE)
+  xvar_order <- as.character(avg_barDT[,xvar][order(avg_barDT[,yvar], decreasing=TRUE)])
+  stopifnot(!is.na(xvar_order))
+  barDT[, xvar] <- factor(as.character(barDT[,xvar]), levels = xvar_order)
+  plotDT <- na.omit(barDT)  
+  
+  if(is.null(colvar)){
+    mycols <- "black"
+  }else {
+    mycols <- plotDT[,colvar]
+  }
+  
+  p_ref <- ggplot(plotDT, aes_string(x = xvar, y = yvar)) +
+    ggtitle(myTit, subtitle = mySub)+
+    geom_boxplot(fill = barCol)+
+    scale_x_discrete(name=myxlab)+
+    scale_y_continuous(name=myylab,
+                       breaks = scales::pretty_breaks(n = 10))+
+    labs(fill = "")+
+    theme( # Increase size of axis lines
+      # top, right, bottom and left
+      plot.margin = unit(c(1, 1, 1, 1), "lines"),
+      plot.title = element_text(hjust = 0.5, face = "bold", size=16),
+      plot.subtitle = element_text(hjust = 0.5, face = "italic", size=10),
+      panel.grid = element_blank(),
+      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = mycols),
+      axis.line.x = element_line(size = .2, color = "black"),
+      axis.line.y = element_line(size = .3, color = "black"),
+      # axis.ticks.x = element_blank(),
+      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
+      axis.title.y = element_text(color="black", size=12),
+      axis.title.x = element_text(color="black", size=12),
+      panel.border = element_blank(),
+      panel.background = element_rect(fill = "transparent"),
+      legend.background =  element_rect(),
+      legend.key = element_blank()
+    )
+  return(p_ref)
+}  
+
+
 
 registerDoMC(ifelse(SSHFS, 2, 40))
 
 build_signifTADs_allDS_data <- TRUE
 
 
-setDir <- ifelse(SSHFS, "~/media/electron", "")
-
 topThresh <- 3
+
+# plot only the 0.95 most numerous matching
+lolliPlotThreshQuantile <- 0.95
+cat(paste0("!!! hard-coded: lolliPlotThreshQuantile = ", lolliPlotThreshQuantile, "\n"))
 
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
@@ -37,6 +163,14 @@ if(topThresh == 1) {
 outFolder <- file.path("INTERSECT_topTADs_ACROSSDS", paste0("top", topThresh))
 dir.create(outFolder, recursive = TRUE)
 
+plotCex <- 1.2
+plotType <- "svg"
+myHeightDens <- ifelse(plotType=="png", 400, 7)
+myWidthDens <- ifelse(plotType=="png", 600, 10)
+myHeight <- myWidth <- myHeightDens
+
+myHeightGG <- 7
+myWidthGG <- 10
 
 logFile=""
 
@@ -92,7 +226,6 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   stopifnot(file.exists(geneList_file))
   geneList <- eval(parse(text = load(geneList_file)))
   
-  
   if(topThresh >= 1) {
     topThresh <- min(c(topThresh, length(adj_tad_pvals)))
     pvalThresh <- as.numeric(adj_tad_pvals[topThresh])
@@ -126,10 +259,7 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   stopifnot(TADposDT$region == top_tads)
   head(TADposDT)
   
-  
   # RETRIEVE GENES ID AND GENE SYMBOLS FROM SIGNIF TADs (-> geneDT)
-  
-  
   g2tDT <- read.delim(gene2tadDT_file, stringsAsFactors = FALSE, header=F, col.names=c("entrezID", "chromo", "start", "end", "region"))
   stopifnot(geneList %in% g2tDT$entrezID)
   stopifnot(top_tads %in% g2tDT$region)
@@ -229,14 +359,6 @@ cat(paste0("... written: ", outFile, "\n"))
   signifTADs_allDS_data <- eval(parse(text = load(outFile)))
 }
 
-load("INTERSECT_topTADs_ACROSSDS/signifTADs_allDS_data.Rdata")
-head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["geneDT"]])
-head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["signifDT"]])
-head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["posDT"]])
-head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["matchDT"]])
-head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["idDT"]])
-
-
 all_geneDT <- foreach(ds = names(signifTADs_allDS_data), .combine='rbind') %dopar% {
   signifTADs_allDS_data[[paste0(ds)]][["geneDT"]]
 }
@@ -290,11 +412,7 @@ printVar("length(IDoverlap_hits_all)")
 printVar("length(IDoverlap_hits)")
 stopifnot( (length(IDoverlap_hits_all)-length(IDoverlap_hits) ) == length(query_IR) )
 
-# !!! pintersect removes the match with itself !
-# pintersect(query_IR["ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258",
-#                     "ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258"], 
-#            query_IR["ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258",
-#                     "ENCSR079VIJ_G401_40kb_TCGAkich_norm_kich_chr1_TAD274"])
+
 queryID <- names(query_GR[queryHits(IDoverlap_hits)])
 matchingID <- names(query_GR[subjectHits(IDoverlap_hits)])
 IDsOverlapDT <- data.frame(
@@ -422,22 +540,8 @@ outFile <- file.path(outFolder, "all_matchDT.Rdata")
 save(all_matchDT, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
 
-# outFile <- "INTERSECT_topTADs_ACROSSDS/all_matchDT.Rdata""
-load(outFile)
 
-by(all_matchDT, all_matchDT$query_id, function(subDT) {
-  subDT
-})
-
-# all_matchDT <- all_matchDT[c(1:3,200:205),]
-
-# by(all_matchDT, list(all_matchDT$query_id, all_matchDT$matching_hicds, all_matchDT$matching_exprds), function(subDT) {
-#  return(1)
-# })
-# 
-# by(all_matchDT, list(all_matchDT$query_id,all_matchDT$matching_hicds ), function(subDT) {
-#   subDT[which.max(subDT$matchingRatio),]
-# })
+cat(paste0("... start building all_bestMatchDT \n"))
 
 # for a given hicds and exprds -> select the best match TAD
 all_bestMatchDT <- do.call(rbind,
@@ -458,23 +562,26 @@ all_matchDT[
 
 stopifnot(!duplicated(all_bestMatchDT[, c("query_id", "matching_hicds", "matching_exprds")]))
 
+printVar("length(unique(all_bestMatchDT$query_id))")
+printVar("length(unique(na.omit(all_matchDT)$query_id))")
+printVar("nAllTADs")
+
 stopifnot( length(unique(all_bestMatchDT$query_id)) == length(unique(na.omit(all_matchDT)$query_id)))
+# stopifnot( length(unique(all_bestMatchDT$query_id)) == nAllTADs) # not TRUE because of the NA
 
 outFile <- file.path(outFolder, "all_bestMatchDT.Rdata")
 save(all_bestMatchDT, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
 
-stopifnot( length(unique(all_bestMatchDT$query_id)) == nAllTADs)
 
 
-# for DEBUG
-outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata"
-load(outFile)
-all_matchDT[1:5,1:5]
 
-outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_bestMatchDT.Rdata"
-load(outFile)
-all_bestMatchDT[1:5,1:5]
+#*************************************************************************************************
+#************************************************************************************************* TAD-level analysis
+#*************************************************************************************************
+
+cat(paste0("... start computing statistics queryTAD level \n"))
+
 
 # compute the number of datasets in which signif (with or without counting same exrpds)
 all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
@@ -491,88 +598,112 @@ sum(is.na(queryID_matchDT$diffExprds_nMatch))
 
 stopifnot(!duplicated(queryID_matchDT$query_id))
 
+outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS_and_onlyDiffExprDS_multidens", ".", plotType))
+printVar("outFile")
+printVar("myHeightDens")
+printVar("myWidthDens")
+do.call(plotType, list(outFile, height=myHeightDens, width=myWidthDens))
 plot_multiDens(list(
   nMatch_all = queryID_matchDT$all_nMatch,
   nMatch_diffExprds = queryID_matchDT$diffExprds_nMatch),
-  plotTit="# datasets with matching signif. TAD", legTxt=NULL, legPos="topright", my_ylab="density", my_xlab="")
-
-plotCex=1.2
-
-plot( 
-  x= queryID_matchDT$all_nMatch,
-y = queryID_matchDT$diffExprds_nMatch,
-ylab = paste0("diffExprds_nMatch"),
-xlab = paste0("all_nMatch"),
-cex.lab=plotCex,
-cex.axis=plotCex,
-pch=16,cex=0.7
+  plotTit="# datasets with matching signif. TAD", legTxt=NULL, legPos="topright", my_ylab="density", my_xlab=""
 )
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
 
-plot_cumMatch <- function(dt, tomatch){
-  curr_match <- na.omit(dt[, tomatch])
-  xvect <- seq_len(max(curr_match))
-  yvect <- sapply(xvect, function(x){
-    sum(curr_match >= x)
-  })
-  plot(x = xvect,
-       y = yvect,
-       xlab = paste0("# datasets in which matching signif. TAD"), 
-       ylab = paste0("# query TAD"),
-       type="l")
-  mtext(side=3, text=paste0(tomatch))
-}
+
+outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_cumMatch(queryID_matchDT, "all_nMatch")
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+
+outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_onlyDiffExprDS", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_cumMatch(queryID_matchDT, "diffExprds_nMatch")
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+# ### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
 
-xvect <- seq_len(max(queryID_matchDT$all_nMatch, na.rm=TRUE))  
-yvect <- sapply(xvect, function(x){
-  sum(queryID_matchDT$all_nMatch >= x)
-})
-plot(x = xvect,
-     y = yvect,
-     xlab = paste0("# datasets in which matching signif. TAD"), 
-     ylab = paste0("# query TAD"),
-     type="l")
-### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
+#### boxplot for the dataset
+tmpDT <- inputGR_DT
+colnames(tmpDT)[colnames(tmpDT) == "ID"] <- "query_id"
+boxplotDT <- merge(queryID_matchDT, tmpDT[, c("query_id", "HICDS", "EXPRDS")], by="query_id", all.x=T, all.y=F)
+head(boxplotDT)
+boxplotDT$dataset <- paste0(boxplotDT$HICDS, "\n", boxplotDT$EXPRDS)
+
+plotylab <- paste0("# matching hicds_exprds_ datasets")
+plotTit <- paste0("# of other datasets (all) with signifTADs matching by hicds")
+plotSub <- paste0("(# hicds = ", length(unique(boxplotDT$HICDS)), ")")
+
+outFile <- file.path(outFolder, paste0("hicds_all_nMatch_boxplot.", plotType))
+p_all <- ggplot_boxplot_hicdsexprds(barDT=boxplotDT, xvar="HICDS", yvar="all_nMatch",
+                           colvar=NULL,
+                           myylab=plotylab, myTit=plotTit,
+                           mySub=plotSub) 
+ggsave(plot = p_all, filename = outFile, height=myHeightGG, width = myWidthGG)
+cat("... written: ", outFile, "\n")
+
+plotylab <- paste0("# matching hicds_exprds_ datasets")
+plotTit <- paste0("# of other datasets (diffExprds) with signifTADs matching by hicds")
+plotSub <- paste0("(# hicds = ", length(unique(boxplotDT$HICDS)), ")")
+
+outFile <- file.path(outFolder, paste0("hicds_diffExprds_nMatch_boxplot.", plotType))
+p_diff <- ggplot_boxplot_hicdsexprds(barDT=boxplotDT, xvar="HICDS", yvar="diffExprds_nMatch",
+                           colvar=NULL,
+                           myylab=plotylab, myTit=plotTit,
+                           mySub=plotSub) 
+ggsave(plot = p_diff, filename = outFile, height=myHeightGG, width = myWidthGG)
+cat("... written: ", outFile, "\n")
 
 
 
+outFile <- file.path(outFolder, paste0("matchingRatio_all_and_best_mutlidens", ".", plotType))
+do.call(plotType, list(outFile, height=myHeightDens, width=myWidthDens))
 plot_multiDens(list(
   all_matchingRatio = all_matchDT$matchingRatio,
   best_matchingRatio = all_bestMatchDT$matchingRatio),
-  plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab="")
+  plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab=""
+  )
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
 
 
-source("plot_lolliTAD_funct.R")
-top_to_plot = 5
 
 srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
-head(srtd_DT)
-View(srtd_DT)
+
+nMatchToPlot <- as.numeric(quantile(srtd_DT$all_nMatch, probs = lolliPlotThreshQuantile))
+
+top_to_plot <- max(which(srtd_DT$all_nMatch >= nMatchToPlot))
+
+
+plotted_sets <- list()
+
+cat(paste0("... start lolliplot plotting\n"))
 i=1
 
-# colnames(all_bestMatchDT)
-# [1] "query_id"        "query_hicds"     "query_exprds"    "queryTAD"        "matching_id"     "matching_hicds" 
-# [7] "matching_exprds" "matchingTAD"     "matchingRatio"
+foo <- foreach(i = seq_len(top_to_plot)) %dopar%{
 
-
-for(i in seq_len(top_to_plot)) {
-  
-  plot_list <- list()
+    plot_list <- list()
   
   tad_id <- srtd_DT$query_id[i]
-  
-  plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
-                                  hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
-                                  all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
-  
   matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
   stopifnot(!duplicated(matching_ids))
   
-  matching_ids <- matching_ids[1:3]
+  to_plot_set <- c(tad_id, matching_ids)
+  stopifnot(!duplicated(to_plot_set))
   
+  if(list(to_plot_set) %in% plotted_sets) {
+    next
+  } else {
+    plotted_sets <- c(plotted_sets, list(to_plot_set))
+    stopifnot(list(to_plot_set) %in% plotted_sets)
+  }
+
+  plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
+                                  hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
+                                  all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
   j <- 2
-  
   for(matchTAD in matching_ids) {
     plot_list[[j]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == matchTAD]), 
                                        hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == matchTAD]), 
@@ -580,11 +711,14 @@ for(i in seq_len(top_to_plot)) {
     j <- j+1
   }
   
-  all_plots <- do.call(grid.arrange, c(vect_plot,  list(ncol=2, top=textGrob(paste(exprds),
+  
+  all_plots <- do.call(grid.arrange, c(plot_list,  list(ncol=2, top=textGrob(paste(tad_id),
                                                                              gp=gpar(fontsize=20,font=2)))))
   # cat("myHeight =", outHeight, "\n")
+  outWidth <- 20
+  outHeight <- min(c(7 * length(plot_list)/2, 49))
   
-  outFile <- file.path(outFold, paste0(exprds, "_", hicds, "_", paste0(all_TADs, collapse = "_"), ".", plotType))
+  outFile <- file.path(outFolder, paste0(tad_id, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
   ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
   cat("... written: ", outFile, "\n")
   
@@ -593,42 +727,152 @@ for(i in seq_len(top_to_plot)) {
 
 
 
-# ######################################################################################
-# ######################################################################################
+#*************************************************************************************************
+#************************************************************************************************* hicds_exprds-level analysis
+#*************************************************************************************************
 
-### Pour chaque hicds/exprds -> % de ces signif TADs qui matchent un nombre "x" de signif TADs d'autres datasets
+cat(paste0("... start computing statistics hicds_exprds level \n"))
 
 hicds_exprds_DT <- unique(all_bestMatchDT[, c("query_hicds", "query_exprds")])
 
+#***********
+### Pour chaque hicds/exprds -> % de ces signif TADs qui matchent un nombre "x" de signif TADs d'autres datasets
+#***********
 i=1
-for(i in seq_len(nrow(hicds_exprds_DT))) {
+ratio_matchingSignifTAD_DT <- foreach(i = seq_len(nrow(hicds_exprds_DT)), .combine='rbind') %dopar% {
+  i_hicds <- hicds_exprds_DT$query_hicds[i]
+  i_exprds <- hicds_exprds_DT$query_exprds[i] 
   
-  signifTADs <- unique(all_bestMatchDT$query_id[all_bestMatchDT$query_hicds == hicds_exprds_DT$query_hicds[i] &
-                                           all_bestMatchDT$query_exprds == hicds_exprds_DT$query_exprds[i] 
+  # retrieve the tad query_id for this hicds_exprds dataset
+  signifTADs <- unique(all_bestMatchDT$query_id[all_bestMatchDT$query_hicds == i_hicds &
+                                           all_bestMatchDT$query_exprds == i_exprds
                                            ])
+  nSignif <- length(signifTADs)  
+  # sapply(signifTADs, function(x) {
+  #   sum(all_bestMatchDT$matching_id == x)
+  # })
   
-  sapply(signifTADs, function(x) {
-    sum(all_bestMatchDT$matching_id == x)
+  signifTADs_as_matching <- sapply(signifTADs, function(x) {
+    as.numeric(any(all_bestMatchDT$matching_id == x))
   })
+  nSignif_as_matching <- sum(signifTADs_as_matching)
   
+  data.frame(
+    hicds = i_hicds,
+    exprds = i_exprds,
+    nSignifTADs = nSignif,
+    ratioSignifTADs_as_bestMatch = nSignif_as_matching/nSignif,
+    stringsAsFactors = FALSE
+  )
 }
 
+outFile <- file.path(outFolder, "ratio_matchingSignifTAD_DT.Rdata")
+save(ratio_matchingSignifTAD_DT, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
 
+stopifnot(ratio_matchingSignifTAD_DT$ratioSignifTADs_as_bestMatch <= 1)
+stopifnot(ratio_matchingSignifTAD_DT$ratioSignifTADs_as_bestMatch >= 0)
+range(ratio_matchingSignifTAD_DT$ratioSignifTADs_as_bestMatch)
+
+# > head(ratio_matchingSignifTAD_DT)
+# hicds                   exprds nSignifTADs ratioSignifTADs_as_bestMatch
+# 1     ENCSR079VIJ_G401_40kb       TCGAkich_norm_kich           2                       1.0000
+# 2 ENCSR312KHQ_SK-MEL-5_40kb  TCGAskcm_lowInf_highInf          16                       0.9375
+ratio_matchingSignifTAD_DT <- ratio_matchingSignifTAD_DT[order(ratio_matchingSignifTAD_DT$ratioSignifTADs_as_bestMatch, decreasing=TRUE),]
+ratio_matchingSignifTAD_DT$dataset <- paste0(ratio_matchingSignifTAD_DT$hicds, "\n", ratio_matchingSignifTAD_DT$exprds)
+ratio_matchingSignifTAD_DT$dataset <- factor(ratio_matchingSignifTAD_DT$dataset, levels = as.character(ratio_matchingSignifTAD_DT$dataset))
+
+mynames <- ratio_matchingSignifTAD_DT$exprds
+curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
+stopifnot(!is.na(curr_colors))
+ratio_matchingSignifTAD_DT$dscols <- curr_colors
+
+plotTit <- paste0("ratio DS has bestMatch with other DS")
+plotSub <- paste0("(# ds = ", length(unique(ratio_matchingSignifTAD_DT$dataset)), ")")
+
+p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=ratio_matchingSignifTAD_DT, 
+                                               xvar="dataset", 
+                                               yvar="ratioSignifTADs_as_bestMatch",
+                                               xcolvar = "dscols",
+                                               myxlab="", 
+                                               myylab="ratioDS_is_bestMatch",
+                                               myTit=plotTit,
+                                               mySub=plotSub
+)
+outFile <- file.path(outFolder, paste0("ratioSignifTADs_as_bestMatch", "_", "barplot.", plotType))
+ggsave(plot = p_queryBestMatch, filename = outFile, height=myHeightGG, width = myWidthGG)
+cat(paste0("... written: ", outFile, "\n"))
+
+
+#***********
 ### Pour chaque hicds/exprds, combien de fois ce dataset est dans le best matching TAD des autres datasets
-for(i in seq_len(nrow(hicds_exprds_DT))) {
+#***********
+i=1
+hicds_exprds_asMatch_DT <- foreach(i = seq_len(nrow(hicds_exprds_DT)), .combine='rbind') %dopar% {
   
-sum(all_bestMatchDT$query_hicds == hicds_exprds_DT$query_hicds[i] &
-                                                  all_bestMatchDT$query_exprds == hicds_exprds_DT$query_exprds[i] 
-                                                )
+  i_hicds <- hicds_exprds_DT$query_hicds[i]
+  i_exprds <- hicds_exprds_DT$query_exprds[i] 
+  
+  # retrieve the tad query_id for this hicds_exprds dataset
+  other_hicds_exprds_DT <- all_bestMatchDT[all_bestMatchDT$query_hicds != i_hicds &
+                                                  all_bestMatchDT$query_exprds != i_exprds,
+                                                ]
+  
+  nQuery <- length(unique(other_hicds_exprds_DT$query_id))
+  
+  nDS_asMatching <- sum(other_hicds_exprds_DT$matching_exprds == i_exprds & other_hicds_exprds_DT$matching_hicds == i_hicds)
+  
+  stopifnot(nDS_asMatching <= nQuery)
+# sum(all_bestMatchDT$query_hicds == hicds_exprds_DT$query_hicds[i] &
+#                                                   all_bestMatchDT$query_exprds == hicds_exprds_DT$query_exprds[i] 
+#                                                 )
+  data.frame(
+    hicds = i_hicds,
+    exprds = i_exprds,
+    nQueryTADs = nQuery,
+    ratioDS_as_queryBestMatch = nDS_asMatching/nQuery,
+    stringsAsFactors = FALSE
+  )
 }
 
+outFile <- file.path(outFolder, "hicds_exprds_asMatch_DT.Rdata")
+save(hicds_exprds_asMatch_DT, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
 
+stopifnot(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch <= 1)
+stopifnot(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch >= 0)
+range(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch)
+# > head(hicds_exprds_asMatch_DT)
+# hicds                   exprds nQueryTADs ratioDS_as_queryBestMatch
+# 1     ENCSR079VIJ_G401_40kb       TCGAkich_norm_kich        352                0.02272727
 
+hicds_exprds_asMatch_DT <- hicds_exprds_asMatch_DT[order(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch, decreasing=TRUE),]
+hicds_exprds_asMatch_DT$dataset <- paste0(hicds_exprds_asMatch_DT$hicds, "\n", hicds_exprds_asMatch_DT$exprds)
+hicds_exprds_asMatch_DT$dataset <- factor(hicds_exprds_asMatch_DT$dataset, levels = as.character(hicds_exprds_asMatch_DT$dataset))
 
-# ######################################################################################
-# ######################################################################################
+mynames <- hicds_exprds_asMatch_DT$exprds
+curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[mynames])])
+stopifnot(!is.na(curr_colors))
+hicds_exprds_asMatch_DT$dscols <- curr_colors
 
+plotTit <- paste0("ratio DS has bestMatch with other DS")
+plotSub <- paste0("(# ds = ", length(unique(hicds_exprds_asMatch_DT$dataset)), ")")
 
+p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=hicds_exprds_asMatch_DT, 
+                           xvar="dataset", 
+                           yvar="ratioDS_as_queryBestMatch",
+                           xcolvar = "dscols",
+                           myxlab="", 
+                           myylab="ratioDS_is_bestMatch",
+                           myTit=plotTit,
+                           mySub=plotSub
+                           )
+outFile <- file.path(outFolder, paste0("ratioDS_as_queryBestMatch", "_", "barplot.", plotType))
+ggsave(plot = p_queryBestMatch, filename = outFile, height=myHeightGG, width = myWidthGG)
+cat(paste0("... written: ", outFile, "\n"))
+  
+  
+  
   
 # ######################################################################################
 # ######################################################################################
@@ -638,482 +882,62 @@ cat(paste0(startTime, "\n", Sys.time(), "\n"))
 
 
 
-# store the best match in signifTADs_allDS_data, in case needed
-# nrow(signifTADs_allDS_data[[file.path(query_hicds, query_exprds)]]$matchDT) == length(signifTADs_allDS_data[[file.path(query_hicds, query_exprds)]]$ids)
-# newMatchDT <- 
-#   oldMatchDT <- signifTADs_allDS_data[[file.path(query_hicds, query_exprds)]]$matchDT
-# oldMatchDT <- oldMatchDT[oldMatchDT$]
 
 
 
 
+#*************************************************************************************************
+#************************************************************************************************* trash/debug
+#*************************************************************************************************
+# xvect <- seq_len(max(queryID_matchDT$all_nMatch, na.rm=TRUE))  
+# yvect <- sapply(xvect, function(x){
+#   sum(queryID_matchDT$all_nMatch >= x)
+# })
 # 
-# # ensure the matching is done intrachromosomally
-# queryIDs_chr <- gsub("(chr.+)_.+", "\\1", queryIDs)
-# objectIDs_chr <- gsub("(chr.+)_.+", "\\1", objectIDs)
-# stopifnot( queryIDs_chr == objectIDs_chr)
-# 
-# 
-#     query_IR <- IRanges(start = objectTADs_posDT$start,
-#                                  width = (objectTADs_posDT$end - objectTADs_posDT$start + 1),
-#                                  names=objectTADs_posDT$region)
-# 
-#     object_allTADs_GR <- GRanges(ranges = query_IR,
-#                                    seqnames=gsub("(chr.+)_TAD.+", "\\1", objectTADs_posDT$region))
-# 
-# 
-#     IDoverlap_hits <- findOverlaps(query=query_GR,
-#                                subject=object_allTADs_GR)
-#     # CHANGED 30.01 _IR to _GR
-#     IDoverlaps <- pintersect(query_GR[queryHits(IDoverlap_hits)],
-#                            object_allTADs_GR[subjectHits(IDoverlap_hits)])
-# 
-# 
+# plot(x = xvect,
+#      y = yvect,
+#      xlab = paste0("# datasets in which matching signif. TAD"), 
+#      ylab = paste0("# query TAD"),
+#      type="l")
 
-#   query_IR <- IRanges(start = signifTADs_posDT$start, 
-#                            width = (signifTADs_posDT$end - signifTADs_posDT$start + 1), 
-#                            names=signifTADs_posDT$region)
-#   
-#   
-#   query_GR <- GRanges(ranges = query_IR,
-#                                  seqnames=gsub("(chr.+)_TAD.+", "\\1", signifTADs_posDT$region))
-#   
+# for DEBUG
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata"
+# load(outFile)
+# all_matchDT[1:5,1:5]
+# 
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_bestMatchDT.Rdata"
+# load(outFile)
+# all_bestMatchDT[1:5,1:5]
 
-# ######################################################################################
-# cat(paste0("... written: ", outFile, "\n"))
-# cat(paste0("... written: ", listFile, "\n"))
+# outFile <- "INTERSECT_topTADs_ACROSSDS/all_matchDT.Rdata""
+# load(outFile)
 
+# by(all_matchDT, all_matchDT$query_id, function(subDT) {
+#   subDT
+# })
 
+# all_matchDT <- all_matchDT[c(1:3,200:205),]
 
-# hicds="ENCSR444WCZ_A549_40kb"
-# all_topTADsGenes <- foreach(hicds = all_hicds) %dopar% {
-#   
-#   if(hicds == "pipelineConsensus") {
-#     dsPipOutDir <- file.path(setDir, "/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_TopDom", "OUTPUT_FOLDER",  exprds)
-#     
-#     # file with assignment from entrez to all regions
-#     gene2tadDT_file <- paste0(setDir, 
-#                               "/mnt/ed4/marie/gene_data_final/consensus_TopDom_covThresh_r0.6_t80000_v0_w-1_final/genes2tad/all_genes_positions.txt")
-#     TADposDT_file <- paste0(setDir, 
-#                               "/mnt/ed4/marie/gene_data_final/consensus_TopDom_covThresh_r0.6_t80000_v0_w-1_final/genes2tad/all_assigned_regions.txt") 
-#     
-#   } else {
-#     stopifnot(dir.exists(hicds))
-#     dsPipOutDir <- file.path("PIPELINE", "OUTPUT_FOLDER", hicds, exprds)
-#     gene2tadDT_file <- file.path(hicds, "genes2tad/all_genes_positions.txt")
-#     TADposDT_file <- file.path(hicds, "genes2tad/all_assigned_regions.txt")
-#   }
-#   stopifnot(file.exists(gene2tadDT_file))
-#   g2tDT <- read.delim(gene2tadDT_file, stringsAsFactors = FALSE, header=F, col.names=c("entrezID", "chromo", "start", "end", "region"))
-#   
-#   stopifnot(file.exists(TADposDT_file))
-#   TADposDT <- read.delim(TADposDT_file, stringsAsFactors = FALSE, header=F, col.names=c("chromo","region", "start", "end"))
-#   stopifnot(is.numeric(TADposDT$start))
-#   TADposDT <- TADposDT[grepl("_TAD", TADposDT$region),]
-#   stopifnot(nrow(TADposDT) > 0)
-#   
-#   stopifnot(g2tDT$entrezID %in% entrezDT$entrezID)
-#   g2t2sDT <- merge(g2tDT[, c("entrezID", "region")], entrezDT[,c("entrezID", "symbol")], by="entrezID", all.x = TRUE, all.y = FALSE )
-#   head(g2t2sDT)
-#   stopifnot(!is.na(g2t2sDT))
-#   g2t2sDT$entrezID <- as.character(g2t2sDT$entrezID)
-#   g2t2sDT$region <- as.character(g2t2sDT$region)
-#   g2t2sDT$symbol <- as.character(g2t2sDT$symbol)
-#   
-#   # subset the genes used in the pipeline
-#   stopifnot(dir.exists(dsPipOutDir))
-#   stopifnot(dir.exists(file.path(dsPipOutDir, script0_name)))
-#   # geneList: values are entrez, names can be ENSEMBL, entrez, etc.
-#   geneList_file <- file.path(dsPipOutDir, script0_name, "pipeline_geneList.Rdata")
-#   stopifnot(file.exists(geneList_file))
-#   geneList <- eval(parse(text = load(geneList_file)))
-#   stopifnot(geneList %in% g2tDT$entrezID)
-#   g2tDT <- g2tDT[g2tDT$entrezID %in% geneList,]
-#   
-#   stopifnot(dir.exists(file.path(dsPipOutDir, script11_name)))
-#   tad_pvalFile <- file.path(dsPipOutDir, script11_name, "emp_pval_combined.Rdata")
-#   stopifnot(file.exists(tad_pvalFile))
-#   tad_pvals <- eval(parse(text = load(tad_pvalFile)))
-#   
-#   adj_tad_pvals <- sort(p.adjust(tad_pvals, method="BH"))
-#   
-#   if(topThresh >= 1) {
-#     topThresh <- min(c(topThresh, length(adj_tad_pvals)))
-#     pvalThresh <- as.numeric(adj_tad_pvals[topThresh])
-#     stopifnot(!is.na(pvalThresh))
-#     stopifnot(pvalThresh <= 1)
-#   } else {
-#     pvalThresh <- topThresh
-#   }
-#   top_pvals <- adj_tad_pvals[adj_tad_pvals <= pvalThresh]
-#   stopifnot(!is.na(top_pvals))
-#   
-#   if(topThresh >= 1) stopifnot(length(unique(top_pvals)) <= topThresh)
-#   
-#   top_tads <- names(top_pvals)
-#   
-#   tad_ranks <- rank(top_pvals, ties="min")
-#   stopifnot(top_tads %in% names(tad_ranks))
-#   tad_ranks <- tad_ranks[top_tads]
-#   
-#   topTADsDT <- data.frame(
-#     top_tads = top_tads,
-#     tad_rank = tad_ranks,
-#     top_pvals = as.numeric(top_pvals),
-#     stringsAsFactors = FALSE
-#   )
-#   head(topTADsDT)
-#   
-#   stopifnot(top_tads %in% g2t2sDT$region)
-#   topGenesDT <- g2t2sDT[g2t2sDT$region %in% top_tads,]
-#   head(topGenesDT)
-#   
-#   colnames(topGenesDT)[colnames(topGenesDT) == "region"] <- "top_tads"
-#   
-#   topTADs_genesDT <- merge(topTADsDT, topGenesDT[, c("top_tads", "symbol")], 
-#                            by = "top_tads", all.x=TRUE, all.y=TRUE)
-#   
-#   topTADs_genesDT$top_tads <- as.character(topTADs_genesDT$top_tads)
-#   topTADs_genesDT$symbol <- as.character(topTADs_genesDT$symbol)
-#   topTADs_genesDT <- topTADs_genesDT[order(topTADs_genesDT$top_pvals, topTADs_genesDT$top_tads, topTADs_genesDT$symbol),]
-#   head(topTADs_genesDT)
-#   
-#   list(topTADs_genesDT=topTADs_genesDT,
-#        TADposDT=TADposDT,
-#        gene2tadDT = g2tDT)
-# }
-# names(all_topTADsGenes) <- all_hicds
-# str(all_topTADsGenes)
+# by(all_matchDT, list(all_matchDT$query_id, all_matchDT$matching_hicds, all_matchDT$matching_exprds), function(subDT) {
+#  return(1)
+# })
 # 
-# ########################################################################### LOAD SAVED DATA
-# # outFolder <- "INTERSECT_topTADs"
-# # outFile <- file.path(outFolder, "all_topTADsGenes.Rdata")
-# # save(all_topTADsGenes, file = outFile)
-#       # outFile = "INTERSECT_topTADs/all_topTADsGenes.Rdata"
-#       # load(outFile)
-#       # load("INTERSECT_topTADs/all_topTADsGenes.Rdata")
-#       # str(all_topTADsGenes)
-# 
-# # names(all_topTADsGenes[[1]])
-# # [1] "topTADs_genesDT" "TADposDT"        "gene2tadDT" 
-# 
-# i=1
-# j=2
-# 
-# all_maxIntersectOverlap_matchDT <- foreach(i = seq_along(all_topTADsGenes), .combine="rbind") %dopar% {
-#   
-#   ref_ds <- names(all_topTADsGenes)[i]
-#   
-#   cat("... start with ref_ds\t=\t", ref_ds, "\n")
-#   
-#   signifTADs <- unique(as.character(all_topTADsGenes[[i]][["topTADs_genesDT"]][, "top_tads"]))
-#   
-#   signifTADs_posDT <- all_topTADsGenes[[i]][["TADposDT"]]
-#   signifTADs_posDT$region <- as.character(signifTADs_posDT$region)
-#   stopifnot(signifTADs %in% signifTADs_posDT$region)
-#   signifTADs_posDT <- signifTADs_posDT[signifTADs_posDT$region %in% signifTADs,]
-#   
-#   ref_g2tDT <- all_topTADsGenes[[i]][["gene2tadDT"]]
-#   
-#   query_IR <- IRanges(start = signifTADs_posDT$start, 
-#                            width = (signifTADs_posDT$end - signifTADs_posDT$start + 1), 
-#                            names=signifTADs_posDT$region)
-#   
-#   
-#   query_GR <- GRanges(ranges = query_IR,
-#                                  seqnames=gsub("(chr.+)_TAD.+", "\\1", signifTADs_posDT$region))
-#   
-#   
-#   ref_maxIntersectOverlap_matchDT <- foreach(j = seq_along(all_topTADsGenes)[-i], .combine="rbind") %dopar% {
-#     
-#     obj_ds <- names(all_topTADsGenes)[j]
-#     
-#     cat("... start with obj_ds\t=\t", obj_ds, "\n")
-#     
-#     objectTADs_posDT <- all_topTADsGenes[[j]][["TADposDT"]]
-#     objectTADs_posDT$region <- as.character(objectTADs_posDT$region)
-#     
-#     obj_g2tDT <- all_topTADsGenes[[j]][["gene2tadDT"]]
-#     obj_g2tDT$region <- as.character(obj_g2tDT$region)
-#     # added 30.01: filter the TAD to the ones in g2t -> I want only those with genes inside
-#     objectTADs_posDT <- objectTADs_posDT[objectTADs_posDT$region %in% obj_g2tDT$region, ]
-#     stopifnot(nrow(objectTADs_posDT) > 0)
-#     
-#     query_IR <- IRanges(start = objectTADs_posDT$start, 
-#                                  width = (objectTADs_posDT$end - objectTADs_posDT$start + 1), 
-#                                  names=objectTADs_posDT$region)
-#     
-#     object_allTADs_GR <- GRanges(ranges = query_IR,
-#                                    seqnames=gsub("(chr.+)_TAD.+", "\\1", objectTADs_posDT$region))
-#     
-#     
-#     IDoverlap_hits <- findOverlaps(query=query_GR, 
-#                                subject=object_allTADs_GR)
-#     # CHANGED 30.01 _IR to _GR
-#     IDoverlaps <- pintersect(query_GR[queryHits(IDoverlap_hits)], 
-#                            object_allTADs_GR[subjectHits(IDoverlap_hits)])
-#     
-#     queryIDs <- names(query_IR[queryHits(IDoverlap_hits)])
-#     objectIDs <- names(query_IR[subjectHits(IDoverlap_hits)])
-#     stopifnot( length(queryIDs) == length(objectIDs) )
-#     
-#     # ensure the matching is done intrachromosomally
-#     queryIDs_chr <- gsub("(chr.+)_.+", "\\1", queryIDs)
-#     objectIDs_chr <- gsub("(chr.+)_.+", "\\1", objectIDs)
-#     stopifnot( queryIDs_chr == objectIDs_chr)
-#     
-#     # retrieve the number of common genes for each match
-#     # take the reference TADs that have a match
-#     queryTADs_withMatch <- unique(queryIDs)
-#     
-#     txt <- paste0("... signif. queryIDs with overlapping objectIDs:\t")
-#     printAndLog(txt, logFile)
-#     txt <- paste0(length(queryTADs_withMatch), "/", length(query_GR), "\n")
-#     printAndLog(txt, logFile)
-#     
-#     cat("... retrieve genes for the TADs that have matching object TADs\n")
-#     
-#     
-#     # for each TAD, 1) retrieve the genes that belong to it
-#     queryTADs_withMatch_genes <- lapply(queryTADs_withMatch, function(curr_tad){
-#       stopifnot( curr_tad %in% ref_g2tDT$region )
-#       as.character(ref_g2tDT$entrezID[ref_g2tDT$region == curr_tad])
-#     })
-#     names(queryTADs_withMatch_genes) <- queryTADs_withMatch
-#     
-#     # $chr9_TAD191
-#     # [1] "9858"   "138162" "51116"  "3933"   "29991"  "5047"   "402381" "57582"  "157922" "10422"  "138151" "90120"  "169714"
-#     
-#     # queryTADs_withMatch <- queryTADs_withMatch[1:3]
-#     
-#     # for each TAD, 2) retrieve the genes of that TAD that matches with it
-#     
-#     cat("... retrieve the genes of the matching TADs\n")
-#     
-#     queryTADs_withMatch_matchingObjectTADs <- lapply(queryTADs_withMatch, function(curr_tad){
-#           
-#           ref_genes <- queryTADs_withMatch_genes[[curr_tad]]
-#           
-#           matching_objectTADs <- objectIDs[queryIDs == curr_tad]
-#           stopifnot(length(matching_objectTADs) > 0)
-#           
-#           matching_objectTADs_genes <- lapply(matching_objectTADs, function(obj_tad){
-#             stopifnot( obj_tad %in% obj_g2tDT$region )
-#             genes_in_matchingTADs <- as.character(obj_g2tDT$entrezID[obj_g2tDT$region == obj_tad])
-#             nbr_intersectGenes_in_matchingTADs <- sum(genes_in_matchingTADs %in% ref_genes)
-#             list(matchingTADs_genes = genes_in_matchingTADs,
-#                  matchingTADs_nIntersect = nbr_intersectGenes_in_matchingTADs)
-#           })
-#           names(matching_objectTADs_genes) <- matching_objectTADs
-#           matching_objectTADs_genes
-#         
-#           # list(matching_objectTADs=matching_objectTADs,
-#           #      matching_objectTADs_genes=matching_objectTADs_genes)
-#     })
-#     names(queryTADs_withMatch_matchingObjectTADs) <- queryTADs_withMatch
-#     
-#     # queryTADs_withMatch_matchingObjectTADs[["chr9_TAD191"]]
-#     # $chr9_TAD178
-#     # $chr9_TAD178$matchingTADs_genes
-#     # [1] "1289"  "2220"  "2219"  "10439"
-#     # 
-#     # $chr9_TAD178$matchingTADs_nIntersect
-#     # [1] 0
-#     
-#     ### VERSION 1 -> MATCHING TAD IS THE ONE WITH MOST INTERSECT GENES
-#     
-#     # e.g. for the query chr10_TAD1 -> match 2 objectIDs
-#     # > queryTADs_withMatch_matchingObjectTADs[["chr10_TAD1"]]
-#     # $chr10_TAD1
-#     # $chr10_TAD1$matchingTADs_genes
-#     # [1] "347688"    "439945"    "10771"     "100421369"
-#     # 
-#     # $chr10_TAD1$matchingTADs_nIntersect
-#     # [1] 4
-#     # 
-#     # 
-#     # $chr10_TAD2
-#     # $chr10_TAD2$matchingTADs_genes
-#     # [1] "22982"     "100847086" "414235"   
-#     # 
-#     # $chr10_TAD2$matchingTADs_nIntersect
-#     # [1] 3
-#     
-#     # > queryTADs_withMatch_matchingObjectTADs[["chr11_TAD130"]]
-#     # $chr11_TAD108
-#     # $chr11_TAD108$matchingTADs_genes
-#     # [1] "246330"    "101928069" "10072"     "582"       "254359"    "89"       
-#     # [7] "8722"      "55231"     "9973"      "10432"     "100526737" "5936"     
-#     # [13] "83759"    
-#     # 
-#     # $chr11_TAD108$matchingTADs_nIntersect
-#     # [1] 13
-#     # 
-#     # 
-#     # $chr11_TAD109
-#     # $chr11_TAD109$matchingTADs_genes
-#     # [1] "6712"      "79703"     "100422299" "100462788"
-#     # 
-#     # $chr11_TAD109$matchingTADs_nIntersect
-#     # [1] 4
-#     
-#     # Filter to retain only the highest intersect
-#     
-#     cat("... filter retain highest gene intersect\n")
-#     
-#     queryTADs_withMatch_maxInterObjectTADs <- lapply(queryTADs_withMatch_matchingObjectTADs, function(curr_tad){
-#       tmp_nIntersect <- unlist(lapply(curr_tad, function(x) as.numeric(x[["matchingTADs_nIntersect"]])))
-#       stopifnot( ! is.na(tmp_nIntersect) )
-#       obj_maxIntersect_names <- which.max(tmp_nIntersect)
-#       obj_maxIntersect_names
-#     })
-#     stopifnot(names(queryTADs_withMatch_maxInterObjectTADs) == queryTADs_withMatch)
-#     
-#     maxIntersectMatchingTAD <- as.character(unlist(
-#       lapply(queryTADs_withMatch_maxInterObjectTADs, function(x) names(x))))
-#     
-#     nIntersectMatchingTAD <- unlist(lapply(queryTADs_withMatch_matchingObjectTADs, function(curr_tad){
-#       tmp_nIntersect <- unlist(lapply(curr_tad, function(x) as.numeric(x[["matchingTADs_nIntersect"]])))
-#       stopifnot( ! is.na(tmp_nIntersect) )
-#       obj_maxIntersect_nbr <- max(tmp_nIntersect)
-#       obj_maxIntersect_nbr
-#     }))
-# 
-#     stopifnot(!is.na(nIntersectMatchingTAD))
-#     stopifnot(is.numeric(nIntersectMatchingTAD))
-#     
-#     stopifnot( length(maxIntersectMatchingTAD) == length(queryTADs_withMatch) )
-#     
-#     query_nbrGenes <- sapply(queryTADs_withMatch, function(x) 
-#                           sum(ref_g2tDT$region == x))
-#     
-#     object_nbrGenes <- sapply(maxIntersectMatchingTAD, function(x) 
-#       sum(obj_g2tDT$region == x))
-#     
-#     query_matching_ratio <- nIntersectMatchingTAD/query_nbrGenes
-#     stopifnot(query_matching_ratio >= 0 & query_matching_ratio <= 1 )
-#     
-#     maxIntersect_matchDT <- data.frame(
-#       
-#       expr_ds = exprds,
-#       
-#       query_ds = ref_ds,
-#       matching_ds = obj_ds,
-#       
-#       queryTAD = queryTADs_withMatch,
-#       query_nbrGenes = query_nbrGenes,
-#       
-#       matchingTAD_maxIntersect = maxIntersectMatchingTAD,
-#       matching_nbrGenes = object_nbrGenes,
-#         
-#       query_matching_intersectGenes = nIntersectMatchingTAD,
-#       query_matching_ratio = query_matching_ratio,
-#       
-#       
-#       stringsAsFactors = FALSE
-#     )
-#     stopifnot(maxIntersect_matchDT$query_matching_intersectGenes <= maxIntersect_matchDT$matching_nbrGenes)
-#     stopifnot(maxIntersect_matchDT$query_matching_intersectGenes <= maxIntersect_matchDT$query_nbrGenes)
-#     
-#     maxIntersect_matchDT$queryTAD <- as.character(maxIntersect_matchDT$queryTAD)
-#     maxIntersect_matchDT <- maxIntersect_matchDT[order(maxIntersect_matchDT$queryTAD),]
-#     
-#                 # outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxIntersect_matchDT.txt"))
-#                 # cat("... writte table with max gene intersect\n")
-#                 # write.table(maxIntersect_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-#                 # cat(paste0("... written: ", outFile, "\n"))
-#         
-#     ### VERSION 2 -> MATCHING TAD IS THE ONE WITH HIGHEST OVERLAP
-#         
-#     # IDoverlap_hits <- findOverlaps(query=query_GR, 
-#     #                                 subject=object_allTADs_GR)
-#     # 
-#     # IDoverlaps <- pintersect(query_GR[queryHits(IDoverlap_hits)], 
-#     #                           object_allTADs_GR[subjectHits(IDoverlap_hits)])
-#     percentTADoverlap <- width(IDoverlaps)/width(query_GR[queryHits(IDoverlap_hits)])
-#     stopifnot( percentTADoverlap > 0 & percentTADoverlap <= 1 )
-#     
-# 
-#     overlap_matchDT <- data.frame(
-#       
-#       expr_ds = exprds,
-#       
-#       query_ds = ref_ds,
-#       matching_ds = obj_ds,
-#       
-#       queryTAD = names(query_GR[queryHits(IDoverlap_hits)]),
-#       query_size = width(query_GR[queryHits(IDoverlap_hits)]),
-#       
-#       matchingTAD = names(object_allTADs_GR[subjectHits(IDoverlap_hits)]),
-#       matching_size = width(object_allTADs_GR[subjectHits(IDoverlap_hits)]),
-#       
-#       query_matching_overlap = percentTADoverlap,
-#       stringsAsFactors = FALSE
-#     )
-#     
-# 
-# 
-#         
-#     maxOverlap_matchDT <- do.call(rbind, by(data = overlap_matchDT, INDICES = overlap_matchDT$queryTAD, FUN=function(x) {
-#       x[which.max(x$query_matching_overlap),]
-#     }))
-# 
-#     colnames(maxOverlap_matchDT)[  colnames(maxOverlap_matchDT) == "matchingTAD"] <- "matchingTAD_maxOverlap"
-#     
-#     maxOverlap_matchDT$queryTAD <- as.character(maxOverlap_matchDT$queryTAD)
-#     maxOverlap_matchDT <- maxOverlap_matchDT[order(maxOverlap_matchDT$queryTAD),]
-#     
-#                 # outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_maxOverlap_matchDT.txt"))
-#                 # cat("... writte table with max overlap\n")
-#                 # write.table(maxOverlap_matchDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-#                 # cat(paste0("... written: ", outFile, "\n"))
-#     
-#     
-#     # list(
-#     #   maxIntersect = maxIntersect_matchDT,
-#     #   maxOverlap = maxOverlap_matchDT
-#     # )
-#     #break
-#     
-#     # expr_ds	query_ds	matching_ds	queryTAD	query_nbrGenes	matchingTAD_maxIntersect	matching_nbrGenes	query_matching_intersectGenes
-#     # expr_ds	query_ds	matching_ds	queryTAD	query_size	matchingTAD_maxOverlap	matching_size	query_matching_overlap
-#     
-#     maxIntersectOverlap_matchDT <- merge(maxIntersect_matchDT, maxOverlap_matchDT, by=c("expr_ds", "query_ds", "matching_ds", "queryTAD"))
-#     maxIntersectOverlap_matchDT
-#     
-#   } # end iterating over the j [object dataset] -> ref_maxIntersectOverlap_matchDT
-#   #break
-#   ref_maxIntersectOverlap_matchDT
-# } # end iterating over the i [reference dataset] -> all_maxIntersectOverlap_matchDT
-# 
-# outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT.Rdata"))
-# cat("... writte table with max overlap and intersect\n")
-# save(all_maxIntersectOverlap_matchDT,file = outFile)
-# cat(paste0("... written: ", outFile, "\n"))
-# 
-# 
-# outDT <- all_maxIntersectOverlap_matchDT
-# 
-# # outDT <- outDT[order(outDT[, "query_matching_ratio"]),]
-# 
-# 
-# outDT[, "query_matching_ratio"] <- round(outDT[, "query_matching_ratio"], 4)
-# outDT[, "query_matching_overlap"] <- round(outDT[,"query_matching_overlap"], 4)
-# 
-# 
-# outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT.txt"))
-# cat("... writte table with max overlap and intersect\n")
-# write.table(outDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-# cat(paste0("... written: ", outFile, "\n"))
-# 
-# shortDT <- outDT 
-# shortDT <- shortDT[, c("expr_ds", "query_ds", "matching_ds", "queryTAD", "matchingTAD_maxIntersect", "query_matching_ratio")]
-# shortDT <- shortDT[order(shortDT[, "query_matching_ratio"], decreasing = TRUE),]
-# outFile <- file.path(outFolder, paste0(exprds, "_", ref_ds, "_", obj_ds, "_top", topThresh, "_all_maxIntersectOverlap_matchDT_shortDT.txt"))
-# cat("... writte table with max overlap and intersect\n")
-# write.table(shortDT, col.names=TRUE, row.names=FALSE, sep="\t", quote=F, file = outFile)
-# cat(paste0("... written: ", outFile, "\n"))
+# by(all_matchDT, list(all_matchDT$query_id,all_matchDT$matching_hicds ), function(subDT) {
+#   subDT[which.max(subDT$matchingRatio),]
+# })
 
+# !!! pintersect removes the match with itself !
+# pintersect(query_IR["ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258",
+#                     "ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258"], 
+#            query_IR["ENCSR346DCU_LNCaP_40kb_TCGAprad_norm_prad_chr1_TAD258",
+#                     "ENCSR079VIJ_G401_40kb_TCGAkich_norm_kich_chr1_TAD274"])
+
+# load("INTERSECT_topTADs_ACROSSDS/signifTADs_allDS_data.Rdata")
+# head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["geneDT"]])
+# head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["signifDT"]])
+# head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["posDT"]])
+# head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["matchDT"]])
+# head(signifTADs_allDS_data[["NCI-H460_40kb/TCGAlusc_norm_lusc"]][["idDT"]])
 
 
 

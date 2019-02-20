@@ -2,7 +2,7 @@ suppressPackageStartupMessages(library(grid, warn.conflicts = FALSE, quietly = T
 suppressPackageStartupMessages(library(tools, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)) 
 source("utils_fct.R")
 
-setDir="~/media/electron"
+#setDir="~/media/electron"
 mainDir = file.path(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 pipelineDir = file.path(mainDir, "PIPELINE")
 settingDir = file.path(pipelineDir, "INPUT_FILES")
