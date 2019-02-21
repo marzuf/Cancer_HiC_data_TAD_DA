@@ -13,7 +13,7 @@ require(doMC)
 
 source("utils_fct.R")
 
-plotType <- "png"
+plotType <- "svg"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 
@@ -531,13 +531,13 @@ head(all_matchDT)
 all_bestMatchDT <- eval(parse(text = load(all_bestMatchDT_file)))
 head(all_bestMatchDT)
 
-# 4) check table4
-ratio_matchingSignifTAD_DT <- eval(parse(text = load(ratio_matchingSignifTAD_DT_file)))
-head(ratio_matchingSignifTAD_DT)
-
-# 5) check table5
-hicds_exprds_asMatch_DT <- eval(parse(text = load(hicds_exprds_asMatch_DT_file)))
-head(hicds_exprds_asMatch_DT)
+# # 4) check table4
+# ratio_matchingSignifTAD_DT <- eval(parse(text = load(ratio_matchingSignifTAD_DT_file))) #hicds-exprds level
+# head(ratio_matchingSignifTAD_DT)
+# 
+# # 5) check table5
+# hicds_exprds_asMatch_DT <- eval(parse(text = load(hicds_exprds_asMatch_DT_file))) #hicds-exprds level
+# head(hicds_exprds_asMatch_DT)
 
 # traceback 2 TADs (from top and bottom to check the script !)
 
@@ -559,6 +559,11 @@ bottad_hicds <- "NCI-H460_40kb"
 bottad_tad <-"chr1_TAD232"
 bottad_id <- paste(bottad_hicds, bottad_exprds, bottad_tad, sep="_")
 
+tadwithdup_id <- "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb_TCGAskcm_lowInf_highInf_chr7_TAD32"
+tadwithdup_exprds <- "TCGAskcm_lowInf_highInf"
+tadwithdup_hicds <- "ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb"
+tadwithdup_tad <-"chr7_TAD32"
+tadwithdup_id <- paste(tadwithdup_hicds, tadwithdup_exprds, tadwithdup_tad, sep="_")
 
 
 #### START CHECK HERE
@@ -567,13 +572,17 @@ curr_hicds=toptad_hicds
 curr_tad=toptad_tad
 curr_id=toptad_id
 
-all_exprds=c(toptad_exprds, bottad_exprds)
-all_hicds=c(toptad_hicds, bottad_hicds)
-all_tad=c(toptad_tad, bottad_tad)
-all_id=c(toptad_id, bottad_id)
+# all_exprds=c(toptad_exprds, bottad_exprds)
+# all_hicds=c(toptad_hicds, bottad_hicds)
+# all_tad=c(toptad_tad, bottad_tad)
+# all_id=c(toptad_id, bottad_id)
+all_exprds=c(toptad_exprds, bottad_exprds,tadwithdup_exprds )
+all_hicds=c(toptad_hicds, bottad_hicds, tadwithdup_hicds)
+all_tad=c(toptad_tad, bottad_tad, tadwithdup_tad)
+all_id=c(toptad_id, bottad_id, tadwithdup_id)
 
 
-for(i in 1:2) {
+for(i in 1:3) {
   signifTADs_allDS_data <- eval(parse(text = load(signifTADs_allDS_data_file)))
   
   curr_exprds=all_exprds[i]
@@ -590,6 +599,8 @@ for(i in 1:2) {
   writeValueToFile(myvarname="curr_id", myfile=checkFile)
   
   stopifnot(file.path(curr_hicds, curr_exprds) %in% names(signifTADs_allDS_data))
+  
+  #### CHECK TABLE 1
 
   curr_signifTADs_allDS_data <- signifTADs_allDS_data[[file.path(curr_hicds, curr_exprds)]]
   
@@ -622,7 +633,6 @@ for(i in 1:2) {
   curr_matchDT <- curr_signifTADs_allDS_data[["matchDT"]][curr_signifTADs_allDS_data[["matchDT"]]$ID == curr_id,]
   stopifnot(nrow(curr_matchDT) > 0)
   
-  
   writeSepToFile(mysymbol="*", myfile = checkFile)
   
   writeTableToFile(mytable=curr_idDT, myfile=checkFile)
@@ -638,6 +648,19 @@ for(i in 1:2) {
   writeSepToFile(mysymbol="*", myfile = checkFile)
   
   writeTableToFile(mytable=curr_matchDT, myfile=checkFile)
+  writeSepToFile(mysymbol="*", myfile = checkFile)
+  
+  
+  # 2) check table2
+  curr_all_matchDT <- all_matchDT[all_matchDT$query_id == curr_id,]
+  writeTableToFile(mytable=curr_all_matchDT, myfile=checkFile)
+  writeSepToFile(mysymbol="*", myfile = checkFile)
+  
+  # 3) check table3
+  curr_all_bestMatchDT <- all_bestMatchDT[all_bestMatchDT$query_id == curr_id,]
+  writeTableToFile(mytable=curr_all_bestMatchDT, myfile=checkFile)
+  writeSepToFile(mysymbol="*", myfile = checkFile)
+  
 }
 cat(paste0("... written: ", checkFile, "\n"))
 

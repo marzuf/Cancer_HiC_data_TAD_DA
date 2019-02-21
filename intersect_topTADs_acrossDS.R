@@ -30,13 +30,10 @@ length(dataset_proc_colors)
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
-
 source("utils_fct.R")
 source("plot_lolliTAD_funct.R")
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "~/media/electron", "")
-
-
 
 printVar <- function(x){
   cat(paste0(x, " = ", eval(parse(text=x)), "\n"))
@@ -151,6 +148,9 @@ topThresh <- 3
 # plot only the 0.95 most numerous matching
 lolliPlotThreshQuantile <- 0.95
 cat(paste0("!!! hard-coded: lolliPlotThreshQuantile = ", lolliPlotThreshQuantile, "\n"))
+
+lolliPlotNtop <- 3
+cat(paste0("!!! hard-coded: lolliPlotNtop = ", lolliPlotNtop, "\n"))
 
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
@@ -582,7 +582,6 @@ cat(paste0("... written: ", outFile, "\n"))
 
 cat(paste0("... start computing statistics queryTAD level \n"))
 
-
 # compute the number of datasets in which signif (with or without counting same exrpds)
 all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
 head(all_nMatchDT)
@@ -597,6 +596,10 @@ stopifnot(!is.na(queryID_matchDT$all_nMatch))
 sum(is.na(queryID_matchDT$diffExprds_nMatch))
 
 stopifnot(!duplicated(queryID_matchDT$query_id))
+
+####################
+#***************************************** multiDens and cumsum
+####################
 
 outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS_and_onlyDiffExprDS_multidens", ".", plotType))
 printVar("outFile")
@@ -624,6 +627,21 @@ plot_cumMatch(queryID_matchDT, "diffExprds_nMatch")
 foo <- dev.off()
 cat("... written: ", outFile, "\n")
 # ### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
+
+outFile <- file.path(outFolder, paste0("matchingRatio_all_and_best_mutlidens", ".", plotType))
+do.call(plotType, list(outFile, height=myHeightDens, width=myWidthDens))
+plot_multiDens(list(
+  all_matchingRatio = all_matchDT$matchingRatio,
+  best_matchingRatio = all_bestMatchDT$matchingRatio),
+  plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab=""
+)
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+
+
+####################
+#***************************************** boxplots
+####################
 
 #### boxplot for the dataset
 tmpDT <- inputGR_DT
@@ -656,19 +674,24 @@ p_diff <- ggplot_boxplot_hicdsexprds(barDT=boxplotDT, xvar="HICDS", yvar="diffEx
 ggsave(plot = p_diff, filename = outFile, height=myHeightGG, width = myWidthGG)
 cat("... written: ", outFile, "\n")
 
+####################
+#***************************************** lolliplot - quantile
+####################
 
-
-outFile <- file.path(outFolder, paste0("matchingRatio_all_and_best_mutlidens", ".", plotType))
-do.call(plotType, list(outFile, height=myHeightDens, width=myWidthDens))
-plot_multiDens(list(
-  all_matchingRatio = all_matchDT$matchingRatio,
-  best_matchingRatio = all_bestMatchDT$matchingRatio),
-  plotTit="matchingRatio", legTxt=NULL, legPos="topleft", my_ylab="density", my_xlab=""
-  )
-foo <- dev.off()
-cat("... written: ", outFile, "\n")
-
-
+# load(file.path(outFolder, "all_bestMatchDT.Rdata"))
+# 
+# all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
+# head(all_nMatchDT)
+# colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
+# 
+# diffExprds_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT[all_bestMatchDT$query_exprds != all_bestMatchDT$matching_exprds,])
+# head(diffExprds_nMatchDT)
+# colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
+# 
+# queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
+# stopifnot(!is.na(queryID_matchDT$all_nMatch))
+# sum(is.na(queryID_matchDT$diffExprds_nMatch))
+# stopifnot(!duplicated(queryID_matchDT$query_id))
 
 srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
 
@@ -676,15 +699,14 @@ nMatchToPlot <- as.numeric(quantile(srtd_DT$all_nMatch, probs = lolliPlotThreshQ
 
 top_to_plot <- max(which(srtd_DT$all_nMatch >= nMatchToPlot))
 
-
 plotted_sets <- list()
 
 cat(paste0("... start lolliplot plotting\n"))
 i=1
 
-foo <- foreach(i = seq_len(top_to_plot)) %dopar%{
+for(i in seq_len(top_to_plot)) {
 
-    plot_list <- list()
+  plot_list <- list()
   
   tad_id <- srtd_DT$query_id[i]
   matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
@@ -693,13 +715,15 @@ foo <- foreach(i = seq_len(top_to_plot)) %dopar%{
   to_plot_set <- c(tad_id, matching_ids)
   stopifnot(!duplicated(to_plot_set))
   
-  if(list(to_plot_set) %in% plotted_sets) {
+  if(any(unlist(lapply(plotted_sets, function(x) all(to_plot_set %in% x))))) {
     next
   } else {
     plotted_sets <- c(plotted_sets, list(to_plot_set))
     stopifnot(list(to_plot_set) %in% plotted_sets)
   }
-
+  
+  stopifnot(any(unlist(lapply(plotted_sets, function(x) length(setdiff(to_plot_set, x)) == 0))))
+  
   plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
                                   hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
                                   all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
@@ -711,6 +735,82 @@ foo <- foreach(i = seq_len(top_to_plot)) %dopar%{
     j <- j+1
   }
   
+  all_plots <- do.call(grid.arrange, c(plot_list,  list(ncol=2, top=textGrob(paste(tad_id),
+                                                                             gp=gpar(fontsize=20,font=2)))))
+  # cat("myHeight =", outHeight, "\n")
+  outWidth <- 20
+  outHeight <- min(c(7 * length(plot_list)/2, 49))
+  
+  outFile <- file.path(outFolder, paste0(tad_id, "_quantile", lolliPlotThreshQuantile, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
+  ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
+  cat("... written: ", outFile, "\n")
+
+}
+
+
+####################
+#***************************************** lolliplot - nTop
+####################
+
+# load(file.path(outFolder, "all_bestMatchDT.Rdata"))
+# 
+# all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
+# head(all_nMatchDT)
+# colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
+# 
+# diffExprds_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT[all_bestMatchDT$query_exprds != all_bestMatchDT$matching_exprds,])
+# head(diffExprds_nMatchDT)
+# colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
+# 
+# queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
+# stopifnot(!is.na(queryID_matchDT$all_nMatch))
+# sum(is.na(queryID_matchDT$diffExprds_nMatch))
+# stopifnot(!duplicated(queryID_matchDT$query_id))
+
+srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
+
+
+
+# lolliPlotNtop
+
+plotted_sets <- list()
+
+cat(paste0("... start lolliplot plotting\n"))
+i=1
+
+nPlotted <- i<-  0
+while(nPlotted < lolliPlotNtop) {
+  i <- i+1
+  
+  plot_list <- list()
+  
+  tad_id <- srtd_DT$query_id[i]
+  matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
+  stopifnot(!duplicated(matching_ids))
+  
+  to_plot_set <- c(tad_id, matching_ids)
+  stopifnot(!duplicated(to_plot_set))
+  
+  if(any(unlist(lapply(plotted_sets, function(x) all(to_plot_set %in% x))))) {
+    next
+  } else {
+    plotted_sets <- c(plotted_sets, list(to_plot_set))
+    stopifnot(list(to_plot_set) %in% plotted_sets)
+    nPlotted <- nPlotted + 1
+  }
+  
+  stopifnot(any(unlist(lapply(plotted_sets, function(x) length(setdiff(to_plot_set, x)) == 0))))
+  
+  plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
+                                     hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
+                                     all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
+  j <- 2
+  for(matchTAD in matching_ids) {
+    plot_list[[j]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == matchTAD]), 
+                                       hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == matchTAD]), 
+                                       all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == matchTAD]))
+    j <- j+1
+  }
   
   all_plots <- do.call(grid.arrange, c(plot_list,  list(ncol=2, top=textGrob(paste(tad_id),
                                                                              gp=gpar(fontsize=20,font=2)))))
@@ -718,14 +818,11 @@ foo <- foreach(i = seq_len(top_to_plot)) %dopar%{
   outWidth <- 20
   outHeight <- min(c(7 * length(plot_list)/2, 49))
   
-  outFile <- file.path(outFolder, paste0(tad_id, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
+  outFile <- file.path(outFolder, paste0(tad_id, "_nTop", lolliPlotNtop, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
   ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
   cat("... written: ", outFile, "\n")
   
-
 }
-
-
 
 #*************************************************************************************************
 #************************************************************************************************* hicds_exprds-level analysis
@@ -736,7 +833,7 @@ cat(paste0("... start computing statistics hicds_exprds level \n"))
 hicds_exprds_DT <- unique(all_bestMatchDT[, c("query_hicds", "query_exprds")])
 
 #***********
-### Pour chaque hicds/exprds -> % de ces signif TADs qui matchent un nombre "x" de signif TADs d'autres datasets
+### Pour chaque hicds/exprds -> % de ces signif TADs qui matchent un nombre "x" de signif TADs d'autres datasets  ------ BUILD TABLE FOR BARPLOT ratio_matchingSignifTAD_DT
 #***********
 i=1
 ratio_matchingSignifTAD_DT <- foreach(i = seq_len(nrow(hicds_exprds_DT)), .combine='rbind') %dopar% {
@@ -790,6 +887,10 @@ ratio_matchingSignifTAD_DT$dscols <- curr_colors
 plotTit <- paste0("ratio DS has bestMatch with other DS")
 plotSub <- paste0("(# ds = ", length(unique(ratio_matchingSignifTAD_DT$dataset)), ")")
 
+####################
+#***************************************** BARPLOT - ratio_matchingSignifTAD_DT
+####################
+
 p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=ratio_matchingSignifTAD_DT, 
                                                xvar="dataset", 
                                                yvar="ratioSignifTADs_as_bestMatch",
@@ -805,7 +906,7 @@ cat(paste0("... written: ", outFile, "\n"))
 
 
 #***********
-### Pour chaque hicds/exprds, combien de fois ce dataset est dans le best matching TAD des autres datasets
+### Pour chaque hicds/exprds, combien de fois ce dataset est dans le best matching TAD des autres datasets ------ BUILD TABLE FOR BARPLOT hicds_exprds_asMatch_DT
 #***********
 i=1
 hicds_exprds_asMatch_DT <- foreach(i = seq_len(nrow(hicds_exprds_DT)), .combine='rbind') %dopar% {
@@ -846,6 +947,11 @@ range(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch)
 # hicds                   exprds nQueryTADs ratioDS_as_queryBestMatch
 # 1     ENCSR079VIJ_G401_40kb       TCGAkich_norm_kich        352                0.02272727
 
+####################
+#***************************************** BARPLOT - hicds_exprds_asMatch_DT
+####################
+
+
 hicds_exprds_asMatch_DT <- hicds_exprds_asMatch_DT[order(hicds_exprds_asMatch_DT$ratioDS_as_queryBestMatch, decreasing=TRUE),]
 hicds_exprds_asMatch_DT$dataset <- paste0(hicds_exprds_asMatch_DT$hicds, "\n", hicds_exprds_asMatch_DT$exprds)
 hicds_exprds_asMatch_DT$dataset <- factor(hicds_exprds_asMatch_DT$dataset, levels = as.character(hicds_exprds_asMatch_DT$dataset))
@@ -880,15 +986,51 @@ cat(paste0("... written: ", outFile, "\n"))
 cat("*** DONE\n")
 cat(paste0(startTime, "\n", Sys.time(), "\n"))
 
-
-
-
-
-
-
 #*************************************************************************************************
 #************************************************************************************************* trash/debug
 #*************************************************************************************************
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata"
+# load(outFile)
+# all_matchDT[1:5,1:5]
+# 
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_bestMatchDT.Rdata"
+# load(outFile)
+# all_bestMatchDT[1:5,1:5]
+# 
+# 
+# curr_tad = "ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr6_TAD71"
+# 
+# moreThanOneMatch <- all_matchDT[, c("query_id", "matching_hicds", "matching_exprds")]
+# tad_withDup_idx <- which(duplicated(moreThanOneMatch))
+# 
+# tad_withDup <- all_matchDT[tad_withDup_idx[1], c("query_id")]
+# "ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr7_TAD58"
+# 
+# nrow(all_matchDT[all_matchDT$query_id == tad_withDup,])
+# nrow(all_bestMatchDT[all_bestMatchDT$query_id == tad_withDup,])
+# 
+# tad_withDup <- all_matchDT[tad_withDup_idx[2], c("query_id")]
+# tad_withDup
+# nrow(all_matchDT[all_matchDT$query_id == tad_withDup,])
+# nrow(all_bestMatchDT[all_bestMatchDT$query_id == tad_withDup,])
+# 
+# tad_withDup <- all_matchDT[tad_withDup_idx[3], c("query_id")]
+# tad_withDup
+# nrow(all_matchDT[all_matchDT$query_id == tad_withDup,])
+# nrow(all_bestMatchDT[all_bestMatchDT$query_id == tad_withDup,])
+# 
+# tad_withDup = "ENCSR444WCZ_A549_40kb_TCGAluad_mutKRAS_mutEGFR_chr6_TAD60" 
+# tad_withDup = "GSE105194_spinal_cordGSE105194_cerebellum_40kb_TCGAlgg_IDHwt_IDHmutnc_chr17_TAD80"
+# 
+# all_tads_withDup <- unique(all_matchDT$query_id[tad_withDup_idx]) # almost all only 1 diff
+# 
+# 
+# for(tad_withDup in all_tads_withDup) {
+# cat(nrow(all_matchDT[all_matchDT$query_id == tad_withDup,]), "\n")
+#   cat(nrow(all_bestMatchDT[all_bestMatchDT$query_id == tad_withDup,]), "\n")
+# }
+
+
 # xvect <- seq_len(max(queryID_matchDT$all_nMatch, na.rm=TRUE))  
 # yvect <- sapply(xvect, function(x){
 #   sum(queryID_matchDT$all_nMatch >= x)
