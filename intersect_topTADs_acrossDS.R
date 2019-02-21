@@ -35,107 +35,7 @@ source("plot_lolliTAD_funct.R")
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
-printVar <- function(x){
-  cat(paste0(x, " = ", eval(parse(text=x)), "\n"))
-}
-
-
-plot_cumMatch <- function(dt, tomatch){
-  curr_match <- na.omit(dt[, tomatch])
-  xvect <- seq_len(max(curr_match))
-  yvect <- sapply(xvect, function(x){
-    sum(curr_match >= x)
-  })
-  plot(x = xvect,
-       y = yvect,
-       xlab = paste0("# datasets in which matching signif. TAD"), 
-       ylab = paste0("# query TAD"),
-       type="l")
-  mtext(side=3, text=paste0(tomatch))
-}
-
-
-ggplot_barplot_hicdsexprds <- function(barDT, xvar, yvar,
-                                       xcolvar = NULL,
-                                       myxlab="", myylab="", myTit="", mySub="", 
-                                       barCol="dodgerblue3") {
-  if(is.null(xcolvar)) {
-    plotcols <- "black"
-  }else {
-    plotcols <- barDT[,xcolvar]
-  }
-  
-  p_ref <- ggplot(barDT, aes_string(x = xvar, y = yvar)) +
-    ggtitle(myTit, subtitle = mySub)+
-    geom_bar(stat="identity", position = "dodge", fill = barCol)+
-    scale_x_discrete(name=myxlab)+
-    scale_y_continuous(name=myylab,
-                       breaks = scales::pretty_breaks(n = 10))+
-    labs(fill = "")+
-    theme( # Increase size of axis lines
-      # top, right, bottom and left
-      plot.margin = unit(c(1, 1, 1, 1), "lines"),
-      plot.title = element_text(hjust = 0.5, face = "bold", size=16),
-      plot.subtitle = element_text(hjust = 0.5, face = "italic", size=10),
-      panel.grid = element_blank(),
-      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = plotcols),
-      axis.line.x = element_line(size = .2, color = "black"),
-      axis.line.y = element_line(size = .3, color = "black"),
-      # axis.ticks.x = element_blank(),
-      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
-      axis.title.y = element_text(color="black", size=12),
-      axis.title.x = element_text(color="black", size=12),
-      panel.border = element_blank(),
-      panel.background = element_rect(fill = "transparent"),
-      legend.background =  element_rect(),
-      legend.key = element_blank()
-    )
-  return(p_ref)
-}  
-
-ggplot_boxplot_hicdsexprds <- function(barDT, xvar, yvar, colvar,
-                                       myxlab="", myylab="", myTit="", mySub="", 
-                                       barCol="dodgerblue3") {
-  avg_barDT <- aggregate(as.formula(paste0(yvar, "~", xvar)), data = barDT, FUN=mean, na.rm=TRUE)
-  xvar_order <- as.character(avg_barDT[,xvar][order(avg_barDT[,yvar], decreasing=TRUE)])
-  stopifnot(!is.na(xvar_order))
-  barDT[, xvar] <- factor(as.character(barDT[,xvar]), levels = xvar_order)
-  plotDT <- na.omit(barDT)  
-  
-  if(is.null(colvar)){
-    mycols <- "black"
-  }else {
-    mycols <- plotDT[,colvar]
-  }
-  
-  p_ref <- ggplot(plotDT, aes_string(x = xvar, y = yvar)) +
-    ggtitle(myTit, subtitle = mySub)+
-    geom_boxplot(fill = barCol)+
-    scale_x_discrete(name=myxlab)+
-    scale_y_continuous(name=myylab,
-                       breaks = scales::pretty_breaks(n = 10))+
-    labs(fill = "")+
-    theme( # Increase size of axis lines
-      # top, right, bottom and left
-      plot.margin = unit(c(1, 1, 1, 1), "lines"),
-      plot.title = element_text(hjust = 0.5, face = "bold", size=16),
-      plot.subtitle = element_text(hjust = 0.5, face = "italic", size=10),
-      panel.grid = element_blank(),
-      axis.text.x = element_text( hjust=1,vjust = 0.5, size=8, angle = 90, color = mycols),
-      axis.line.x = element_line(size = .2, color = "black"),
-      axis.line.y = element_line(size = .3, color = "black"),
-      # axis.ticks.x = element_blank(),
-      axis.text.y = element_text(color="black", hjust=1,vjust = 0.5),
-      axis.title.y = element_text(color="black", size=12),
-      axis.title.x = element_text(color="black", size=12),
-      panel.border = element_blank(),
-      panel.background = element_rect(fill = "transparent"),
-      legend.background =  element_rect(),
-      legend.key = element_blank()
-    )
-  return(p_ref)
-}  
-
+source("utils_plot_fcts.R")
 
 
 registerDoMC(ifelse(SSHFS, 2, 40))
@@ -642,6 +542,13 @@ cat("... written: ", outFile, "\n")
 ####################
 #***************************************** boxplots
 ####################
+outFile <- file.path(outFolder, "inputGR_DT.Rdata")
+save(inputGR_DT, file = outFile)
+cat("... written: ", outFile, "\n")
+
+outFile <- file.path(outFolder, "queryID_matchDT.Rdata")
+save(queryID_matchDT, file = outFile)
+cat("... written: ", outFile, "\n")
 
 #### boxplot for the dataset
 tmpDT <- inputGR_DT
@@ -673,6 +580,23 @@ p_diff <- ggplot_boxplot_hicdsexprds(barDT=boxplotDT, xvar="HICDS", yvar="diffEx
                            mySub=plotSub) 
 ggsave(plot = p_diff, filename = outFile, height=myHeightGG, width = myWidthGG)
 cat("... written: ", outFile, "\n")
+
+# scatterplot
+plotSub <- paste0("(# hicds = ", length(unique(na.omit(boxplotDT)$HICDS)), ")")
+outFile <- file.path(outFolder, paste0("hicds_all_vs_diffExprds_nMatch_scatterplot.", plotType))
+plotTit <- paste0("# of other datasets with signifTADs matching by hicds")
+do.call(plotType, list(outFile, height=myHeightDens, width=myHeightDens))
+plot(all_nMatch ~ diffExprds_nMatch, 
+     pch=16, cex=0.7,
+     cex.lab=plotCex,
+     cex.axis=plotCex,
+     data = na.omit(boxplotDT),
+     main=plotTit
+     )
+mtext(side=3, text = plotSub)
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+
 
 ####################
 #***************************************** lolliplot - quantile
@@ -891,7 +815,7 @@ plotSub <- paste0("(# ds = ", length(unique(ratio_matchingSignifTAD_DT$dataset))
 #***************************************** BARPLOT - ratio_matchingSignifTAD_DT
 ####################
 
-p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=ratio_matchingSignifTAD_DT, 
+p_bestMatch <- ggplot_barplot_hicdsexprds(barDT=ratio_matchingSignifTAD_DT, 
                                                xvar="dataset", 
                                                yvar="ratioSignifTADs_as_bestMatch",
                                                xcolvar = "dscols",
@@ -901,7 +825,7 @@ p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=ratio_matchingSignifTAD_DT,
                                                mySub=plotSub
 )
 outFile <- file.path(outFolder, paste0("ratioSignifTADs_as_bestMatch", "_", "barplot.", plotType))
-ggsave(plot = p_queryBestMatch, filename = outFile, height=myHeightGG, width = myWidthGG)
+ggsave(plot = p_bestMatch, filename = outFile, height=myHeightGG, width = myWidthGG)
 cat(paste0("... written: ", outFile, "\n"))
 
 
@@ -961,7 +885,7 @@ curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[myname
 stopifnot(!is.na(curr_colors))
 hicds_exprds_asMatch_DT$dscols <- curr_colors
 
-plotTit <- paste0("ratio DS has bestMatch with other DS")
+plotTit <- paste0("ratio DS has queryBestMatch with other DS")
 plotSub <- paste0("(# ds = ", length(unique(hicds_exprds_asMatch_DT$dataset)), ")")
 
 p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=hicds_exprds_asMatch_DT, 
@@ -969,7 +893,7 @@ p_queryBestMatch <- ggplot_barplot_hicdsexprds(barDT=hicds_exprds_asMatch_DT,
                            yvar="ratioDS_as_queryBestMatch",
                            xcolvar = "dscols",
                            myxlab="", 
-                           myylab="ratioDS_is_bestMatch",
+                           myylab="ratioDS_is_queryBestMatch",
                            myTit=plotTit,
                            mySub=plotSub
                            )
@@ -978,8 +902,34 @@ ggsave(plot = p_queryBestMatch, filename = outFile, height=myHeightGG, width = m
 cat(paste0("... written: ", outFile, "\n"))
   
   
-  
-  
+# scatterplot
+scatterDT <- merge(ratio_matchingSignifTAD_DT[, c("hicds", "exprds", "ratioSignifTADs_as_bestMatch")], 
+                   hicds_exprds_asMatch_DT[c("hicds", "exprds", "ratioDS_as_queryBestMatch")], by=c("hicds", "exprds"))
+stopifnot(!is.na(scatterDT))
+
+plot()
+
+
+head(ratio_matchingSignifTAD_DT)
+head(hicds_exprds_asMatch_DT)
+
+# scatterplot
+plotSub <- paste0("(# hicds_exprds = ", nrow(unique(na.omit(scatterDT))), ")")
+outFile <- file.path(outFolder, paste0("ratioSignifTADs_as_bestMatch_vs_as_queryBestMatch_scatterplot.", plotType))
+plotTit <- paste0("ratio query as_bestMatch vs. as_queryBestMatch")
+do.call(plotType, list(outFile, height=myHeightDens, width=myHeightDens))
+plot(ratioSignifTADs_as_bestMatch ~ ratioDS_as_queryBestMatch, 
+     pch=16, cex=0.7,
+     cex.lab=plotCex,
+     cex.axis=plotCex,
+     data = scatterDT,
+     main=plotTit
+)
+mtext(side=3, text = plotSub)
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+
+                                                                                   
 # ######################################################################################
 # ######################################################################################
 # ######################################################################################
