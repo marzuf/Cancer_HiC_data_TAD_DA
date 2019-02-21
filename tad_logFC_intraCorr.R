@@ -2,7 +2,6 @@
 # Rscript tad_logFC_intraCorr.R # default 0.05
 # Rscript tad_logFC_intraCorr.R 0.05
 
-
 startTime <- Sys.time()
 
 cat("> START tad_logFC_intraCorr.R \n")
@@ -14,37 +13,17 @@ require(doMC)
 
 source("utils_fct.R")
 
-plotType <- "svg"
+plotType <- "png"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
-
-printVar <- function(x){
-  cat(paste0(x, " = ", eval(parse(text=x)), "\n"))
-}
-writeSepToFile <- function(mysymbol, myfile, ...){
-  printAndLog(txt = paste0("\n", paste0(rep(mysymbol, 50), collapse=""), "\n"), logFile = checkFile)
-}
-
-writeValueToFile <- function(myvarname, myfile, ...) {
-  txt <- paste0(myvarname, " =\t", eval(parse(text=myvarname)), "\n")
-  cat(txt, file="")
-  cat(txt, file = myfile, append = TRUE, ...)
-}
-
-writeTableToFile <- function(mytable, myfile) {
-  write.table(mytable, col.names=TRUE, row.names=FALSE, append=T, sep="\t", quote=F, file=myfile)
-  write.table(mytable, col.names=TRUE, row.names=FALSE, append=T, sep="\t", quote=F, file="")
-}
 
 registerDoMC(ifelse(SSHFS, 2, 40))
 
 build_signifTADs_allDS_data <- TRUE
 
-
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 signifThresh <- 0.05
-
 
 args <- commandArgs(trailingOnly = TRUE)
 if(length(args) > 0) {
@@ -62,7 +41,6 @@ dir.create(outFolder, recursive = TRUE)
 # file.remove(checkFile)
 checkFile <- file.path(outFolder, paste0("check_file_traceback", ".txt"))
 file.remove(checkFile)
-
 
 logFile=""
 
@@ -205,12 +183,44 @@ cat(paste0("... written: ", outFile, "\n"))
 
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_allTADs_log10", ".", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-myx <- allPvals_allDS_DT[,xvar]
-myy <- allPvals_allDS_DT[,yvar]
+myx <- -log10(allPvals_allDS_DT[,xvar])
+myy <-  -log10(allPvals_allDS_DT[,yvar])
 densplot(x = myx,
-         xlab=paste0(xvar),
+         xlab=paste0(xvar, " [-log10]"),
          xlim=range(myx,na.rm=T),
          ylim=range(myy,na.rm=T),
+         y = myy,
+         ylab=paste0(yvar, " [-log10]"),
+         main = myTit,
+         cex=0.7,
+         cex.axis=plotCex,
+         cex.lab=plotCex,
+         pch=16
+)
+mtext(side=3, text=mySub)
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
+
+
+##################################################################################################
+####### signif TADs: signif Comb
+##################################################################################################
+signifPvalComb_allDS_DT <- allPvals_allDS_DT[allPvals_allDS_DT$adj_pvalComb <= signifThresh,]
+
+stopifnot(!duplicated(signifPvalComb_allDS_DT$tad_id))
+
+myTit <- paste0("all TCGA datasets - pvalComb. signif. TADs (pval <= ", signifThresh, ")")
+mySub <- paste0("(# TADs = ", length(signifPvalComb_allDS_DT$tad_id) , ")")
+
+myx <- signifPvalComb_allDS_DT[,xvar]
+myy <- signifPvalComb_allDS_DT[,yvar]
+
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_signifTADsPvalComb", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+densplot(x = myx,
+         xlab=paste0(xvar),
+         xlim=c(min(myx,na.rm=T),signifThresh),
+         ylim=c(min(myy,na.rm=T),signifThresh),
          y = myy,
          ylab=paste0(yvar),
          main = myTit,
@@ -223,7 +233,32 @@ mtext(side=3, text=mySub)
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
+myx <- -log10(signifPvalComb_allDS_DT[,xvar])
+myy <-  -log10(signifPvalComb_allDS_DT[,yvar])
 
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_signifTADsPvalComb_log10", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+densplot(x = myx,
+         xlab=paste0(xvar, " [-log10]"),
+         xlim=range(myx,na.rm=T),
+         ylim=range(myy,na.rm=T),
+         # xlim=c(min(myx,na.rm=T),-log10(signifThresh)),
+         # ylim=c(min(myy,na.rm=T),-log10(signifThresh)),
+         y = myy,
+         ylab=paste0(yvar, " [-log10]"),
+         main = myTit,
+         cex=0.7,
+         cex.axis=plotCex,
+         cex.lab=plotCex,
+         pch=16
+)
+mtext(side=3, text=mySub)
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
+
+##################################################################################################
+####### signif TADs: signif FC & signif Corr
+##################################################################################################
 signifPvals_allDS_DT <- allPvals_allDS_DT[allPvals_allDS_DT$adj_pvalFC <= signifThresh & 
                                             allPvals_allDS_DT$adj_pvalCorr <= signifThresh,]
 
@@ -259,11 +294,13 @@ myy <-  -log10(signifPvals_allDS_DT[,yvar])
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_signifTADs_log10", ".", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 densplot(x = myx,
-         xlab=paste0(xvar),
-         xlim=c(min(myx,na.rm=T),signifThresh),
-         ylim=c(min(myy,na.rm=T),signifThresh),
+         xlab=paste0(xvar, " [-log10]"),
+         xlim=range(myx,na.rm=T),
+         ylim=range(myy,na.rm=T),
+         # xlim=c(min(myx,na.rm=T),-log10(signifThresh)),
+         # ylim=c(min(myy,na.rm=T),-log10(signifThresh)),
          y = myy,
-         ylab=paste0(yvar),
+         ylab=paste0(yvar, " [-log10]"),
          main = myTit,
          cex=0.7,
          cex.axis=plotCex,
@@ -275,9 +312,10 @@ foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
 
-
-
-# ###################################################################################### ADD the main TAD
+#*******************************************************************************************************
+# ###################################################################################### 
+# ###################################################################################### ADD the main TAD across DS
+# ###################################################################################### 
 load("TAD_LOGFC_INTRACORR/signif0.05/allPvals_allDS_DT.Rdata")
 head(allPvals_allDS_DT)
 
@@ -327,10 +365,7 @@ plotted_sets <- list()
 
 nPlotted <- i<-  0
 while(nPlotted < top_to_plot) {
-  
   i <- i+1
-  
-  cat("... nPlotted = ", nPlotted, "\n")
   
   plot_list <- list()
   
@@ -368,19 +403,14 @@ while(nPlotted < top_to_plot) {
   all_cols_to_plot <- c(all_cols_to_plot, to_plot_col)
   all_nmatch_legend <- c(all_nmatch_legend, nmatch_legend)
   
-  
   #datasetwise
   # points(x=to_plot_x, y = to_plot_y, col =to_plot_col , pch=4)
   # text(x=to_plot_x,y=to_plot_y,col=to_plot_col, labels = to_plot_labels, cex = 0.7)
   
 }
-
-
-
-
-outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , ".", plotType))
+# plot1: topTADs, limit xrange and yrange -> zoom
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_zoom.", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-
 plot(x = allPvals_allDS_DT[,xvar],
      xlab=paste0(xvar),
      xlim=range(all_x_to_plot),
@@ -400,8 +430,33 @@ legend("topleft", legend = all_nmatch_legend, col = all_cols_to_plot, pch=4, bty
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
+# plot2: topTADs, limit xrange and yrange -> with all other points
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+plot(x = allPvals_allDS_DT[,xvar],
+     xlab=paste0(xvar),
+     xlim=range(allPvals_allDS_DT[,xvar]),
+     ylim=range(allPvals_allDS_DT[,yvar]),
+     y = allPvals_allDS_DT[,yvar],
+     ylab=paste0(yvar),
+     main = myTit,
+     cex=plotCex/2,
+     cex.axis=plotCex,
+     cex.lab=plotCex,
+     col="grey",
+     pch=16
+)
+points(x=all_x_to_plot, y = all_y_to_plot, col =all_cols_to_plot , pch=4)
+text(x=all_x_to_plot,y=all_y_to_plot,col=all_cols_to_plot, labels = all_labels_to_plot, cex = 0.7)
+legend("topleft", legend = all_nmatch_legend, col = all_cols_to_plot, pch=4, bty="n")
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
-outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_log10.", plotType))
+
+
+
+# plot3: topTADs, -log10, limit xrange and yrange -> zoom
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_zoom_log10.", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 
 all_x_to_plot_log10 <- -log10(all_x_to_plot)
@@ -411,6 +466,33 @@ plot(x =  -log10(allPvals_allDS_DT[,xvar]),
      xlab=paste0(xvar, "[-log10]"),
      xlim=range(all_x_to_plot_log10),
      ylim=range(all_y_to_plot_log10),
+     y =  -log10(allPvals_allDS_DT[,yvar]),
+     ylab=paste0(yvar, "[-log10]"),
+     main = myTit,
+     cex=plotCex/2,
+     cex.axis=plotCex,
+     cex.lab=plotCex,
+     col="grey",
+     pch=16
+)
+points(x=all_x_to_plot_log10, y = all_y_to_plot_log10, col =all_cols_to_plot , pch=4)
+text(x=all_x_to_plot_log10,y=all_y_to_plot_log10,col=all_cols_to_plot, labels = all_labels_to_plot, cex = 0.7)
+legend("topleft", legend = all_nmatch_legend, col = all_cols_to_plot, pch=4, bty="n")
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
+
+# plot4: topTADs, -log10, limit xrange and yrange -> with all other points
+
+outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_log10.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+
+all_x_to_plot_log10 <- -log10(all_x_to_plot)
+all_y_to_plot_log10 <- -log10(all_y_to_plot)
+
+plot(x =  -log10(allPvals_allDS_DT[,xvar]),
+     xlab=paste0(xvar, "[-log10]"),
+     xlim=range(-log10(allPvals_allDS_DT[,xvar]), na.rm=T),
+     ylim=range(-log10(allPvals_allDS_DT[,yvar]), na.rm=T),
      y =  -log10(allPvals_allDS_DT[,yvar]),
      ylab=paste0(yvar, "[-log10]"),
      main = myTit,
@@ -458,14 +540,22 @@ hicds_exprds_asMatch_DT <- eval(parse(text = load(hicds_exprds_asMatch_DT_file))
 head(hicds_exprds_asMatch_DT)
 
 # traceback 2 TADs (from top and bottom to check the script !)
+
+all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
+head(all_nMatchDT)
+colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
+srtd_DT <- all_nMatchDT[order(all_nMatchDT$all_nMatch, decreasing = TRUE),]
+head(srtd_DT$query_id,1)
+tail(srtd_DT$query_id,1)
+# toptad:"ENCSR312KHQ_SK-MEL-5_40kb_TCGAskcm_lowInf_highInf_chr6_TAD71
 toptad_exprds <- "TCGAskcm_lowInf_highInf"
 toptad_hicds <- "ENCSR312KHQ_SK-MEL-5_40kb"
 toptad_tad <-"chr6_TAD71"
 toptad_id <- paste(toptad_hicds, toptad_exprds, toptad_tad, sep="_")
 
-
+# bottomtad: "NCI-H460_40kb_TCGAlusc_norm_lusc_chr1_TAD232"
 bottad_exprds <- "TCGAlusc_norm_lusc"
-bottad_hicds <- "NCI-H460_40kb-MEL-5_40kb"
+bottad_hicds <- "NCI-H460_40kb"
 bottad_tad <-"chr1_TAD232"
 bottad_id <- paste(bottad_hicds, bottad_exprds, bottad_tad, sep="_")
 
@@ -486,8 +576,6 @@ all_id=c(toptad_id, bottad_id)
 for(i in 1:2) {
   signifTADs_allDS_data <- eval(parse(text = load(signifTADs_allDS_data_file)))
   
-  
-  
   curr_exprds=all_exprds[i]
   curr_hicds=all_hicds[i]
   curr_tad=all_tad[i]
@@ -501,37 +589,13 @@ for(i in 1:2) {
   writeValueToFile(myvarname="curr_tad", myfile=checkFile)
   writeValueToFile(myvarname="curr_id", myfile=checkFile)
   
-  cat(file.path(curr_hicds, curr_exprds))
-  cat("\n")
-  cat(names(signifTADs_allDS_data))
-  
-  x1=file.path(curr_hicds, curr_exprds) 
-  save(x1, file="x1.Rdata")
-  x2=names(signifTADs_allDS_data)
-save(x2, file="x2.Rdata")
-load("x1.Rdata")
-load("x2.Rdata")
-
   stopifnot(file.path(curr_hicds, curr_exprds) %in% names(signifTADs_allDS_data))
 
   curr_signifTADs_allDS_data <- signifTADs_allDS_data[[file.path(curr_hicds, curr_exprds)]]
   
-  cat(length(curr_signifTADs_allDS_data))
-  cat("\n")
-  
-  # "ids"     cat("\n")
-   # "idDT"     "geneDT"   "signifDT" "posDT"    "matchDT" 
-  cat(head(curr_signifTADs_allDS_data[["ids"]]))
-  cat("\n")
-  
-  cat(curr_id)
-  cat("\n")
-  head(curr_signifTADs_allDS_data[["ids"]])
-  head(names(curr_signifTADs_allDS_data))
-  
   stopifnot(curr_id %in% curr_signifTADs_allDS_data[["ids"]])
-  # curr_ids <- curr_signifTADs_allDS_data[["ids"]][curr_signifTADs_allDS_data[["ids"]] == curr_id]
-  # stopifnot(length(curr_ids) > 0)
+  curr_ids <- curr_signifTADs_allDS_data[["ids"]][curr_signifTADs_allDS_data[["ids"]] == curr_id]
+  stopifnot(length(curr_ids) > 0)
   
   head(curr_signifTADs_allDS_data[["idDT"]])
   stopifnot(curr_id %in% curr_signifTADs_allDS_data[["idDT"]]$ID)
