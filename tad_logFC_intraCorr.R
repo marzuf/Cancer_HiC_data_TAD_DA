@@ -13,7 +13,7 @@ require(doMC)
 
 source("utils_fct.R")
 
-plotType <- "svg"
+plotType <- "png"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 
@@ -219,8 +219,11 @@ outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_signifTADsPvalComb", 
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 densplot(x = myx,
          xlab=paste0(xvar),
-         xlim=c(min(myx,na.rm=T),signifThresh),
-         ylim=c(min(myy,na.rm=T),signifThresh),
+         # xlim=c(min(myx,na.rm=T),signifThresh),
+         # ylim=c(min(myy,na.rm=T),signifThresh),
+         xlim=range(myx,na.rm=T),
+         ylim=range(myy,na.rm=T),
+         
          y = myy,
          ylab=paste0(yvar),
          main = myTit,
@@ -316,8 +319,8 @@ cat(paste0("... written: ", outFile, "\n"))
 # ###################################################################################### 
 # ###################################################################################### ADD the main TAD across DS
 # ###################################################################################### 
-load("TAD_LOGFC_INTRACORR/signif0.05/allPvals_allDS_DT.Rdata")
-head(allPvals_allDS_DT)
+# load("TAD_LOGFC_INTRACORR/signif0.05/allPvals_allDS_DT.Rdata")
+# head(allPvals_allDS_DT)
 
 all_bestMatchDT <- eval(parse(text = load(all_bestMatchDT_file)))
 head(all_bestMatchDT)
@@ -410,6 +413,7 @@ while(nPlotted < top_to_plot) {
 }
 # plot1: topTADs, limit xrange and yrange -> zoom
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_zoom.", plotType))
+myTit <- paste0("zoom TCGA data - matchTADs (nTop=", top_to_plot, ")")
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot(x = allPvals_allDS_DT[,xvar],
      xlab=paste0(xvar),
@@ -432,6 +436,7 @@ cat(paste0("... written: ", outFile, "\n"))
 
 # plot2: topTADs, limit xrange and yrange -> with all other points
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , ".", plotType))
+myTit <- paste0("all TCGA data - matchTADs (nTop=", top_to_plot, ")")
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot(x = allPvals_allDS_DT[,xvar],
      xlab=paste0(xvar),
@@ -457,6 +462,8 @@ cat(paste0("... written: ", outFile, "\n"))
 
 # plot3: topTADs, -log10, limit xrange and yrange -> zoom
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_zoom_log10.", plotType))
+myTit <- paste0("zoom TCGA data - matchTADs (nTop=", top_to_plot, ")")
+
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 
 all_x_to_plot_log10 <- -log10(all_x_to_plot)
@@ -484,6 +491,8 @@ cat(paste0("... written: ", outFile, "\n"))
 # plot4: topTADs, -log10, limit xrange and yrange -> with all other points
 
 outFile <- file.path(outFolder, paste0("pvalCorr_vs_pvalFC_matchTADs_", "nTop",top_to_plot , "_log10.", plotType))
+myTit <- paste0("all TCGA data - matchTADs (nTop=", top_to_plot, ")")
+
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 
 all_x_to_plot_log10 <- -log10(all_x_to_plot)
