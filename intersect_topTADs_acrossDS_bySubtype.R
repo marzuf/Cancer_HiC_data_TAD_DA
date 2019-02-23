@@ -3,13 +3,11 @@
 
 # Rscript intersect_topTADs_acrossDS_bySubtype.R 3 subtypes
 
-
-# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 lesions
-
-
 # Rscript intersect_topTADs_acrossDS_bySubtype.R 3 vs_normal
 
-# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 vs_other
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 vs_other # -> not TCGA
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 lesions # -> not TCGA
+
 
 # subtypes      lesions    vs_normal     vs_other     mutation 
 startTime <- Sys.time()
@@ -109,23 +107,19 @@ script11_name <- "11_runEmpPvalCombined"
 
 pipOutFolder <- file.path("PIPELINE", "OUTPUT_FOLDER")
 
-# all_hicexpr_ds <- unname(unlist(sapply(list.files(pipOutFolder, full.names = TRUE), 
- all_hicexpr_ds <- unname(unlist(sapply(list.files(list.files(pipOutFolder, full.names = TRUE), full.names=TRUE),
-                                       function(x) {
-                                         hicds <- basename(dirname(x))
-                                         exprds <- basename(x)
-                                         if(exprds %in% exprDsToKeep) {
-                                           return(NA)
-                                           } else {
-                                             return(file.path(hicds, exprds))
-                                             }
-                                       }
-                                         )))
-all_hicexpr_ds <- na.omit(all_hicexpr_ds)
+all_hicexpr_ds <- unname(unlist(sapply(list.files(pipOutFolder, full.names = TRUE), function(x) file.path(basename(x),  list.files(x)))))
+stopifnot(dir.exists(file.path(pipOutFolder, all_hicexpr_ds)))
 
-cat(all_hicexpr_ds)
+hicds <- dirname(all_hicexpr_ds)
+exprds <- basename(all_hicexpr_ds)
+
+all_hicexpr_ds <- all_hicexpr_ds[exprds %in% exprDsToKeep]
+
+cat(subType)
 cat("\n")
-stop("ok")
+cat(paste0(all_hicexpr_ds,sep="\n"))
+cat("\n")
+#stop("ok")
 
 "MCF-7ENCSR549MGQ_T47D_40kb/TCGAbrca_lum_bas"
 stopifnot(length(all_hicexpr_ds) > 0)
