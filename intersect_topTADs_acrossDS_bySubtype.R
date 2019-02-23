@@ -1,9 +1,20 @@
 
-# Rscript intersect_topTADs_acrossDS.R 3
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 mutation
 
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 subtypes
+
+
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 lesions
+
+
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 vs_normal
+
+# Rscript intersect_topTADs_acrossDS_bySubtype.R 3 vs_other
+
+# subtypes      lesions    vs_normal     vs_other     mutation 
 startTime <- Sys.time()
 
-cat("> START intersect_topTADs_acrossDS.R \n")
+cat("> START intersect_topTADs_acrossDS_bySubType.R \n")
 
 # saved:
 # save(signifTADs_allDS_data, file = outFile)
@@ -55,12 +66,22 @@ cat(paste0("!!! hard-coded: lolliPlotNtop = ", lolliPlotNtop, "\n"))
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
 topThresh <- as.numeric(args[1])
+subType <- args[2]
+stopifnot(subType %in% names(cancer_subColors))
+# subtypes      lesions    vs_normal     vs_other     mutation 
+# "green4" "chocolate1"      "blue3"    "orchid1"        "red" 
+
+stopifnot(subType %in% cancer_subAnnot)
+# TCGAstad_msi_gs            GSE79209_dysp_nodysp GSE58135_tripleNeg_adjTripleNeg 
+# "subtypes"                       "lesions"                     "vs_normal" 
+
+exprDsToKeep <- names(cancer_subAnnot)[cancer_subAnnot == subType]
 
 if(topThresh == 1) {
   warning("topThresh == 1 is ambiguous; will be considered as a nTop not pval thresh !\n")
 }
 
-outFolder <- file.path("INTERSECT_topTADs_ACROSSDS", paste0("top", topThresh))
+outFolder <- file.path(paste0("INTERSECT_topTADs_ACROSSDS_", subType), paste0("top", topThresh))
 dir.create(outFolder, recursive = TRUE)
 
 plotCex <- 1.2
@@ -88,9 +109,27 @@ script11_name <- "11_runEmpPvalCombined"
 
 pipOutFolder <- file.path("PIPELINE", "OUTPUT_FOLDER")
 
-all_hicexpr_ds <- unname(unlist(sapply(list.files(pipOutFolder, full.names = TRUE), function(x) file.path(basename(x),  list.files(x)))))
-stopifnot(dir.exists(file.path(pipOutFolder, all_hicexpr_ds)))
+# all_hicexpr_ds <- unname(unlist(sapply(list.files(pipOutFolder, full.names = TRUE), 
+ all_hicexpr_ds <- unname(unlist(sapply(list.files(list.files(pipOutFolder, full.names = TRUE), full.names=TRUE),
+                                       function(x) {
+                                         hicds <- basename(dirname(x))
+                                         exprds <- basename(x)
+                                         if(exprds %in% exprDsToKeep) {
+                                           return(NA)
+                                           } else {
+                                             return(file.path(hicds, exprds))
+                                             }
+                                       }
+                                         )))
+all_hicexpr_ds <- na.omit(all_hicexpr_ds)
 
+cat(all_hicexpr_ds)
+cat("\n")
+stop("ok")
+
+"MCF-7ENCSR549MGQ_T47D_40kb/TCGAbrca_lum_bas"
+stopifnot(length(all_hicexpr_ds) > 0)
+stopifnot(dir.exists(file.path(pipOutFolder, all_hicexpr_ds)))
 
 ds=all_hicexpr_ds[1]
 
@@ -103,6 +142,10 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   
   hicds <- dirname(ds)
   exprds <- basename(ds)
+  
+  # cat(exprds)
+  # cat(exprDsToKeep)
+
   stopifnot(dir.exists(hicds))
   dsPipOutDir <- file.path(pipOutFolder, ds)
   stopifnot(dir.exists(dsPipOutDir))
@@ -628,12 +671,15 @@ plotted_sets <- list()
 cat(paste0("... start lolliplot plotting\n"))
 i=1
 
+top_to_plot <- min(c(top_to_plot, nrow(srtd_DT)))
+
 for(i in seq_len(top_to_plot)) {
 
   plot_list <- list()
   
   tad_id <- srtd_DT$query_id[i]
   matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
+  cat("DEF\n")
   stopifnot(!duplicated(matching_ids))
   
   to_plot_set <- c(tad_id, matching_ids)
@@ -672,81 +718,87 @@ for(i in seq_len(top_to_plot)) {
 }
 
 
-                            # ####################
-                            # #***************************************** lolliplot - nTop
-                            # ####################
-                            # 
-                            # # load(file.path(outFolder, "all_bestMatchDT.Rdata"))
-                            # # 
-                            # # all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
-                            # # head(all_nMatchDT)
-                            # # colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
-                            # # 
-                            # # diffExprds_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT[all_bestMatchDT$query_exprds != all_bestMatchDT$matching_exprds,])
-                            # # head(diffExprds_nMatchDT)
-                            # # colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
-                            # # 
-                            # # queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
-                            # # stopifnot(!is.na(queryID_matchDT$all_nMatch))
-                            # # sum(is.na(queryID_matchDT$diffExprds_nMatch))
-                            # # stopifnot(!duplicated(queryID_matchDT$query_id))
-                            # 
-                            # srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
-                            # 
-                            # 
-                            # 
-                            # # lolliPlotNtop
-                            # 
-                            # plotted_sets <- list()
-                            # 
-                            # cat(paste0("... start lolliplot plotting\n"))
-                            # i=1
-                            # 
-                            # nPlotted <- i<-  0
-                            # while(nPlotted < lolliPlotNtop) {
-                            #   i <- i+1
-                            #   
-                            #   plot_list <- list()
-                            #   
-                            #   tad_id <- srtd_DT$query_id[i]
-                            #   matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
-                            #   stopifnot(!duplicated(matching_ids))
-                            #   
-                            #   to_plot_set <- c(tad_id, matching_ids)
-                            #   stopifnot(!duplicated(to_plot_set))
-                            #   
-                            #   if(any(unlist(lapply(plotted_sets, function(x) all(to_plot_set %in% x))))) {
-                            #     next
-                            #   } else {
-                            #     plotted_sets <- c(plotted_sets, list(to_plot_set))
-                            #     stopifnot(list(to_plot_set) %in% plotted_sets)
-                            #     nPlotted <- nPlotted + 1
-                            #   }
-                            #   
-                            #   stopifnot(any(unlist(lapply(plotted_sets, function(x) length(setdiff(to_plot_set, x)) == 0))))
-                            #   
-                            #   plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]), 
-                            #                                      hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]), 
-                            #                                      all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
-                            #   j <- 2
-                            #   for(matchTAD in matching_ids) {
-                            #     plot_list[[j]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == matchTAD]), 
-                            #                                        hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == matchTAD]), 
-                            #                                        all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == matchTAD]))
-                            #     j <- j+1
-                            #   }
-                            #   
-                            #   all_plots <- do.call(grid.arrange, c(plot_list,  list(ncol=2, top=textGrob(paste(tad_id),
-                            #                                                                              gp=gpar(fontsize=20,font=2)))))
-                            #   # cat("myHeight =", outHeight, "\n")
-                            #   outWidth <- 20
-                            #   outHeight <- min(c(7 * length(plot_list)/2, 49))
-                            #   
-                            #   outFile <- file.path(outFolder, paste0(tad_id, "_nTop", lolliPlotNtop, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
-                            #   ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
-                            #   cat("... written: ", outFile, "\n")
-                            #   
-                            # }
+                            ####################
+                            #***************************************** lolliplot - nTop
+                            ####################
+
+                            load(file.path(outFolder, "all_bestMatchDT.Rdata"))
+
+                            all_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT)
+                            head(all_nMatchDT)
+                            colnames(all_nMatchDT) <- c("query_id", "all_nMatch")
+
+                            diffExprds_nMatchDT <- aggregate(matching_id ~ query_id, FUN=length, data = all_bestMatchDT[all_bestMatchDT$query_exprds != all_bestMatchDT$matching_exprds,])
+                            head(diffExprds_nMatchDT)
+                            colnames(diffExprds_nMatchDT) <- c("query_id", "diffExprds_nMatch")
+
+                            queryID_matchDT <- merge(all_nMatchDT, diffExprds_nMatchDT, by="query_id", all.x = TRUE, all.y=TRUE)
+                            stopifnot(!is.na(queryID_matchDT$all_nMatch))
+                            sum(is.na(queryID_matchDT$diffExprds_nMatch))
+                            stopifnot(!duplicated(queryID_matchDT$query_id))
+
+                            srtd_DT <- queryID_matchDT[order(queryID_matchDT$all_nMatch, decreasing = T),]
+
+
+
+                            # lolliPlotNtop
+
+                            plotted_sets <- list()
+
+                            cat(paste0("... start lolliplot plotting\n"))
+                            i=1
+
+                            nPlotted <- i<-  0
+                            
+                            lolliPlotNtop <- min(c(lolliPlotNtop, nrow(srtd_DT)))
+                            
+                            while(nPlotted < lolliPlotNtop) {
+                              i <- i+1
+
+                              plot_list <- list()
+                              
+                              if(i > nrow(srtd_DT)) break
+
+                              tad_id <- srtd_DT$query_id[i]
+                              matching_ids <- all_bestMatchDT$matching_id[all_bestMatchDT$query_id == tad_id]
+                              cat("ABC\n")
+                              stopifnot(!duplicated(matching_ids))
+
+                              to_plot_set <- c(tad_id, matching_ids)
+                              stopifnot(!duplicated(to_plot_set))
+
+                              if(any(unlist(lapply(plotted_sets, function(x) all(to_plot_set %in% x))))) {
+                                next
+                              } else {
+                                plotted_sets <- c(plotted_sets, list(to_plot_set))
+                                stopifnot(list(to_plot_set) %in% plotted_sets)
+                                nPlotted <- nPlotted + 1
+                              }
+
+                              stopifnot(any(unlist(lapply(plotted_sets, function(x) length(setdiff(to_plot_set, x)) == 0))))
+
+                              plot_list[[1]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == tad_id]),
+                                                                 hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == tad_id]),
+                                                                 all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == tad_id]))
+                              j <- 2
+                              for(matchTAD in matching_ids) {
+                                plot_list[[j]] <- plot_lolliTAD_ds(exprds = unique(all_bestMatchDT$query_exprds[all_bestMatchDT$query_id == matchTAD]),
+                                                                   hicds = unique(all_bestMatchDT$query_hicds[all_bestMatchDT$query_id == matchTAD]),
+                                                                   all_TADs = unique(all_bestMatchDT$queryTAD[all_bestMatchDT$query_id == matchTAD]))
+                                j <- j+1
+                              }
+
+                              all_plots <- do.call(grid.arrange, c(plot_list,  list(ncol=2, top=textGrob(paste(tad_id),
+                                                                                                         gp=gpar(fontsize=20,font=2)))))
+                              # cat("myHeight =", outHeight, "\n")
+                              outWidth <- 20
+                              outHeight <- min(c(7 * length(plot_list)/2, 49))
+
+                              outFile <- file.path(outFolder, paste0(tad_id, "_nTop", lolliPlotNtop, "_", paste0("nMatch", length(matching_ids)), ".", plotType))
+                              ggsave(filename = outFile, all_plots, width=outWidth, height = outHeight)
+                              cat("... written: ", outFile, "\n")
+
+                            }
 
 #*************************************************************************************************
 #************************************************************************************************* hicds_exprds-level analysis
