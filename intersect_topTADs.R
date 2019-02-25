@@ -3,10 +3,6 @@
 # Rscript intersect_topTADs.R TCGAluad_mutKRAS_mutEGFR 3 ENCSR444WCZ_A549_40kb NCI-H460_40kb ENCSR444WCZ_A549NCI-H460_40kb
 # Rscript intersect_topTADs.R TCGAskcm_wt_mutCTNNB1 3 ENCSR312KHQ_SK-MEL-5_40kb ENCSR862OGI_RPMI-7951_40kb ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb
 
-# 
-# 
-
-
 startTime <- Sys.time()
 
 require(foreach)

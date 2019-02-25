@@ -5,7 +5,7 @@ startTime <- Sys.time()
 cat("> START plot_matchingTADs.R \n")
 
 # Rscript plot_matchingTADs.R NCI-H460_40kb_TCGAlusc_norm_lusc_chr1_TAD232 INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata
-# Rscript plot_matchingTADs.R NCI-H460_40kb_TCGAlusc_norm_lusc_chr1_TAD232
+# Rscript plot_matchingTADs.R NCI-H460_40kb_TCGAlusc_norm_lusc_chr1_TAD232 3
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "~/media/electron", "")
@@ -29,10 +29,11 @@ dir.create(outFolder)
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
 tad_id <- args[1]
-if(!is.na(args[2])) {
-  matchDT_file <- args[2]  
+dt_arg <- as.numeric(args[2])
+if(is.na(dt_arg)) {
+  matchDT_file <- args[2]
 } else {
-  matchDT_file <- file.path("INTERSECT_topTADs_ACROSSDS", "top3", "all_matchDT.Rdata")
+  matchDT_file <- file.path("INTERSECT_topTADs_ACROSSDS", paste0("top", dt_arg), "all_matchDT.Rdata")
 }
 stopifnot(file.exists(matchDT_file))
 all_matchDT <- eval(parse(text = load(matchDT_file)))

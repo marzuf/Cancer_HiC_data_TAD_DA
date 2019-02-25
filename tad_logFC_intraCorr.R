@@ -48,7 +48,6 @@ stopifnot(!is.na(signifThresh))
 stopifnot(signifThresh > 0)
 
 #PIPELINE/OUTPUT_FOLDER/GSE105318_DLD1_40kb/TCGAcoad_msi_mss//emp_pval_combined.Rdata
-script0_name <- "0_prepGeneData"
 script9_name <- "9_runEmpPvalMeanTADLogFC"
 script10_name <- "10_runEmpPvalMeanTADCorr"
 script11_name <- "11_runEmpPvalCombined"

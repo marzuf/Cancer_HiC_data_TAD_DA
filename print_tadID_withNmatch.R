@@ -3,8 +3,8 @@ startTime <- Sys.time()
 
 cat("> START print_tadID_withNmatch.R \n")
 
-# Rscript print_tadID_withNmatch.R 21
-# Rscript print_tadID_withNmatch.R 21 13 INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata
+# Rscript print_tadID_withNmatch.R 3 21
+# Rscript print_tadID_withNmatch.R 3 21 13 INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "~/media/electron", "")
@@ -30,11 +30,13 @@ all_nMatch <- c(21, 13)
 
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
-all_nMatch <- as.numeric(args)
+signifThresh <- as.numeric(args[1])
+stopifnot(!is.na(signifThresh))
+all_nMatch <- as.numeric(args[2:length(all_nMatch)])
 if(is.na(args[length(args)])) {
   matchDT_file <- all_nMatch[length(all_nMatch)]
 }else{
-  matchDT_file <- file.path("INTERSECT_topTADs_ACROSSDS", "top3", "all_matchDT.Rdata")
+  matchDT_file <- file.path("INTERSECT_topTADs_ACROSSDS", paste0("top", signifThresh), "all_matchDT.Rdata")
 }
 
 if(SSHFS) {

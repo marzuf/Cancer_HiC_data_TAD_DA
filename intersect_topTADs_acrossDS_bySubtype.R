@@ -9,6 +9,8 @@
 # Rscript intersect_topTADs_acrossDS_bySubtype.R 3 lesions # -> not TCGA
 
 
+#Rscript intersect_topTADs_acrossDS_bySubtype.R 10 mutation
+
 # subtypes      lesions    vs_normal     vs_other     mutation 
 startTime <- Sys.time()
 
