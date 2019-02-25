@@ -119,7 +119,7 @@ txt <- paste0("... returnNull\t=\t", as.character(returnNull), "\n")
 printAndLog(txt, logFile)
 
 ds_file = all_setting_files[1]
-all_setting_files <- all_setting_files[22:22]
+# all_setting_files <- all_setting_files[22:22]
 
 if(buildTable) {
   all_ds_geneVarDT <- foreach(ds_file = all_setting_files, .combine="rbind") %dopar% {
@@ -324,6 +324,35 @@ cat(paste0("... written: ", outFile, "\n"))
 load("GENE_VARIANCE/LOG2FPKM/all_ds_geneVarDT.Rdata")
 load("GENE_VARIANCE/LOG2FPKM/aucFCC.Rdata")
 load("GENE_VARIANCE/LOG2FPKM/aucCoexprDist.Rdata")
+
+
+subTypeDT <- data.frame(exprds=names(cancer_subAnnot), subtype=cancer_subAnnot, stringsAsFactors = FALSE)
+colorDT <- data.frame(exprds=names(dataset_proc_colors), color=dataset_proc_colors, stringsAsFactors = FALSE)
+stopifnot(all_ds_geneVarDT$exprds %in% subTypeDT$exprds)
+stopifnot(all_ds_geneVarDT$exprds %in% colorDT$exprds)
+
+subtype_data_DT <- unique(merge(merge(all_ds_geneVarDT, subTypeDT, by="exprds", all.x=T, all.y=F), 
+                                colorDT, by="exprds", all.x=T, all.y=F))
+
+stopifnot(!is.na(subtype_data_DT))
+
+stopifnot(nrow(all_ds_geneVarDT) == nrow(subtype_data_DT))
+
+##########################################################################################
+##########################################################################################
+
+outFile <- file.path(outFolder, paste0("multidens_bySubtypes.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+plot_multiDens_setcols(
+  lapply(split(subtype_data_DT, subtype_data_DT$subtype), function(x) x[["meanMostVar"]]),
+  my_cols = cancer_subColors[as.character(levels(as.factor(subtype_data_DT$subtype)))],
+  my_xlab = paste0(""),
+  plotTit = myTit
+)
+mtext(side=3, text=subTit)
+foo <- dev.off()  
+cat(paste0("... written: ", outFile, "\n"))
+stop("ok")
 
 ##########################################################################################
 ##########################################################################################
