@@ -540,6 +540,12 @@ stopifnot(!duplicated(queryID_matchDT$query_id))
 #***************************************** multiDens and cumsum
 ####################
 
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/all_matchDT.Rdata"
+# load(outFile)
+# outFile <- "INTERSECT_topTADs_ACROSSDS/top3/queryID_matchDT.Rdata"
+# load(outFile)
+
+
 outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS_and_onlyDiffExprDS_multidens", ".", plotType))
 printVar("outFile")
 printVar("myHeightDens")
@@ -554,9 +560,48 @@ foo <- dev.off()
 cat("... written: ", outFile, "\n")
 
 
+### CUMSUM plots, also with lines for subtypes
+subTypeDT <- data.frame(query_exprds=names(cancer_subAnnot), subtype=cancer_subAnnot, stringsAsFactors = FALSE, row.names = NULL)
+colorDT <- data.frame(query_exprds=names(dataset_proc_colors), color=dataset_proc_colors, stringsAsFactors = FALSE, row.names = NULL)
+
+tmpDT <- queryID_matchDT
+tmpDT <- unique(merge(queryID_matchDT, all_matchDT[, c("query_id", "query_exprds")], by="query_id", all.x=T, all.y=F))
+stopifnot(!is.na(tmpDT$query_exprds))
+stopifnot(!duplicated(tmpDT$query_id))
+tmpDT <- merge(tmpDT, subTypeDT[, c("query_exprds", "subtype")], by ="query_exprds", all.x=T, all.y=F)
+tmpDT <- merge(tmpDT, colorDT[, c("query_exprds", "color")], by ="query_exprds", all.x=T, all.y=F)
+head(tmpDT)
+stopifnot(!is.na(tmpDT$query_exprds))
+stopifnot(!duplicated(tmpDT$query_id))
+
 outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS", ".", plotType))
 do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_cumMatch(queryID_matchDT, "all_nMatch")
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
+
+
+outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_allDS_withSub", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+plot_cumMatch(queryID_matchDT, "all_nMatch")
+### ADD LINES BY SUBTYPE:
+tomatch="all_nMatch"
+curr_match <- na.omit(tmpDT[, tomatch])
+xvect <- seq_len(max(curr_match))
+lineVect <- lapply(split(tmpDT, tmpDT$subtype), function(x) {
+  curr_match <- na.omit(x[, tomatch])
+  yvect <- sapply(xvect, function(i){
+    sum(curr_match >= i)
+  })
+  yvect
+})
+lineCols <- cancer_subColors[as.character(levels(as.factor(tmpDT$subtype)))]
+foo <- sapply(seq_along(lineVect), function(i)  lines(x = rep(list(xvect), length(lineVect))[[i]], y = lineVect[[i]], col = lineCols[i]) )
+legend("topright", bty="n", 
+       legend = c("all", names(lineCols)),
+       lty=1,
+       col = c("black", lineCols)
+)
 foo <- dev.off()
 cat("... written: ", outFile, "\n")
 
@@ -565,7 +610,35 @@ do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_cumMatch(queryID_matchDT, "diffExprds_nMatch")
 foo <- dev.off()
 cat("... written: ", outFile, "\n")
+
+
+outFile <- file.path(outFolder, paste0("cumNbrTADs_by_nbrDSmatch_onlyDiffExprDS_withSub", ".", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+plot_cumMatch(queryID_matchDT, "diffExprds_nMatch")
+### ADD LINES BY SUBTYPE:
+tomatch="diffExprds_nMatch"
+curr_match <- na.omit(tmpDT[, tomatch])
+xvect <- seq_len(max(curr_match))
+lineVect <- lapply(split(tmpDT, tmpDT$subtype), function(x) {
+  curr_match <- na.omit(x[, tomatch])
+  yvect <- sapply(xvect, function(i){
+    sum(curr_match >= i)
+  })
+  yvect
+})
+lineCols <- cancer_subColors[as.character(levels(as.factor(tmpDT$subtype)))]
+foo <- sapply(seq_along(lineVect), function(i)  lines(x = rep(list(xvect), length(lineVect))[[i]], y = lineVect[[i]], col = lineCols[i]) )
+legend("topright", bty="n", 
+       legend = c("all", names(lineCols)),
+       lty=1,
+       col = c("black", lineCols)
+         )
+foo <- dev.off()
+cat("... written: ", outFile, "\n")
 # ### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
+
+stop("--ok")
+
 
 outFile <- file.path(outFolder, paste0("matchingRatio_all_and_best_mutlidens", ".", plotType))
 do.call(plotType, list(outFile, height=myHeightDens, width=myWidthDens))

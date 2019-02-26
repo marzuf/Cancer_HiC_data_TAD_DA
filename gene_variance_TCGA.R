@@ -4,6 +4,8 @@
 # Rscript gene_variance_TCGA.R NBvar
 # Rscript gene_variance_TCGA.R voom
 
+buildTable <- TRUE
+
 cat("> START: gene_variance_TCGA.R\n")
 
 SSHFS <- FALSE
@@ -42,8 +44,8 @@ dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
 length(dataset_proc_colors)
 
 source("utils_fct.R")
+source("utils_plot_fcts.R")
 source("plot_lolliTAD_funct.R")
-
 
 cancerDS <- score_DT$dataset[score_DT$process_short == "cancer"]
 
@@ -51,6 +53,8 @@ registerDoMC(ifelse(SSHFS,2,40))
 
 famType1 <- "hgnc"
 famType2 <- "hgnc_family_short"
+
+script17_name <- "170revision2EZH2_score_auc_pval_permGenes"
 
 correctTCGA_factor <- 10^6
 # I used scaled estimates -> similar to FPKM, but not multiplied by 10^6
@@ -75,13 +79,8 @@ stopifnot(!is.na(exprTypeName))
 cat("... START with exprType =\t", exprType, "\n")
 cat("... START with nTopLast =\t", nTopLast, "\n")
 
-buildTable <- TRUE
-# 
-# 
-
 settingFolder <- file.path("PIPELINE", "INPUT_FILES")
 # PIPELINE/INPUT_FILES/NCI-H460_40kb/run_settings_TCGAluad_mutKRAS_mutEGFR.R
-# PIPELINE/INPUT_FILES/NCI-H460_40kb/run_settings_TCGAluad_nonsmoker_smoker.R
 
 dsFold <- file.path("PIPELINE", "OUTPUT_FOLDER")
 
@@ -104,18 +103,11 @@ logFile <- file.path(outFold, "gene_variance_TCGA_logFile.txt")
 if(SSHFS) logFile <- ""
 if(!SSHFS) file.remove(logFile)
 
-# all_setting_files <- all_setting_files[1:5]
-
-# return NULL if file not found ??? [if yes -> build table skipping missing files, otherwise raise error and stop]
-returnNull <-  FALSE
-
 txt <- paste0("... exprType\t=\t", exprType, "\n")
 printAndLog(txt, logFile)
 txt <- paste0("... nTopLast\t=\t", nTopLast, "\n")
 printAndLog(txt, logFile)
 txt <- paste0("... correctTCGA_factor\t=\t", correctTCGA_factor, "\n")
-printAndLog(txt, logFile)
-txt <- paste0("... returnNull\t=\t", as.character(returnNull), "\n")
 printAndLog(txt, logFile)
 
 ds_file = all_setting_files[1]
@@ -129,24 +121,13 @@ if(buildTable) {
     
     curr_ds_name <- paste0(hicds, "_", exprds)
     curr_ds_path <- file.path(hicds, exprds)
-
+    ds_pipFolder <- file.path(dsFold, hicds, exprds)
+    
     cat(file.path(dsFold, hicds, exprds))
     stopifnot(dir.exists(file.path(dsFold, hicds, exprds)))
       
-    # if(returnNull) {if(!file.exists(ds_file)) return(NULL)} else {stopifnot(file.exists(ds_file))}
     cat("... source settingFile", basename(ds_file), "\n")
     source(ds_file)
-  
-    # curr_ds <- basename(pipOutFold)
-    # cat("... START", curr_ds, "\n")
-
-    # if(! curr_ds %in% cancerDS) return(NULL)
-    # if(!grepl("^TCGA", curr_ds)) return(NULL)
-    # 
-    ds_pipFolder <- file.path(dsFold, hicds, exprds)
-
-    # if(returnNull) {if(!file.exists(ds_pipFolder)) return(NULL)} else {stopifnot(file.exists(ds_pipFolder))}
-
     cat("... load samp1\n")
     samp1 <- eval(parse(text = load(file.path(setDir, sample1_file))))
     cat("... load samp2\n")
@@ -220,6 +201,9 @@ if(buildTable) {
     meanMostVar <- mean(mostVariant)
     meanLeastVar <- mean(leastVariant)
     
+    medianMostVar <- median(mostVariant)
+    medianLeastVar <- median(leastVariant)
+    
     data.frame(
       nTopLast = nTopLast,
       data_type = exprType,
@@ -228,6 +212,8 @@ if(buildTable) {
       dataset = curr_ds_name,
       meanMostVar = meanMostVar,
       meanLeastVar = meanLeastVar,
+      medianMostVar = medianMostVar,
+      medianLeastVar = medianLeastVar,
       stringsAsFactors = FALSE
     )
     
@@ -250,28 +236,24 @@ all_ds <- unique(all_ds_geneVarDT$dataset)
 
 curr_ds <- all_ds[1]
 
+### RETRIEVE FCC
 aucFCC <- foreach(curr_ds = all_ds, .combine='c') %dopar% {
-  ### RETRIEVE FCC
   
   hicds <- all_ds_geneVarDT$hicds[all_ds_geneVarDT$dataset == curr_ds]
   stopifnot(length(hicds) == 1)
   exprds <- all_ds_geneVarDT$exprds[all_ds_geneVarDT$dataset == curr_ds]
   stopifnot(length(exprds) == 1)
   
-  step17_fold <- file.path(dsFold, hicds, exprds, "170revision2EZH2_score_auc_pval_permGenes")
+  step17_fold <- file.path(dsFold, hicds, exprds, script17_name)
   stopifnot(dir.exists(step17_fold))
   
   aucFCC_file <- file.path(step17_fold, "auc_ratios.Rdata")
   stopifnot(file.exists(aucFCC_file))
   
-  # if(returnNull) {if(!file.exists(aucFCC_file)) return(NULL)} else {stopifnot(file.exists(aucFCC_file))}
   # AUC_COEXPRDIST_WITHFAM_SORTNODUP/MCF-7_40kb/TCGAbrca_lum_bas_hgnc/hgnc_family_short/auc_values.Rdata
-  
   aucCoexprDist_file <- file.path(auc_coexprdist_fold, hicds, paste0(exprds, "_", famType1), famType2, "auc_values.Rdata")
   stopifnot(file.exists(aucCoexprDist_file))
   
-  # if(returnNull) {if(!file.exists(aucCoexprDist_file)) return(NULL)} else {stopifnot(file.exists(aucCoexprDist_file))}
-
   all_ratios <- eval(parse(text = load(aucFCC_file)))
   aucFCC <- as.numeric(all_ratios["prodSignedRatio_auc_permGenes"])
   stopifnot(!is.na(aucFCC))
@@ -282,17 +264,11 @@ outFile <- file.path(outFold, "aucFCC.Rdata")
 save(aucFCC, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
 
-load("GENE_VARIANCE/LOG2FPKM/aucFCC.Rdata")
-
-# stopifnot(names(aucFCC) %in% names(dataset_proc_colors) )
-
+# load("GENE_VARIANCE/LOG2FPKM/aucFCC.Rdata")
 name_aucFCC_expr <- gsub(".+(TCGA.+)$", "\\1", names(aucFCC))
 
 stopifnot(name_aucFCC_expr %in% names(dataset_proc_colors) )
-
 stopifnot(cancer_subAnnot %in% names(cancer_subColors))
-
-# curr_colors <- dataset_proc_colors[names(aucFCC)]
 
 curr_colors <- as.character(cancer_subColors[as.character(cancer_subAnnot[name_aucFCC_expr])])
 stopifnot(!is.na(curr_colors))
@@ -304,13 +280,12 @@ aucCoexprDist <- foreach(curr_ds = all_ds, .combine='c') %dopar% {
   exprds <- all_ds_geneVarDT$exprds[all_ds_geneVarDT$dataset == curr_ds]
   stopifnot(length(exprds) == 1)
   
-  
   ### RETRIEVE FCC
-  step17_fold <- file.path(dsFold, hicds, exprds, "170revision2EZH2_score_auc_pval_permGenes")
+  step17_fold <- file.path(dsFold, hicds, exprds, script17_name)
   
   aucCoexprDist_file <- file.path(auc_coexprdist_fold, hicds, paste0(exprds, "_", famType1), famType2, "auc_values.Rdata")
   stopifnot(file.exists(aucCoexprDist_file))
-  # if(returnNull) {if(!file.exists(aucCoexprDist_file)) return(NULL)} else {stopifnot(file.exists(aucCoexprDist_file))}
+  
   all_aucDist <- eval(parse(text = load(aucCoexprDist_file)))
   aucCoexprDist <- as.numeric(all_aucDist["auc_ratio_same_over_diff_distVect"])
   stopifnot(!is.na(aucCoexprDist))
@@ -321,10 +296,9 @@ outFile <- file.path(outFold, "aucCoexprDist.Rdata")
 save(aucCoexprDist, file = outFile)
 cat(paste0("... written: ", outFile, "\n"))
 
-load("GENE_VARIANCE/LOG2FPKM/all_ds_geneVarDT.Rdata")
-load("GENE_VARIANCE/LOG2FPKM/aucFCC.Rdata")
-load("GENE_VARIANCE/LOG2FPKM/aucCoexprDist.Rdata")
-
+# load("GENE_VARIANCE/LOG2FPKM/all_ds_geneVarDT.Rdata")
+# load("GENE_VARIANCE/LOG2FPKM/aucFCC.Rdata")
+# load("GENE_VARIANCE/LOG2FPKM/aucCoexprDist.Rdata")
 
 subTypeDT <- data.frame(exprds=names(cancer_subAnnot), subtype=cancer_subAnnot, stringsAsFactors = FALSE)
 colorDT <- data.frame(exprds=names(dataset_proc_colors), color=dataset_proc_colors, stringsAsFactors = FALSE)
@@ -338,71 +312,50 @@ stopifnot(!is.na(subtype_data_DT))
 
 stopifnot(nrow(all_ds_geneVarDT) == nrow(subtype_data_DT))
 
-##########################################################################################
-##########################################################################################
+dsByType <- table(unique(subtype_data_DT[, c("exprds", "subtype")])$subtype)
+nDSbyType <- setNames(as.numeric(dsByType), names(dsByType))
+subTit <- paste0("# DS: ", paste0(names(nDSbyType), "=", as.numeric(nDSbyType), collapse = " - "))
 
-outFile <- file.path(outFolder, paste0("multidens_bySubtypes.", plotType))
-do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-plot_multiDens_setcols(
-  lapply(split(subtype_data_DT, subtype_data_DT$subtype), function(x) x[["meanMostVar"]]),
-  my_cols = cancer_subColors[as.character(levels(as.factor(subtype_data_DT$subtype)))],
-  my_xlab = paste0(""),
-  plotTit = myTit
-)
-mtext(side=3, text=subTit)
-foo <- dev.off()  
-cat(paste0("... written: ", outFile, "\n"))
-stop("ok")
+##########################################################################################
+##########################################################################################
+for(mytransf in c("normal", "log10")){
+  
+  mysuffix <- ifelse(mytransf=="normal", "", "_log10")
+  mysuffixLab <- ifelse(mytransf=="normal", "", " [log10] ")
+  for(myvar in c("meanMostVar", "medianMostVar", "meanLeastVar", "medianLeastVar")){
+    
+    myTit <- ifelse(mytransf == "normal", 
+                    paste0(myvar, " by categories"),
+                    paste0(myvar, " (log10) by categories"))
+    
+    outFile <- file.path(outFold, paste0("multidens_bySubtypes_", myvar, mysuffix, ".", plotType))
+    do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+    plot_multiDens_setcols(
+      lapply(split(subtype_data_DT, subtype_data_DT$subtype), function(x) {
+        tmp <- x[[myvar]]
+        if(mytransf == "log10") tmp <- log10(tmp)
+        tmp
+        }),
+      my_cols = cancer_subColors[as.character(levels(as.factor(subtype_data_DT$subtype)))],
+      my_xlab = paste0(myvar),
+      plotTit = myTit
+    )
+    mtext(side=3, text=subTit)
+    foo <- dev.off() 
+    cat(paste0("... written: ", outFile, "\n"))
+  } 
+}
 
 ##########################################################################################
 ##########################################################################################
 
 myTit <- paste0("mean variance top and least ", nTopLast, " genes (", exprType, " data)")
 
-# mySubTit <- paste0("(n datasets = ", nrow(all_ds_geneVarDT), ")")
 mySubTit <- paste0("all datasets (n=", nrow(all_ds_geneVarDT), ")")
-
 
 if(exprType == "NBvar") {
   all_ds_geneVarDT <- all_ds_geneVarDT[!is.na(all_ds_geneVarDT$meanMostVar) & !is.na(all_ds_geneVarDT$meanMostVar),]
 }
-######### plot density
-
-          # outFile <- file.path(outFold, paste0("density_mostVar_log10_vs_leastVar_log10.", plotType))
-          # do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-          # 
-          # plot_multiDens(list(
-          #   meanMostVar = log10(all_ds_geneVarDT$meanMostVar),
-          #   meanLeastVar = log10(all_ds_geneVarDT$meanLeastVar)
-          # ),
-          # plotTit = myTit)
-          # foo <- dev.off()
-          # cat(paste0("... written: ", outFile, "\n"))
-
-######### scatter plot most var ~ least var
-
-          # outFile <- file.path(outFold, paste0("mostVar_log10_vs_leastVar_log10.", plotType))
-          # do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-          # plot(x =  log10(all_ds_geneVarDT$meanMostVar),
-          #      y =  log10(all_ds_geneVarDT$meanLeastVar),
-          #      xlim =  range(log10(all_ds_geneVarDT$meanMostVar)) + c(-rangeOffset,rangeOffset),
-          #      ylim =  range(log10(all_ds_geneVarDT$meanLeastVar))  + c(-rangeOffset,rangeOffset),
-          #      pch = 16, cex = 0.7,
-          #      xlab = "mean most var (log10)",
-          #      ylab = "mean least var (log10)",
-          #      main = myTit
-          #        )
-          # text(x = log10(all_ds_geneVarDT$meanMostVar), 
-          #      log10(all_ds_geneVarDT$meanLeastVar),
-          #      labels = all_ds_geneVarDT$dataset,
-          #      pos=3, cex = 0.7)
-          # 
-          # add_legend_narm(x = log10(all_ds_geneVarDT$meanMostVar), y = log10(all_ds_geneVarDT$meanLeastVar), mypos="topleft", mymet="Pearson")  
-          # 
-          # mtext(text = mySubTit, side = 3)
-          # 
-          # foo <- dev.off()
-          # cat(paste0("... written: ", outFile, "\n"))
 
 ####### scatter plot most var, least var, and ratio
 
@@ -415,40 +368,10 @@ for(auc_type in all_auc) {
   cat("... start", auc_type, "\n")
   
   curr_auc <- eval(parse(text = paste0("auc", auc_type)))
-
   curr_auc <- (curr_auc-1)*100
-
   stopifnot(all_ds_geneVarDT$dataset %in% names(curr_auc))
   
-  
   all_ds_geneVarDT[, auc_type] <- curr_auc[all_ds_geneVarDT$dataset]
-
-                          # myTit <- paste0(auc_type, ": mean variance least ", nTopLast, " genes (", exprType, " data)")
-                          # outFile <- file.path(outFold, paste0(auc_type, "auc_vs_leastVar_log10.", plotType))
-                          # do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-                          # plot(
-                          #      x =  log10(all_ds_geneVarDT$meanLeastVar),
-                          #      y =  all_ds_geneVarDT[, auc_type],
-                          #      
-                          #      xlim =  range(log10(all_ds_geneVarDT$meanLeastVar)) + c(-rangeOffset,rangeOffset),
-                          #      ylim =  range(all_ds_geneVarDT[, auc_type])  + c(-rangeOffset,rangeOffset),
-                          #      
-                          #      pch = 16, cex = 0.7,
-                          #      ylab = paste0("AUC ratio ", auc_type),
-                          #      # xlab = "mean least var (log10)",
-                          #      xlab = paste0("Mean most var. [log10] top ", nTopLast, " least variant genes\n(", exprTypeName, ")"),
-                          #      main = myTit
-                          # )
-                          # text(x = log10(all_ds_geneVarDT$meanLeastVar),
-                          #      y = all_ds_geneVarDT[, auc_type],
-                          #      labels = all_ds_geneVarDT$dataset,
-                          #      pos=3, cex = 0.7)
-                          # add_legend_narm(x = log10(all_ds_geneVarDT$meanLeastVar), y = all_ds_geneVarDT[, auc_type], mypos="topleft", mymet="Pearson")  
-                          # 
-                          # mtext(text = mySubTit, side = 3)
-                          # 
-                          # foo <- dev.off()
-                          # cat(paste0("... written: ", outFile, "\n"))
   
   myTit <- paste0(auc_type, ": mean variance most ", nTopLast, " genes (", exprType, " data)")
   outFile <- file.path(outFold, paste0(auc_type, "auc_vs_mostVar_log10.", plotType))
@@ -456,11 +379,8 @@ for(auc_type in all_auc) {
   plot(
        x =  log10(all_ds_geneVarDT$meanMostVar),
        y =  all_ds_geneVarDT[, auc_type],
-       
        xlim =  range(log10(all_ds_geneVarDT$meanMostVar)) + c(-rangeOffset,rangeOffset),
        ylim =  range(all_ds_geneVarDT[, auc_type])  + c(-rangeOffset,rangeOffset),
-       
-       
        pch = 16, cex = 0.7,
        ylab = paste0("% AUC increase - ", auc_type),
        # xlab = "mean most var (log10)",
@@ -477,34 +397,6 @@ for(auc_type in all_auc) {
   
   foo <- dev.off()
   cat(paste0("... written: ", outFile, "\n"))
-  
-                                      # myTit <- paste0(auc_type, ": mean variance most/least ", nTopLast, " genes (", exprType, " data)")
-                                      # outFile <- file.path(outFold, paste0(auc_type, "auc_vs_mostVarleastVar_log10_ratio.", plotType))
-                                      # do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-                                      # plot(
-                                      #      x =  log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar),
-                                      #      y =  all_ds_geneVarDT[, auc_type],
-                                      #      
-                                      #      xlim =  range(log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar)) + c(-rangeOffset,rangeOffset),
-                                      #      ylim =  range(all_ds_geneVarDT[, auc_type])  + c(-rangeOffset,rangeOffset),
-                                      #      
-                                      #      pch = 16, cex = 0.7,
-                                      #      ylab = paste0("AUC ratio ", auc_type),
-                                      #      # xlab = "mean most/mean least var (log10)",
-                                      #      xlab = paste0("Mean most/mean least var. [log10] top ", nTopLast, " variant genes\n(", exprTypeName, ")"),
-                                      #      main = myTit
-                                      # )
-                                      # text(x =  log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar),
-                                      #      y = all_ds_geneVarDT[, auc_type],
-                                      #      labels = all_ds_geneVarDT$dataset,
-                                      #      pos=3, cex = 0.7)
-                                      # add_legend_narm(x =  log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar), y = all_ds_geneVarDT[, auc_type], mypos="topleft", mymet="Pearson")  
-                                      # 
-                                      # mtext(text = mySubTit, side = 3)
-                                      # 
-                                      # foo <- dev.off()
-                                      # cat(paste0("... written: ", outFile, "\n"))
-  
 }
 
 add_curv_fit <- function(x, y, withR2 = TRUE, R2shiftX = 0, R2shiftY = 0,...) {
@@ -524,50 +416,14 @@ add_curv_fit <- function(x, y, withR2 = TRUE, R2shiftX = 0, R2shiftY = 0,...) {
 }
 
 
-
-# stop("--ok")
-
 for(auc_type in all_auc) {
   
   cat("... start", auc_type, "\n")
-  
-  
   curr_auc <- eval(parse(text = paste0("auc", auc_type)))
-
   curr_auc <- (curr_auc-1)*100
-
 
   stopifnot(all_ds_geneVarDT$dataset %in% names(curr_auc))
   all_ds_geneVarDT[, auc_type] <- curr_auc[all_ds_geneVarDT$dataset]
-  
-                                          #   myTit <- paste0(auc_type, ": mean variance least ", nTopLast, " genes (", exprType, " data)")
-                                          #   outFile <- file.path(outFold, paste0(auc_type, "auc_vs_leastVar_log10_withFit_noLab.", plotType))
-                                          #   do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-                                          #   
-                                          #   xvar <- log10(all_ds_geneVarDT$meanLeastVar)
-                                          #   yvar <- all_ds_geneVarDT[, auc_type]
-                                          #   
-                                          #   plot(y =  yvar,
-                                          #        x =  xvar,
-                                          #        pch = pointPch, cex = pointCex,
-                                          #        ylab = paste0("AUC ratio ", auc_type),
-                                          #        xlab = paste0("Mean var. [log10] top ", nTopLast, " least variant genes\n(", exprTypeName, ")"),
-                                          #        main = myTit,
-                                          # cex.axis = cexAxis, cex.lab = cexLab
-                                          #   )
-                                          #   # text(x = log10(all_ds_geneVarDT$meanLeastVar),
-                                          #   #      y = all_ds_geneVarDT[, auc_type],
-                                          #   #      labels = all_ds_geneVarDT$dataset,
-                                          #   #      pos=3, cex = 0.7)
-                                          #   add_legend_narm(x = xvar, y = yvar, mypos="topleft", mymet="Pearson")  
-                                          #   add_curv_fit(x = xvar, y = yvar, 
-                                          #                withR2 = TRUE,
-                                          #                col ="gray80")
-                                          #   
-                                          #   mtext(text = mySubTit, side = 3)
-                                          #   
-                                          #   foo <- dev.off()
-                                          #   cat(paste0("... written: ", outFile, "\n"))
   
   myTit <- paste0(auc_type, ": mean variance most ", nTopLast, " genes (", exprType, " data)")
   outFile <- file.path(outFold, paste0(auc_type, "auc_vs_mostVar_log10_withFit_noLab.", plotType))
@@ -634,12 +490,9 @@ cex.axis = cexAxis, cex.lab = cexLab
                R2shiftX = -0.1, 
                R2shiftY = -0.1,
                lty=2)
-  
   mtext(text = mySubTit, side = 3)
   
-  
   my_colors <- my_colors[my_colors %in% curr_colors]
-  
   legend("topleft",
          legend=unique(cancer_subAnnot[names(aucFCC)]),
          lty=1,
@@ -650,37 +503,6 @@ cex.axis = cexAxis, cex.lab = cexLab
   
   foo <- dev.off()
   cat(paste0("... written: ", outFile, "\n"))
-  
-                                    #   myTit <- paste0(auc_type, ": mean variance most/least ", nTopLast, " genes (", exprType, " data)")
-                                    #   outFile <- file.path(outFold, paste0(auc_type, "auc_vs_mostVarleastVar_log10_ratio_withFit_noLab.", plotType))
-                                    #   do.call(plotType, list(outFile, height = myHeight, width = myWidth))
-                                    #   xvar <- log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar)
-                                    #   yvar <- all_ds_geneVarDT[, auc_type]
-                                    #   plot(y =  yvar,
-                                    #        x =  xvar,
-                                    #        pch = pointPch, cex = pointCex,
-                                    #        ylab = paste0("AUC ratio ", auc_type),
-                                    #        #xlab = "mean most/mean least var (log10)",
-                                    # 	   # xlab = paste0("Mean most/mean least var. [log10] top ", nTopLast, " most variant genes\n(", exprTypeName, ")"),
-                                    # 	   xlab = paste0("Mean most/mean least var. [log10] top ", nTopLast, " variant genes\n(", exprTypeName, ")"),
-                                    # 	   
-                                    #        main = myTit,
-                                    # cex.axis = cexAxis, cex.lab = cexLab
-                                    #   )
-                                    #   # text(x =  log10(all_ds_geneVarDT$meanMostVar)/log10(all_ds_geneVarDT$meanLeastVar),
-                                    #   #      y = all_ds_geneVarDT[, auc_type],
-                                    #   #      labels = all_ds_geneVarDT$dataset,
-                                    #   #      pos=3, cex = 0.7)
-                                    #   add_legend_narm(x = xvar, y = yvar, mypos="topleft", mymet="Pearson")  
-                                    #   add_curv_fit(x = xvar, y = yvar, 
-                                    #                withR2 = TRUE,
-                                    #                col ="gray80")
-                                    #   
-                                    #   mtext(text = mySubTit, side = 3)
-                                    #   
-                                    #   foo <- dev.off()
-                                    #   cat(paste0("... written: ", outFile, "\n"))
-  
 }
 
 

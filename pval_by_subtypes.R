@@ -258,14 +258,7 @@ foo <- foreach(var = vars_densplot) %dopar% {
     mtext(side=3, text=subTit)
     foo <- dev.off()  
     cat(paste0("... written: ", outFile, "\n"))
-    
-    
   }
-  
-  
-  
-  
-  
 }
 
 
