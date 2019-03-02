@@ -415,7 +415,6 @@ add_curv_fit <- function(x, y, withR2 = TRUE, R2shiftX = 0, R2shiftY = 0,...) {
   }
 }
 
-
 for(auc_type in all_auc) {
   
   cat("... start", auc_type, "\n")
