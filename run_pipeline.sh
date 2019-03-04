@@ -8,6 +8,8 @@
 # ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_norm_luad   # 01.03.2018
 
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
+
+
  
 # BREAST
 # ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 14.01.2018
@@ -93,11 +95,15 @@ echo "... > Gene expression dataset: $expr_dataset"
 step1=1     # prepare setting file
 step2=1    # run the pipeline
 
-TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "2v2" "3" "4" "5" "6" "7" "8c" "9" "10" "11" "13cleanInput" "14f2" "170revision2EZH2" )
+#TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "2v2" "3" "4" "5" "6" "7" "8c" "9" "10" "11" "13cleanInput" "14f2" "170revision2EZH2" )
 #TAD_DE_pipSteps=( "0cleanInputTCGA" )
 #TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "3" )
 #TAD_DE_pipSteps=( "4" "5" "6" "7" "8c")
-#TAD_DE_pipSteps=( "2v2" )
+
+# new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 11v2
+TAD_DE_pipSteps=( "5v2" )
+
+# ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 
 runDir="/mnt/etemp/marie/Cancer_HiC_data_TAD_DA"
 

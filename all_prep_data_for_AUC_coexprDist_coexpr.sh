@@ -68,19 +68,24 @@ all_TAD_files_ds=(
 # missing:
 # colorectal; liver;  astrocytes 2/2; astrocyte consensus
 
-# TO RUN 21.01.2018
-"GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
-"GSE105194_cerebellum_40kb TCGAgbm_classical_neural"
-"GSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
-"GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
+# RUN 21.01.2018
+# "GSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
+# "GSE105194_cerebellum_40kb TCGAgbm_classical_neural"
+# "GSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
+# "GSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
+# 
+# "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
+# "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural"
+# "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
+# "GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
+# 
+# "GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1"
 
-"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal"
-"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural"
-"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural"
-"GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc"
-
-"GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1"
-
+## added 01.03.2018 for variance comparison
+"ENCSR444WCZ_A549_40kb TCGAluad_norm_luad"
+"NCI-H460_40kb TCGAluad_norm_luad"
+"ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_norm_luad"
+"GSE105381_HepG2_40kb TCGAlihc_norm_lihc"
 )
 
 
