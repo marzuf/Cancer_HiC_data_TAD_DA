@@ -101,9 +101,13 @@ step2=1    # run the pipeline
 #TAD_DE_pipSteps=( "4" "5" "6" "7" "8c")
 
 # new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 11v2
-TAD_DE_pipSteps=( "5v2" )
+TAD_DE_pipSteps=( "7v2" )
 
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
+
+
+# ./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # 01.03.2018
+
 
 runDir="/mnt/etemp/marie/Cancer_HiC_data_TAD_DA"
 

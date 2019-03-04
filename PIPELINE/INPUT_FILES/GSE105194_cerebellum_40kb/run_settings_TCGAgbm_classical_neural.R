@@ -62,7 +62,7 @@ step8_for_randomTADsShuffle <- FALSE
 step14_for_randomTADsShuffle <- FALSE
 
 
-# > file edited: Mon, 21 Jan 2019 16:13:10 +0100 
+# > file edited: Mon, 04 Mar 2019 11:51:29 +0100 
 
 # path to output folder:
 pipOutFold <- "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/PIPELINE/OUTPUT_FOLDER/GSE105194_cerebellum_40kb/TCGAgbm_classical_neural"

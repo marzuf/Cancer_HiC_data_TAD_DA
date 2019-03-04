@@ -1,10 +1,11 @@
 
-    # > file written: Wed, 16 Jan 2019 11:06:39 +0100 
+    # > file written: Sat, 08 Dec 2018 11:17:17 +0100 
+    # edited manually to compare variance with wt-mut dataset 01.03.2019
 
     # in this file, settings that are specific for a run on a dataset
 
     # gives path to output folder
-    pipOutFold <- "OUTPUT_FOLDER/TCGAprad_norm_prad"
+    pipOutFold <- "OUTPUT_FOLDER/TCGAluad_norm_luad"
 
     # full path (starting with /mnt/...)
     # following format expected for the input
@@ -17,9 +18,9 @@
     # *************************************************************************************************************************
 
     # UPDATE 07.12.2018: for RSEM data, the "analog" FPKM file is provided separately (built in prepData)
-    rna_fpkmDT_file <- "/mnt/ed4/marie/other_datasets/TCGAprad_norm_prad/fpkmDT.Rdata"
+    rna_fpkmDT_file <- "/mnt/ed4/marie/other_datasets/TCGAluad_norm_luad/fpkmDT.Rdata"
 
-    rnaseqDT_file <- "/mnt/ed4/marie/other_datasets/TCGAprad_norm_prad/rnaseqDT_v2.Rdata"
+    rnaseqDT_file <- "/mnt/ed4/marie/other_datasets/TCGAluad_norm_luad/rnaseqDT_v2.Rdata"
     my_sep <- "\t"
     # input is Rdata or txt file ?
     # TRUE if the input is Rdata
@@ -41,11 +42,11 @@
 
     # labels for conditions
     cond1 <- "norm"
-    cond2 <- "prad"
+    cond2 <- "luad"
 
     # path to sampleID for each condition - should be Rdata ( ! sample1 for cond1, sample2 for cond2 ! )
-    sample1_file <- "/mnt/ed4/marie/other_datasets/TCGAprad_norm_prad/norm_ID.Rdata"
-    sample2_file <- "/mnt/ed4/marie/other_datasets/TCGAprad_norm_prad/prad_ID.Rdata"
+    sample1_file <- "/mnt/ed4/marie/other_datasets/TCGAluad_norm_luad/norm_ID.Rdata"
+    sample2_file <- "/mnt/ed4/marie/other_datasets/TCGAluad_norm_luad/luad_ID.Rdata"
 
     minCpmRatio <- 20/888 
 
@@ -62,18 +63,18 @@ step8_for_randomTADsShuffle <- FALSE
 step14_for_randomTADsShuffle <- FALSE
 
 
-# > file edited: Mon, 04 Mar 2019 17:39:52 +0100 
+# > file edited: Mon, 04 Mar 2019 11:52:39 +0100 
 
 # path to output folder:
-pipOutFold <- "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/PIPELINE/OUTPUT_FOLDER/ENCSR346DCU_LNCaP_40kb/TCGAprad_norm_prad"
+pipOutFold <- "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/PIPELINE/OUTPUT_FOLDER/NCI-H460_40kb/TCGAluad_norm_luad"
 
 # OVERWRITE THE DEFAULT SETTINGS FOR INPUT FILES - use TADs from the current Hi-C dataset 
-TADpos_file <- paste0(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/ENCSR346DCU_LNCaP_40kb/genes2tad/all_assigned_regions.txt")
+TADpos_file <- paste0(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/NCI-H460_40kb/genes2tad/all_assigned_regions.txt")
 #chr1    chr1_TAD1       750001  1300000
 #chr1    chr1_TAD2       2750001 3650000
 #chr1    chr1_TAD3       3650001 4150000
 
-gene2tadDT_file <- paste0(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/ENCSR346DCU_LNCaP_40kb/genes2tad/all_genes_positions.txt")
+gene2tadDT_file <- paste0(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/NCI-H460_40kb/genes2tad/all_genes_positions.txt")
 #LINC00115       chr1    761586  762902  chr1_TAD1
 #FAM41C  chr1    803451  812283  chr1_TAD1
 #SAMD11  chr1    860260  879955  chr1_TAD1

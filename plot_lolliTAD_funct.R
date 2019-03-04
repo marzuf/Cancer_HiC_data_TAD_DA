@@ -10,7 +10,7 @@ pipOutDir =  file.path(pipelineDir, "OUTPUT_FOLDER")
 pipScriptDir = paste0(setDir, "/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2")
 mainSettingsFile = file.path(paste0(pipScriptDir, "_",  "TopDom"), "main_settings.R")
 
-plot_lolliTAD_ds <- function(exprds, hicds, all_TADs){
+plot_lolliTAD_ds <- function(exprds, hicds, all_TADs, orderByLolli = "startPos"){
                           # mainDir = file.path(setDir, "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA"),
                           # pipelineDir = file.path(mainDir, "PIPELINE"),
                           # settingDir = file.path(pipelineDir, "INPUT_FILES"),
@@ -19,7 +19,6 @@ plot_lolliTAD_ds <- function(exprds, hicds, all_TADs){
                           # pipScriptDir = paste0(setDir, "/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2"),
                           # mainSettingsFile = file.path(paste0(pipScriptDir, "_",  "TopDom"), "main_settings.R") # needed for entrezDT_file
                           # ) {
-  
   
   stopifnot(length(exprds) == 1)
   stopifnot(length(hicds) == 1)
@@ -45,7 +44,6 @@ plot_lolliTAD_ds <- function(exprds, hicds, all_TADs){
   source(mainSettingsFile)
   source(paste0(pipScriptDir, "/", "TAD_DE_utils.R"))
   source(settingF)
-  
   
   ################################****************************************************************************************
   ####################################################### PREPARE INPUT
@@ -113,7 +111,6 @@ plot_lolliTAD_ds <- function(exprds, hicds, all_TADs){
   # txt <- paste0(toupper(script_name), "> Discard duplicated symbol, retain: ", nrow(rnaseqDT), "/", initNrow , " genes\n")
   # printAndLog(txt, logfile)
   
-  
   stopifnot(all(rownames(rnaseqDT) == names(geneList)))
   stopifnot(is.numeric(rnaseqDT[1,1]))
   #if(applyVoomAndCPM) {
@@ -156,7 +153,8 @@ plot_lolliTAD_ds <- function(exprds, hicds, all_TADs){
                                          id2name_table=entrez2symbDT, 
                                          geneList = geneList,
                                          textLeft =  meanTADlogFC[tad_to_plot] > 0,
-                                         orderBy = "logFC", cond1=plot_cond1, cond2=plot_cond2)
+                                         orderBy = orderByLolli,
+                                         cond1=plot_cond1, cond2=plot_cond2)
   }
   all_plots <- do.call(grid.arrange, c(vect_plot,  list(ncol=ifelse(n_topTAD_toplot == 1, 1, 2), top=textGrob(paste(hicds," - " , exprds),
                                                                              gp=gpar(fontsize=20,font=2)))))

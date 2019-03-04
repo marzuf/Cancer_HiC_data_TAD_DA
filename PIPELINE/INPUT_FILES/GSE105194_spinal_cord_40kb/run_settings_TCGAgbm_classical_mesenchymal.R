@@ -62,7 +62,7 @@ step8_for_randomTADsShuffle <- FALSE
 step14_for_randomTADsShuffle <- FALSE
 
 
-# > file edited: Sat, 19 Jan 2019 16:22:54 +0100 
+# > file edited: Mon, 04 Mar 2019 11:51:38 +0100 
 
 # path to output folder:
 pipOutFold <- "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/PIPELINE/OUTPUT_FOLDER/GSE105194_spinal_cord_40kb/TCGAgbm_classical_mesenchymal"

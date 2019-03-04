@@ -62,7 +62,7 @@ step8_for_randomTADsShuffle <- FALSE
 step14_for_randomTADsShuffle <- FALSE
 
 
-# > file edited: Mon, 14 Jan 2019 13:05:44 +0100 
+# > file edited: Mon, 04 Mar 2019 17:40:01 +0100 
 
 # path to output folder:
 pipOutFold <- "/mnt/etemp/marie/Cancer_HiC_data_TAD_DA/PIPELINE/OUTPUT_FOLDER/ENCSR401TBQ_Caki2_40kb/TCGAkich_norm_kich"

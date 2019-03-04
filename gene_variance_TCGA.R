@@ -4,7 +4,7 @@
 # Rscript gene_variance_TCGA.R NBvar
 # Rscript gene_variance_TCGA.R voom
 
-buildTable <- TRUE
+buildTable <- F
 
 cat("> START: gene_variance_TCGA.R\n")
 
@@ -26,11 +26,10 @@ cexAxis <- 1.2
 cexLab <- 1.2
 
 rangeOffset <- 0.15
-source(file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18/analysis_utils.R")))
 source(file.path(setDir, "/mnt/ed4/marie/scripts/EZH2_final_MAPQ/ezh2_utils_fct.R"))
 source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
 head(score_DT)
-source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))# cancer_subColors from here
 source( file.path("colors_utils.R"))
 dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
 length(dataset_proc_colors)
@@ -38,8 +37,8 @@ length(dataset_proc_colors)
 require(ggplot2)
 source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_coreg"), "set_dataset_colors.R"))
 head(score_DT)
-source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R"))
-source( file.path("colors_utils.R"))
+source( file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18"), "analysis_utils.R")) # cancer_subColors from here
+source( file.path("colors_utils.R")) # !! redefine cancer_subAnnot !!!
 dataset_proc_colors <- setNames(score_DT$proc_col, score_DT$dataset)
 length(dataset_proc_colors)
 

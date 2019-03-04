@@ -49,6 +49,10 @@ cancer_subAnnot <- c(
   "TCGAkich_norm_kich" = "vs_normal",
   "TCGAlusc_norm_lusc" = "vs_normal",
   "TCGAstad_norm_gs" = "vs_normal",
+  "TCGAluad_norm_luad" = "vs_normal",
+  "TCGAlihc_norm_lihc" = "vs_normal",
+  
+  
   
   "TCGAprad_norm_prad" = "vs_normal",
   
