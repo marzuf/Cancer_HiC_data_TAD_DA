@@ -144,7 +144,9 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   top_pvals <- adj_tad_pvals[adj_tad_pvals <= pvalThresh]
   stopifnot(!is.na(top_pvals))
   
-  if(topThresh >= 1) stopifnot(length(unique(top_pvals)) <= topThresh)
+  # if(topThresh >= 1) stopifnot(length(unique(top_pvals)) <= topThresh)
+  ### CHANGED 04.03.2019 -> 1 IS CONSIDERED AS PVAL  NOT NTOP
+  if(topThresh > 1) stopifnot(length(unique(top_pvals)) <= topThresh)
   
   top_tads <- names(top_pvals)
   
