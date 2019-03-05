@@ -612,7 +612,7 @@ cat("... written: ", outFile, "\n")
 
 # ### Problem of dup ??? si un groupe de TADs sont tous best match entre eux -> compté à double dans la courbe ????????
 
-stop("--ok")
+# stop("--ok")
 
 ####################
 #***************************************** boxplots

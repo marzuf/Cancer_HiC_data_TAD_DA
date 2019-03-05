@@ -372,7 +372,6 @@ head(ratioSignif_by_thresh_v2)
 myTit <- paste0("ratio signif. TADs vs. p-val. thresh.")
 mySub <- paste0("(pval_step = ", pval_step, ")")
 
-### plot 1) # signif TADs
 myylab <- paste0("ratio signif. TADs")
 myxlab <- paste0("adj. emp. p-val thresh")
 
@@ -395,7 +394,6 @@ legend("topleft",
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
-### plot 2) # signif TADs (log10)
 
 
 
