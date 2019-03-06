@@ -1,13 +1,16 @@
-setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
+SSHFS <- TRUE
+setDir <- ifelse(SSHFS, "~/media/electron", "")
+setwd(setDir)
 
 plotType <- "svg"
 myHeightDensity <- ifelse(plotType == "png", 400, 7)
 myWidthDensity <- ifelse(plotType == "png", 600, 10)
 myHeight <- myWidth <- myHeightDensity
-
+myWidthGG <- myWidthDensity
 plotCex <- 1.2
 
-outFold <- "CHECK_PIPELINE_V2"
+outFold <- file.path("CHECK_PIPELINE_V2")
+dir.create(outFold, recursive=TRUE)
 
 step_2v2 <- TRUE
 step_5v2 <- TRUE
@@ -59,22 +62,25 @@ head(wilcox_pairedTAD_meanExpr_fpkm)
 wilcox_pvals <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_pval"]]))
 adj_wilcox_pvals <- p.adjust(wilcox_pvals, method="BH")
 
+nSignif1 <- sum(adj_wilcox_pvals <= signifThresh1)
+nSignif2 <- sum(adj_wilcox_pvals <= signifThresh2)
+
+outFile <- file.path(outFold, paste0("2v2_adj_wilcox_pvals_density.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot(density(adj_wilcox_pvals), 
      main = paste0(mytit),
      xlab = myxlab,
      cex.lab = plotCex,
      cex.axis = plotCex)
 mtext(text = paste0(mysub), side=3)
-
-nSignif1 <- sum(adj_wilcox_pvals <= signifThresh1)
-nSignif2 <- sum(adj_wilcox_pvals <= signifThresh2)
-
 legend("topleft", 
        legend = c(paste0("# TADs = ", length(adj_wilcox_pvals)),
                   paste0("# <=", signifThresh1, "=", nSignif1),
                   paste0("# <=", signifThresh2, "=", nSignif2)),
        bty="n"
        )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> density plots (Wilcox test pval)
@@ -85,6 +91,8 @@ myxlab <- paste0("Wilcox. W stat.")
 
 wilcox_wstat <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_stat"]]))
 
+outFile <- file.path(outFold, paste0("2v2_adj_wilcox_wstat_density.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot(density(wilcox_wstat), 
      main = paste0(mytit),
      xlab = myxlab,
@@ -96,7 +104,8 @@ legend("topleft",
        legend = c(paste0("# TADs = ", length(adj_wilcox_pvals))),
        bty="n"
 )
-
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> comparison with v1 
@@ -127,6 +136,8 @@ myxlab <- paste0("TAD mean logFC (v1)")
 #        legend = c(paste0("# TADs = ", length(adj_wilcox_pvals))),
 #        bty="n"
 # )
+outFile <- file.path(outFold, paste0("2v2_adj_wilcox_pvals_densplot_log10.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 densplot(y = -log10(adj_wilcox_pvals[tad_list]),
          x = all_meanLogFC_TAD[tad_list],
          main = paste0(mytit),
@@ -140,6 +151,8 @@ legend("topleft",
        legend = c(paste0("# TADs = ", length(adj_wilcox_pvals))),
        bty="n"
 )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 
 ################################################
@@ -171,6 +184,8 @@ myxlab <- paste0("ratio exactly same TAD")
 
 nSameTADs <- unlist(lapply(nbrSameTAD_obs_permut, sum))
 
+outFile <- file.path(outFold, paste0("5v2_ratio_sameTADs_density.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot(density(nSameTADs/nTotTADs), 
      main = paste0(mytit),
      xlab = myxlab,
@@ -183,6 +198,8 @@ legend("topleft",
                   paste0("mean same TAD = ", mean(nSameTADs))),
        bty="n"
 )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 ################################################
 ################################################ STEP 7v2 => intraCorr for permutDT
@@ -225,6 +242,8 @@ tad_avg_v1 <- rowMeans(meanCorr_permDT_v1)
 tad_avg_v2 <- rowMeans(meanCorr_permDT_v2)
 stopifnot(names(tad_avg_v1) == names(tad_avg_v2) )
 
+outFile <- file.path(outFold, paste0("7v2_permutIntraCorr_densplot.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 densplot(
          x = tad_avg_v1,
          y = tad_avg_v2,
@@ -239,11 +258,15 @@ legend("topleft",
        legend = c(paste0("# TADs = ", length(tad_avg_v1))),
        bty="n"
 )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> multi density plot:  comparison with v1 
 #================================
 
+outFile <- file.path(outFold, paste0("7v2_permutIntraCorr_multiDens.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 
 plot_multiDens(size_list = list(
         v1=as.numeric(unlist(meanCorr_permDT_v1)),
@@ -252,12 +275,17 @@ plot_multiDens(size_list = list(
       plotTit = mytit,
       my_xlab = "permut. meanCorr")
 mtext(text = paste0(mysub), side=3)
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> multi density plot:  comparison with v1 and observed 
 #================================
 obs_corr_file <-  file.path(mainFolder, script4_name, "all_meanCorr_TAD.Rdata")
 obs_corr <- eval(parse(text = load(obs_corr_file)))
+
+outFile <- file.path(outFold, paste0("7v2_permutIntraCorr_with_obs_multiDens.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 
 plot_multiDens(size_list = list(
   v1=as.numeric(unlist(meanCorr_permDT_v1)),
@@ -267,6 +295,8 @@ plot_multiDens(size_list = list(
 plotTit = mytit,
 my_xlab = "permut. meanCorr")
 mtext(text = paste0(mysub), side=3)
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 # > x="PIPELINE/OUTPUT_FOLDER/GSE105381_HepG2_40kb/TCGAlihc_norm_lihc/4_runMeanTADCorr/all_meanCorr_TAD.Rdata""
 
@@ -302,6 +332,9 @@ mysub <- "adj. emp. pval. meanCorr"
 #================> densplot comparison with v1 
 #================================
 
+outFile <- file.path(outFold, paste0("10v2_emp_pval_intraCorr_densplot.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
+
 densplot(
   x = adj_emp_pval_meanCorr_v1,
   y = adj_emp_pval_meanCorr_v2,
@@ -316,10 +349,15 @@ legend("topleft",
        legend = c(paste0("# TADs = ", length(tad_avg_v1))),
        bty="n"
 )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> densplot comparison with v1 - log10
 #================================
+
+outFile <- file.path(outFold, paste0("10v2_emp_pval_intraCorr_densplot_log10.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 
 densplot(
   x = log10(adj_emp_pval_meanCorr_v1),
@@ -335,10 +373,15 @@ legend("topleft",
        legend = c(paste0("# TADs = ", length(tad_avg_v1))),
        bty="n"
 )
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> multi density plot:  comparison with v1 
 #================================
+
+outFile <- file.path(outFold, paste0("10v2_emp_pval_intraCorr_multidens.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidthGG))
 
 plot_multiDens(size_list = list(
   v1=as.numeric(unlist(adj_emp_pval_meanCorr_v1)),
@@ -347,6 +390,8 @@ plot_multiDens(size_list = list(
 plotTit = mytit,
 my_xlab = "adj. emp. p-val meanCorr")
 mtext(text = paste0(mysub), side=3)
+foo <- dev.off()
+cat(paste0("... written: ", outFile, "\n"))
 
 #================================
 #================> signif by threshold
@@ -375,8 +420,9 @@ mySub <- paste0("(pval_step = ", pval_step, ")")
 myylab <- paste0("ratio signif. TADs")
 myxlab <- paste0("adj. emp. p-val thresh")
 
-# outFile <- file.path(outFold, paste0("ratio_signif_by_pval.", plotType))
-# do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+outFile <- file.path(outFold, paste0("10v2_emp_pval_intraCorr_nSignif_by_thresh.", plotType))
+do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+
 plot(NULL,
      xlim=range(c(ratioSignif_by_thresh_v1, ratioSignif_by_thresh_v2)),
      ylim=range(c(ratioSignif_by_thresh_v1, ratioSignif_by_thresh_v2)), 

@@ -1,6 +1,76 @@
 #!/usr/bin/bash
 
 
+### TO RUN V2 05.03.2019
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_norm_luad   # running
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_norm_luad   #
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_norm_luad   # 
+
+# ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 
+
+# BREAST
+# ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 
+# ./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # 
+# ./run_pipeline.sh MCF-7ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas  # 
+
+# KIDNEY
+# ./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich  # 
+# ./run_pipeline.sh ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich # 
+# ./run_pipeline.sh ENCSR079VIJ_G401ENCSR401TBQ_Caki2_40kb TCGAkich_norm_kich	# 
+
+# SKIN
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_lowInf_highInf # 
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf  # 
+
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutBRAF # 
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF #  
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF  # 
+
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5_40kb TCGAskcm_wt_mutCTNNB1		# 
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1		# 
+# ./run_pipeline.sh ENCSR312KHQ_SK-MEL-5ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1	# 
+
+# LUNG
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_mutKRAS_mutEGFR # 
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR  # 
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_mutKRAS_mutEGFR
+
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_nonsmoker_smoker # 
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_nonsmoker_smoker  # 
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_nonsmoker_smoker # 
+
+#./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_wt_mutKRAS # 
+# ./run_pipeline.sh NCI-H460_40kb TCGAluad_wt_mutKRAS # 
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAluad_wt_mutKRAS # 
+
+
+### RUN 16.01.2019
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAlusc_norm_lusc  # 
+# ./run_pipeline.sh NCI-H460_40kb TCGAlusc_norm_lusc # 
+# ./run_pipeline.sh ENCSR444WCZ_A549NCI-H460_40kb TCGAlusc_norm_lusc # 
+	
+	
+# PANCREAS
+# ./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS # 
+	
+
+# PROSTATE	
+# ./run_pipeline.sh ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad # 
+
+
+# GBM
+# ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_mesenchymal
+# ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_neural
+# ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_proneural
+
+# COLORECTAL
+# ./run_pipeline.sh GSE105318_ENCFF439QFU_DLD1 TCGAcoad_msi_mss
+
+
+######## #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
+
+
 # ADDED 01.03.2019 TO BE ABLE TO COMPARE THE VARIANCE DATA NORM VS. CANCER AND WT VS. MUT
 
 # ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_norm_luad   # 01.03.2018
@@ -9,8 +79,6 @@
 
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 
-
- 
 # BREAST
 # ./run_pipeline.sh MCF-7_40kb TCGAbrca_lum_bas   # 14.01.2018
 # ./run_pipeline.sh ENCSR549MGQ_T47D_40kb TCGAbrca_lum_bas   # 14.01.2018
@@ -61,9 +129,6 @@
 # PROSTATE	
 # ./run_pipeline.sh ENCSR346DCU_LNCaP_40kb TCGAprad_norm_prad # 16.01.2019
 
-	
-#### TO RUN:
-
 # GBM
 # ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_mesenchymal
 # ./run_pipeline.sh GSE105194_ENCFF027IEO_astroCerebellum_vs_GSE105957_ENCFF715HDW_astroSpinal TCGAgbm_classical_neural
@@ -100,14 +165,15 @@ step2=1    # run the pipeline
 #TAD_DE_pipSteps=( "0cleanInputTCGA" "1cleanInput" "2" "3" )
 #TAD_DE_pipSteps=( "4" "5" "6" "7" "8c")
 
-# new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 11v2
-TAD_DE_pipSteps=( "7v2" )
+# new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 10v2, 11v2
+TAD_DE_pipSteps=( "6v2" "9v2" )
 
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 
 
 # ./run_pipeline.sh ENCSR079VIJ_G401_40kb TCGAkich_norm_kich   # 01.03.2018
 
+# ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_norm_luad
 
 runDir="/mnt/etemp/marie/Cancer_HiC_data_TAD_DA"
 
