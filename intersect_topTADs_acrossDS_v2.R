@@ -6,6 +6,7 @@
 
 # Rscript intersect_topTADs_acrossDS_v2.R 3
 # Rscript intersect_topTADs_acrossDS_v2.R 0.05
+# Rscript intersect_topTADs_acrossDS_v2.R 1
 
 startTime <- Sys.time()
 
@@ -63,9 +64,14 @@ args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) > 0)
 topThresh <- as.numeric(args[1])
 
+# if(topThresh == 1) {
+#   warning("topThresh == 1 is ambiguous; will be considered as a nTop not pval thresh !\n")
+# }
+# changed to investigate conserved TADs
 if(topThresh == 1) {
-  warning("topThresh == 1 is ambiguous; will be considered as a nTop not pval thresh !\n")
+  warning("topThresh == 1 is ambiguous; will be considered as pval thresh !\n")
 }
+
 
 outFolder <- file.path("INTERSECT_topTADs_ACROSSDS_v2", paste0("top", topThresh))
 dir.create(outFolder, recursive = TRUE)
@@ -133,7 +139,8 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   stopifnot(file.exists(geneList_file))
   geneList <- eval(parse(text = load(geneList_file)))
   
-  if(topThresh >= 1) {
+  # if(topThresh >= 1) {
+  if(topThresh > 1) {
     topThresh <- min(c(topThresh, length(adj_tad_pvals)))
     pvalThresh <- as.numeric(adj_tad_pvals[topThresh])
     stopifnot(!is.na(pvalThresh))
@@ -144,7 +151,10 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   top_pvals <- adj_tad_pvals[adj_tad_pvals <= pvalThresh]
   stopifnot(!is.na(top_pvals))
   
-  if(topThresh >= 1) stopifnot(length(unique(top_pvals)) <= topThresh)
+  # if(topThresh >= 1) stopifnot(length(unique(top_pvals)) <= topThresh)
+  # !!! CHANGED
+  if(topThresh > 1) stopifnot(length(unique(top_pvals)) <= topThresh)
+  
   
   top_tads <- names(top_pvals)
   

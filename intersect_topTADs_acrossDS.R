@@ -133,6 +133,7 @@ signifTADs_allDS_data <- foreach(ds = all_hicexpr_ds) %dopar% {
   stopifnot(file.exists(geneList_file))
   geneList <- eval(parse(text = load(geneList_file)))
   
+  # if(topThresh >= 1) {
   if(topThresh > 1) {
     topThresh <- min(c(topThresh, length(adj_tad_pvals)))
     pvalThresh <- as.numeric(adj_tad_pvals[topThresh])
