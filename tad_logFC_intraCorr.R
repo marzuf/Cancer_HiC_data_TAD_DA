@@ -13,7 +13,7 @@ require(doMC)
 
 source("utils_fct.R")
 
-plotType <- "png"
+plotType <- "svg"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 

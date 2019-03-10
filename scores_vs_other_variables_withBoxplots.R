@@ -1,7 +1,7 @@
 startTime <- Sys.time()
-cat(paste0("> Rscript scores_vs_other_variables_withBoxplots_TCGA.R\n"))
+cat(paste0("> Rscript scores_vs_other_variables_withBoxplots.R\n"))
 
-#  Rscript scores_vs_other_variables_withBoxplots_TCGA.R
+#  Rscript scores_vs_other_variables_withBoxplots.R
 
 library(foreach)
 library(doMC)

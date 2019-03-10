@@ -32,7 +32,7 @@ if(!SSHFS) file.remove(logFile)
 if(SSHFS) logFile <- ""
 
 plotType <- "svg"
-plotType <- "png"
+plotType <- "svg"
 
 widthBoxplot <- ifelse(plotType =="png", 600, 10)
 heightBoxplot <- ifelse(plotType =="png", 400, 7)

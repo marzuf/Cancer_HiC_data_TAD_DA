@@ -1,32 +1,37 @@
 # Rscript intersectDS_conservedTADs.R
 
+startTime <- Sys.time()
+
 source("utils_fct.R")
 
 plotCex <- 1.2
 
-plotType <- "svg"
+plotType <- "png"
 myHeight <- ifelse(plotType == "png", 400, 7)
 myWidth <- ifelse(plotType == "png", 400, 7)
 
 
-outFold <- file.path("INTERSECT_topTADs_ACROSSDS", "top1")
+outFold <- file.path("INTERSECTDS_CONSERVEDTADS")
 dir.create(outFold, recursive = TRUE)
 
 inFold <- file.path("INTERSECT_topTADs_ACROSSDS", "top1")
 stopifnot(dir.exists(inFold))
 
+cat("load signifTAD\n")
 load(file.path(inFold, "signifTADs_allDS_data.Rdata"))
 nTADs <- unlist(lapply(signifTADs_allDS_data, function(x) {
   nrow(x[["posDT"]])
 }))
 totTADs <- sum(nTADs)
 
+cat("load all_match\n")
 load(file.path(inFold, "all_matchDT.Rdata"))
 stopifnot( totTADs == length(unique(all_matchDT$query_id)))
 head(all_matchDT)
 
+cat("load bestMatch\n")
 load(file.path(inFold, "all_bestMatchDT.Rdata"))
-stopifnot( totTADs == length(unique(all_bestMatchDT$query_id)))
+# stopifnot( totTADs == length(unique(all_bestMatchDT$query_id))) # not TRUE, NA removed
 head(all_bestMatchDT)
 
 # compute the number of datasets in which signif (with or without counting same exrpds)
@@ -96,7 +101,23 @@ for(var_to_plot in c("nGenes", "TADsize")) {
   )
   foo <- dev.off()
   cat(paste0("... written: ", outFile, "\n"))
+  
+  outFile <- file.path(outFold, paste0(yvar, "_vs_", xvar, "_log10.", plotType))
+  do.call(plotType, list(outFile, height=myHeight, width=myWidth))
+  densplot(
+    x = log10(features_DT[, xvar]),
+    y = features_DT[, yvar],
+    xlab = myxlab,
+    ylab = myylab,
+    cex.lab = plotCex,
+    cex.axis = plotCex,
+    cex = 0.7,
+    pch = 16
+  )
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
 }
 
 
-
+cat("*** DONE\n")
+cat(paste0(startTime, "\n", Sys.time(), "\n"))

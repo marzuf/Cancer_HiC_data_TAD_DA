@@ -4,7 +4,7 @@
 
 startTime <- Sys.time()
 
-cat("> START tad_logFC_intraCorr_v2.R \n")
+cat("> START tmp_tad_logFC_intraCorr_v2.R \n")
 
 SSHFS <- FALSE
 
@@ -37,7 +37,7 @@ stopifnot(!is.na(signifThresh))
 stopifnot(signifThresh >= 0)
 stopifnot(signifThresh <= 1)
 
-outFolder <- file.path("TAD_LOGFC_INTRACORR_v2", paste0("signif", signifThresh))
+outFolder <- file.path("TMP_TAD_LOGFC_INTRACORR_v2", paste0("signif", signifThresh))
 dir.create(outFolder, recursive = TRUE)
 
 
@@ -47,6 +47,9 @@ stopifnot(!is.na(signifThresh))
 stopifnot(signifThresh > 0)
 
 #PIPELINE/OUTPUT_FOLDER/GSE105318_DLD1_40kb/TCGAcoad_msi_mss//emp_pval_combined.Rdata
+
+# available 10.03: 
+
 script9_name <- "9_runEmpPvalMeanTADLogFC"
 script10_name <- "10_runEmpPvalMeanTADCorr"
 script11_name <- "11_runEmpPvalCombined"

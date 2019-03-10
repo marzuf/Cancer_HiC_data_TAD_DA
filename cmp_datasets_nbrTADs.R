@@ -94,7 +94,7 @@ logFile <- file.path(outFold, "cmp_datasets_nbrTADs_logFile.txt")
 if(!SSHFS) system(paste0("rm -f ", logFile))
 if(SSHFS) logFile <- ""
 
-plotType <- "png"
+plotType <- "svg"
 widthBoxplot <- 10
 heightBoxplot <- 7
 myHeight <- ifelse(plotType == "png", 400, 7)
