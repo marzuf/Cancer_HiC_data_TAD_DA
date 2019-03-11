@@ -1,6 +1,11 @@
-SSHFS <- TRUE
+# Rscript check_pipeline_v2.R
+hicds <- "ENCSR079VIJ_G401_40kb"
+exprds <- "TCGAkich_norm_kich"
+
+
+SSHFS <- F
 setDir <- ifelse(SSHFS, "~/media/electron", "")
-setwd(setDir)
+# setwd(setDir)
 
 plotType <- "svg"
 myHeightDensity <- ifelse(plotType == "png", 400, 7)
@@ -9,7 +14,7 @@ myHeight <- myWidth <- myHeightDensity
 myWidthGG <- myWidthDensity
 plotCex <- 1.2
 
-outFold <- file.path("CHECK_PIPELINE_V2")
+outFold <- file.path("CHECK_PIPELINE_V2", paste0(hicds, "_", exprds))
 dir.create(outFold, recursive=TRUE)
 
 step_2v2 <- TRUE
@@ -18,8 +23,6 @@ step_7v2 <- TRUE
 
 pipOutFolder <- "PIPELINE/OUTPUT_FOLDER"
 
-hicds <- "ENCSR079VIJ_G401_40kb"
-exprds <- "TCGAkich_norm_kich"
 
 mainFolder <- file.path(pipOutFolder, hicds, exprds)
 stopifnot(dir.exists(mainFolder))
@@ -223,9 +226,9 @@ meanCorr_permDT_v1 <- meanCorr_permDT
 meanCorr_permDT_v2 <- eval(parse(text = load("luad_kras_egfr_foo_7v2_meanCorr_permDT.Rdata")))
 meanCorr_permDT_v1 <- eval(parse(text = load("luad_kras_egfr_foo_7_meanCorr_permDT.Rdata")))
 
-stopifnot(dim(meanCorr_permDT_v2) == dim(meanCorr_permDT) )
-
-stopifnot(rownames(meanCorr_permDT_v1) == rownames(meanCorr_permDT_v2))
+                        ### NOT YET DONE <<<<<<<<<<<----------------------------------------------
+                        # stopifnot(dim(meanCorr_permDT_v2) == dim(meanCorr_permDT) )
+                        # stopifnot(rownames(meanCorr_permDT_v1) == rownames(meanCorr_permDT_v2))
 
 stopifnot(!is.na(meanCorr_permDT_v1))
 stopifnot(!is.na(meanCorr_permDT_v2))
@@ -428,6 +431,7 @@ plot(NULL,
      ylim=range(c(ratioSignif_by_thresh_v1, ratioSignif_by_thresh_v2)), 
         cex.lab = plotCex, cex.axis = plotCex,
         xlab = myxlab,
+        ylab = myylab,
         main = myTit)
 mtext(text = mySub, side = 3)
 lines(x = pval_signif_thresh_seq, y = ratioSignif_by_thresh_v1, col="black")

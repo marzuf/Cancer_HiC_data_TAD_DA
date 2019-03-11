@@ -13,8 +13,17 @@ outFold <- file.path("CHECK_PIPELINE_V2_ALLDS")
 dir.create(outFold, recursive=TRUE)
 
 step_2v2 <- TRUE
+step_3 <- TRUE
+step_4 <- TRUE
 step_5v2 <- TRUE
 step_7v2 <- TRUE
+step_10 <- TRUE
+step_10v2 <- TRUE
+
+pval_step <- 0.01
+pval_signif_thresh_seq <- seq(from=0, to=1, by=pval_step) 
+
+
 
 pipOutFolder <- "PIPELINE/OUTPUT_FOLDER"
 
@@ -34,20 +43,13 @@ stopifnot(dir.exists(mainFolder))
 source("utils_fct.R")
 
 
-
 script2v2_name <- "2v2_runWilcoxonTAD"
 script3_name <- "3_runMeanTADLogFC"
-
-
 script5v2_name <- "5v2_runPermutations" # 44
-
 script5v2_name <- "5v2_runPermutations" # 44
-
-
 script7_name <- "7_runPermutationsMeanTADCorr"
 script7v2_name <- "7v2_runPermutationsMeanTADCorr"
 script4_name <- "4_runMeanTADCorr"
-
 script10_name <- "10_runEmpPvalMeanTADCorr"
 script10v2_name <- "10v2_runEmpPvalMeanTADCorr"
 
@@ -73,9 +75,6 @@ if(build_cmp_v2_allDS_data){
     ########################################################################################################
     ########################################################################################################
     
-    
-    
-    
     ################################################
     ################################################ STEP 2v2 => wilcox stat obs. data
     ################################################
@@ -86,38 +85,19 @@ if(build_cmp_v2_allDS_data){
     stopifnot(file.exists(wilcoxTestFile))
     load(wilcoxTestFile)
     head(wilcox_pairedTAD_meanExpr_wilcoxStat)
-    head(wilcox_pairedTAD_meanExpr_wilcoxStat)
-    # chr10_TAD1  chr10_TAD2  chr10_TAD8  chr10_TAD9 chr10_TAD10 chr10_TAD11 
-    # 10          21          20          10          15          10 
     
     wilcoxStatFile <- file.path(mainFolder, script2v2_name, "wilcox_pairedTAD_meanExpr_fpkm.Rdata")
     stopifnot(file.exists(wilcoxStatFile))
     load(wilcoxStatFile)
     head(wilcox_pairedTAD_meanExpr_fpkm)
-    # $chr10_TAD11
-    # $chr10_TAD11$wilcoxTest_pval
-    # [1] 0.125
-    # 
-    # $chr10_TAD11$wilcoxTest_stat
-    # [1] 10
-    
-    wilcox_wstat <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_stat"]]))
-    
-    
     wilcox_pvals <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_pval"]]))
-    adj_wilcox_pvals <- p.adjust(wilcox_pvals, method="BH")
     
-    nSignif1 <- sum(adj_wilcox_pvals <= signifThresh1)
-    nSignif2 <- sum(adj_wilcox_pvals <= signifThresh2)
     
-
-        
-    #================================
-    #================> density plots (Wilcox test pval)
-    #================================
-    wilcox_wstat <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_stat"]]))
+    step2v2_wilcox_wstat <- unlist(lapply(wilcox_pairedTAD_meanExpr_fpkm, function(x) x[["wilcoxTest_stat"]]))
+    step2v2_adj_wilcox_pvals <- p.adjust(wilcox_pvals, method="BH")
+    step2v2_nSignif1 <- sum(adj_wilcox_pvals <= signifThresh1)
+    step2v2_nSignif2 <- sum(adj_wilcox_pvals <= signifThresh2)
     
-
     #================================
     #================> comparison with v1 
     #================================
@@ -126,7 +106,7 @@ if(build_cmp_v2_allDS_data){
     head(all_meanLogFC_TAD)
     stopifnot(setequal(names(all_meanLogFC_TAD),  names(adj_wilcox_pvals)))
     
-    tad_list <- names(all_meanLogFC_TAD)
+    step3_tad_list <- names(all_meanLogFC_TAD)
     stopifnot(!duplicated(tad_list))
     
 
@@ -144,16 +124,14 @@ if(build_cmp_v2_allDS_data){
     head(nbrSameTAD_obs_permut)
     
     stopifnot(length(unique(unlist(lapply(nbrSameTAD_obs_permut, length)))) == 1)
-    
     stopifnot(length(unique(unlist(lapply(nbrSameTAD_obs_permut, length)))) == 1)
     
     n1 <- names(nbrSameTAD_obs_permut[[1]])
     stopifnot(unlist(lapply(nbrSameTAD_obs_permut, function(x) setequal(names(x), n1))))
     stopifnot(!duplicated(n1))
-    nTotTADs <- length(n1)
     
-
-    nSameTADs <- unlist(lapply(nbrSameTAD_obs_permut, sum))
+    step5v2_nTotTADs <- length(n1)
+    step5v2_nSameTADs <- unlist(lapply(nbrSameTAD_obs_permut, sum))
     
 
     ################################################
@@ -172,13 +150,11 @@ if(build_cmp_v2_allDS_data){
     meanCorr_permDT_v1 <- meanCorr_permDT
     
     # in the mean time:
-    meanCorr_permDT_v2 <- eval(parse(text = load("luad_kras_egfr_foo_7v2_meanCorr_permDT.Rdata")))
-    meanCorr_permDT_v1 <- eval(parse(text = load("luad_kras_egfr_foo_7_meanCorr_permDT.Rdata")))
+    step7v2_meanCorr_permDT_v2 <- eval(parse(text = load("luad_kras_egfr_foo_7v2_meanCorr_permDT.Rdata")))
+    step7_meanCorr_permDT_v1 <- eval(parse(text = load("luad_kras_egfr_foo_7_meanCorr_permDT.Rdata")))
     
     stopifnot(dim(meanCorr_permDT_v2) == dim(meanCorr_permDT) )
-    
     stopifnot(rownames(meanCorr_permDT_v1) == rownames(meanCorr_permDT_v2))
-    
     stopifnot(!is.na(meanCorr_permDT_v1))
     stopifnot(!is.na(meanCorr_permDT_v2))
     
@@ -186,21 +162,15 @@ if(build_cmp_v2_allDS_data){
     #================> densplot comparison with v1 
     #================================
 
-    tad_avg_v1 <- rowMeans(meanCorr_permDT_v1)
-    tad_avg_v2 <- rowMeans(meanCorr_permDT_v2)
+    step7_tad_avg_v1 <- rowMeans(meanCorr_permDT_v1)
+    step7v2_tad_avg_v2 <- rowMeans(meanCorr_permDT_v2)
     stopifnot(names(tad_avg_v1) == names(tad_avg_v2) )
     
-
-    #================================
-    #================> multi density plot:  comparison with v1 
-    #================================
-    
-
     #================================
     #================> multi density plot:  comparison with v1 and observed 
     #================================
     obs_corr_file <-  file.path(mainFolder, script4_name, "all_meanCorr_TAD.Rdata")
-    obs_corr <- eval(parse(text = load(obs_corr_file)))
+    step4_obs_corr <- eval(parse(text = load(obs_corr_file)))
     
 
     # > x="PIPELINE/OUTPUT_FOLDER/GSE105381_HepG2_40kb/TCGAlihc_norm_lihc/4_runMeanTADCorr/all_meanCorr_TAD.Rdata""
@@ -211,57 +181,55 @@ if(build_cmp_v2_allDS_data){
     # > emp_pval_meanCorr_v1_file ="PIPELINE/OUTPUT_FOLDER/ENCSR079VIJ_G401_40kb/TCGAkich_norm_kich/10_runEmpPvalMeanTADCorr/emp_pval_meanCorr.Rdata"
     # > emp_pval_meanCorr_v2_file ="PIPELINE/OUTPUT_FOLDER/ENCSR079VIJ_G401_40kb/TCGAkich_norm_kich/10v2_runEmpPvalMeanTADCorr/emp_pval_meanCorr.Rdata"
     
-    
     emp_pval_meanCorr_v1_file <- file.path(mainFolder, script10_name, "emp_pval_meanCorr.Rdata")
     emp_pval_meanCorr_v2_file <- file.path(mainFolder, script10v2_name, "emp_pval_meanCorr.Rdata")
     
     emp_pval_meanCorr_v1 <- eval(parse(text = load(emp_pval_meanCorr_v1_file)))
     emp_pval_meanCorr_v2 <- eval(parse(text = load(emp_pval_meanCorr_v2_file)))
     
-    adj_emp_pval_meanCorr_v1 <- p.adjust(emp_pval_meanCorr_v1, method="BH")
-    adj_emp_pval_meanCorr_v2 <- p.adjust(emp_pval_meanCorr_v2, method="BH")
+    step10_adj_emp_pval_meanCorr_v1 <- p.adjust(emp_pval_meanCorr_v1, method="BH")
+    step10v2_adj_emp_pval_meanCorr_v2 <- p.adjust(emp_pval_meanCorr_v2, method="BH")
     
     stopifnot(length(adj_emp_pval_meanCorr_v1) == length(adj_emp_pval_meanCorr_v2) )
     stopifnot(setequal(names(adj_emp_pval_meanCorr_v1), names(adj_emp_pval_meanCorr_v2)))
     stopifnot( names(adj_emp_pval_meanCorr_v1) == names(adj_emp_pval_meanCorr_v2) )
     
     
-
-    #================================
-    #================> densplot comparison with v1 
-    #================================
-    
-
-    #================================
-    #================> densplot comparison with v1 - log10
-    #================================
-    
-
-    #================================
-    #================> multi density plot:  comparison with v1 
-    #================================
-    
     #================================
     #================> signif by threshold
     #================================
     
-    
-    pval_step <- 0.01
-    
-    pval_signif_thresh_seq <- seq(from=0, to=1, by=pval_step) 
-    
-    ratioSignif_by_thresh_v1 <- sapply(pval_signif_thresh_seq, function(p_thresh) {
+    step10_ratioSignif_by_thresh_v1 <- sapply(pval_signif_thresh_seq, function(p_thresh) {
       mean(adj_emp_pval_meanCorr_v1 <= p_thresh) 
     })
     names(ratioSignif_by_thresh_v1) <- pval_signif_thresh_seq
     head(ratioSignif_by_thresh_v1)
     
-    ratioSignif_by_thresh_v2 <- sapply(pval_signif_thresh_seq, function(p_thresh) {
+    step10v2_ratioSignif_by_thresh_v2 <- sapply(pval_signif_thresh_seq, function(p_thresh) {
       mean(adj_emp_pval_meanCorr_v2 <= p_thresh) 
     })
     names(ratioSignif_by_thresh_v2) <- pval_signif_thresh_seq
     head(ratioSignif_by_thresh_v2)
   
+    
+    list(
+      step2v2_wilcox_wstat = step2v2_wilcox_wstat,
+      step2v2_adj_wilcox_pvals = step2v2_adj_wilcox_pvals,
+      step2v2_nSignif1 = step2v2_nSignif1,
+      step2v2_nSignif2 = step2v2_nSignif2,
+      step3_tad_list = step3_tad_list,
+      step5v2_nTotTADs = step5v2_nTotTADs,
+      step5v2_nSameTADs = step5v2_nSameTADs,
+      step7v2_meanCorr_permDT_v2 = step7v2_meanCorr_permDT_v2,
+      step7_meanCorr_permDT_v1 = step7_meanCorr_permDT_v1,
+      step7_tad_avg_v1 = step7_tad_avg_v1,
+      step7v2_tad_avg_v2 = step7v2_tad_avg_v2,
+      step4_obs_corr = step4_obs_corr,
+      step10_adj_emp_pval_meanCorr_v1 = step10_adj_emp_pval_meanCorr_v1,
+      step10_ratioSignif_by_thresh_v1 = step10_ratioSignif_by_thresh_v1,
+      step10v2_adj_emp_pval_meanCorr_v2 = step10v2_adj_emp_pval_meanCorr_v2,
+      step10v2_ratioSignif_by_thresh_v2 = step10v2_ratioSignif_by_thresh_v2
+    )
 
     
     outFile <- file.path(outFold, "cmp_v2_allDS_data.Rdata")
@@ -271,7 +239,6 @@ if(build_cmp_v2_allDS_data){
 
   } # end foreach all_hicexpr_ds
 } else {
-  
   outFile <- file.path(outFold, "cmp_v2_allDS_data.Rdata")
   cmp_v2_allDS_data <- eval(parse(text=load(outFile)))
 }

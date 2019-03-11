@@ -20,6 +20,8 @@ plotType <- "svg"
 myHeight <- 7
 myWidth <- 10
 
+plotCex <- 1.2
+
 outFold <- "CMP_VARIANCE_NORM_MUT_V2"
 dir.create(outFold, recursive = TRUE)
 
@@ -58,10 +60,12 @@ allData_allDs <- foreach(dataset = ctype) %do% {
     samp1_ID <- eval(parse(text=load(file.path(setDir, sample1_file))))
     samp2_ID <- eval(parse(text=load(file.path(setDir, sample2_file))))
     
+    ##### FPKM
+    
     fpkm_file <- file.path(ds_pipFolder, hicds, ds, "0_prepGeneData", paste0("rna_", "fpkm", "DT.Rdata"))
     stopifnot(file.exists(fpkm_file))
-    fpkmDT <- eval(parse(text = load(fpkm_file)))
     
+    fpkmDT <- eval(parse(text = load(fpkm_file)))
     samp1_DT <- fpkmDT[, samp1_ID]
     samp2_DT <- fpkmDT[, samp2_ID]
     
@@ -142,18 +146,23 @@ for(cancerT in ctype) {
     sum(x %in% unlist(norm_samps))
   })
   
-  mytit <- paste0(cancerT)
+  mytit <- paste0(toupper(cancerT))
   mysub <- paste0("top ", nTop, " most var genes ")
   myleg <- paste0(
     all_conds," (",  all_nSamp, "; ", all_nSamp_inNorm, "/", nNorm, ")"
   )
   
+  myxlab <- "gene var. FPKM (all genes)"
+  
   outFile <- file.path(outFold, paste0(cancerT, "_top", nTop, "_mostVar.", plotType))
   do.call(plotType, list(outFile, height=myHeight, width=myWidth))
-  plot_multiDens(c(all_var1, all_var2),
+  plot_multiDens_argList(c(all_var1, all_var2),
                  # legTxt = c("cond (nSamp; nSampInNorm/nNormSamp)", myleg),
                  legTxt = c( myleg),
-                 plotTit = mytit
+                 my_xlab = myxlab,
+                 plotTit = mytit,
+                 cex.axis = plotCex,
+                 cex.lab = plotCex
                 )
   mtext(text=mysub, side=3)
   foo <- dev.off()

@@ -24,6 +24,13 @@ nTADs <- unlist(lapply(signifTADs_allDS_data, function(x) {
 }))
 totTADs <- sum(nTADs)
 
+head(signifTADs_allDS_data[[1]][["ids"]])
+head(signifTADs_allDS_data[[1]][["idDT"]])
+head(signifTADs_allDS_data[[1]][["geneDT"]])
+head(signifTADs_allDS_data[[1]][["signifDT"]])
+head(signifTADs_allDS_data[[1]][["posDT"]])
+head(signifTADs_allDS_data[[1]][["matchDT"]])
+
 cat("load all_match\n")
 load(file.path(inFold, "all_matchDT.Rdata"))
 stopifnot( totTADs == length(unique(all_matchDT$query_id)))
@@ -73,13 +80,24 @@ sizeTADs_DT <- data.frame(
 )
 rownames(sizeTADs_DT) <- NULL
 
-features_DT <- merge(merge(all_nMatchDT, nGenesByTADs_DT, by="query_id"),
-                     sizeTADs_DT, by = "query_id")
+TADpvals <- unlist(unname(lapply(signifTADs_allDS_data, function(x) {
+  tmpDT <- x[["signifDT"]]
+  setNames(tmpDT$PVAL, tmpDT$ID)
+})))
+TADpvals_DT <- data.frame(
+  query_id = names(TADpvals),
+  TADpval = TADpvals,
+  stringsAsFactors = FALSE
+)
+rownames(TADpvals_DT) <- NULL
+
+features_DT <- merge(merge(merge(all_nMatchDT, nGenesByTADs_DT, by="query_id"),
+                     sizeTADs_DT, by = "query_id"), TADpvals_DT, by = "query_id")
 
 stopifnot(nrow(features_DT) > 0)
 
 var_to_plot="nGenes"
-for(var_to_plot in c("nGenes", "TADsize")) {
+for(var_to_plot in c("nGenes", "TADsize", "TADpval")) {
   
   xvar <- var_to_plot
   yvar <- "all_nMatch"
@@ -107,7 +125,7 @@ for(var_to_plot in c("nGenes", "TADsize")) {
   densplot(
     x = log10(features_DT[, xvar]),
     y = features_DT[, yvar],
-    xlab = myxlab,
+    xlab = paste0(myxlab, " [log10]"),
     ylab = myylab,
     cex.lab = plotCex,
     cex.axis = plotCex,
