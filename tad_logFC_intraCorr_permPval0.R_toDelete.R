@@ -1,9 +1,9 @@
 
-# Rscript tad_logFC_intraCorr_dist.R 
+# Rscript tad_logFC_intraCorr_permPval0.R 
 
 startTime <- Sys.time()
 
-cat("> START tad_logFC_intraCorr_dist.R \n")
+cat("> START tad_logFC_intraCorr_permPval0.R \n")
 
 SSHFS <- FALSE
 
@@ -17,9 +17,6 @@ myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 myHeightDensity <- myHeight
 myWidthDensity <- ifelse(plotType=="png", 600, 10)
-
-myWidthBarplot <- ifelse(plotType=="png", 600, 10)
-myHeightBarplot <- ifelse(plotType=="png", 400, 7)
 
 plotCex <- 1.4
 
@@ -41,10 +38,6 @@ file.remove(checkFile)
 
 logFile=""
 
-nPermut <- 10000
-minEmpPval <- 1/(nPermut+1)
-minEmpPval
-
 # stopifnot(!is.na(signifThresh))
 # stopifnot(signifThresh > 0)
 
@@ -52,6 +45,8 @@ minEmpPval
 
 script3_name <- "3_runMeanTADLogFC"
 script4_name <- "4_runMeanTADCorr"
+script6_name <- "6_runPermutationsMeanLogFC"
+script7_name <- "7_runPermutationsMeanTADCorr"
 script9_name <- "9_runEmpPvalMeanTADLogFC"
 script10_name <- "10_runEmpPvalMeanTADCorr"
 script11_name <- "11_runEmpPvalCombined"
@@ -194,60 +189,18 @@ myTit <- "all TCGA datasets - all TADs"
 mySub <- paste0("(# TADs = ", length(allPvals_allDS_DT$tad_id) , ")")
 
 
-############################################## # min Pval
-
-barplotCol <- "skyblue"
-
-all_vars <- c("FC", "Corr")
-
-var <- all_vars[1]
-for(var in all_vars){
-  full_var <- paste0("pval", var)
-  new_var <- paste0("nbrMinPval_", full_var)
-  myylab <- paste0("# min ", full_var, "(# perm.=", nPermut, ")")
-  myTit <- paste0(var, ": # of TADs with min. pval")
-  mySub <- paste0("(tot.: ", sum(allPvals_allDS_DT[, full_var] == minEmpPval), "/", nrow(allPvals_allDS_DT), ")")
-  aggDT <- aggregate(as.formula(paste0(full_var, " ~ hicds + exprds")), data = allPvals_allDS_DT, 
-                     function(x) sum(x == minEmpPval))
-  colnames(aggDT)[ colnames(aggDT) == full_var] <- new_var
-  
-  aggDT$dataset <- paste0(aggDT$hicds, "\n", aggDT$exprds)
-  aggDT <- aggDT[order(aggDT[,new_var]),]
-  
-  outFile <- file.path(outFolder, paste0(full_var, "_nbrTAD_minPval_barplot.", plotType))
-  do.call(plotType, list(outFile,  height=myHeightBarplot, width=myWidthBarplot))
-  
-  x <- barplot(aggDT[, new_var],
-          # names = aggDT$dataset, 
-          col = barplotCol,
-          las = 2,
-          main = myTit,
-          ylab = myylab,
-          cex.main = plotCex,
-          cex.lab = plotCex,
-          cex.axis = plotCex)
-          
-    mtext(text = mySub, side=3)
-   axis(1, at=x, las=2, labels = aggDT$dataset,cex.axis=0.7 ) # for the text label: change cex.axis
-   
-   foo <- dev.off()
-   cat(paste0("... written: ", outFile, "\n"))
-   
-
-}
-
-
-
-
-
 all_vars <- colnames(allPvals_allDS_DT)
 all_vars <- all_vars[!all_vars %in% c("hicds", "exprds", "tad", "tad_id")]
 
 curr_var <- all_vars[1]
 for(curr_var in all_vars) {
   
+  var1 <- comb_vars[1,i]
+  var2 <- comb_vars[2,i]
+  
+  
   ############################################## DENSITY
-  outFile <- file.path(outFolder, paste0(curr_var, "_density.", plotType))
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_density.", plotType))
   do.call(plotType, list(outFile,  height=myHeightDensity, width=myWidthDensity))
   
   plot(density(allPvals_allDS_DT[, curr_var]),
