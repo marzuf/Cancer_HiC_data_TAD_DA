@@ -208,6 +208,12 @@ tissue_data <- allCl_allChr_GRs[[1]]
 
 #query %over% subject
 
+# mergeByOverlaps computes the overlap between query and subject according to the arguments in .... 
+# It then extracts the corresponding hits from each object and returns a DataFrame containing one column for the query and one for the subject, 
+# as well as any mcols that were present on either object. The query and subject columns are named by quoting and deparsing the corresponding argument.
+
+
+
 tissue_cls_cmb <- combn(x = names(tissue_data), m=2)
 
 i_col=1
@@ -219,34 +225,178 @@ for(i_col in seq_len(ncol(tissue_cls_cmb))) {
   GR1 <- tissue_data[[paste0(ds1)]]
   GR2 <- tissue_data[[paste0(ds2)]]
   
-  q1_s2 <- GR1 %over% GR2
-  stopifnot(length(q1_s2) == length(GR1))
   
+  
+
+  # otherwise ...-40000 will match with 40000-
+  start(GR1_2) <- start(GR1_2) + 1
+  
+  # reduce first orders the ranges in x from left to right, then merges the overlapping or adjacent ones.
+     # drop.empty.ranges	-> TRUE or FALSE. Should empty ranges be dropped?
+     # min.gapwidth   Ranges separated by a gap of at least min.gapwidth positions are not merged.
+     # with.revmap	  TRUE or FALSE. Should the mapping from output to input ranges be stored in the returned object? If yes, then it is stored as metadata column revmap of type IntegerList.
+     # with.inframe.attrib	    TRUE or FALSE. For internal use
+    
+  
+  GR1_2_rd <- reduce(GR1_2)
+  
+  ds1_overBD <- GR1 %over% GR1_2_rd
+  ds2_overBD <- GR2 %over% GR1_2_rd
+  
+  uniqBD_ds1 <- sum(!ds1_overBD)
+  commonBD_ds1 <- sum(ds1_overBD)
+  uniqBD_ds2 <- sum(!ds2_overBD)
+  commonBD_ds2 <- sum(ds2_overBD)
+  
+  txt <- paste0("uniqBD_ds1 = ", uniqBD_ds1, "\n")
+  cat(txt, logFile)
+  txt <- paste0("uniqBD_ds2 = ", uniqBD_ds2, "\n")
+  cat(txt, logFile)  
+  txt <- paste0("commonBD_ds1 = ", commonBD_ds1, "\n")
+  cat(txt, logFile)
+  txt <- paste0("commonBD_ds2 = ", commonBD_ds2, "\n")
+  cat(txt, logFile)
+  ## => need to convert from TAD to BD !!!
+  
+  q1_s2 <- 
+  stopifnot(length(q1_s2) == length(GR1))
   q2_s1 <- GR2 %over% GR1
   stopifnot(length(q2_s1) == length(GR2))
+  GR1_2 <- unique(c(GR1, GR2))
+  GR1_2_matching <- mergeByOverlaps(query=GR1_2, GR1_2)
   
-  # GR1_2 <- unique(c(GR1, GR2))
+  q1_s1_2 <- GR1 %over% GR1_2
+  stopifnot(length(q1_s1_2) == length(GR1))
+  
+  q2_s1_2 <- GR2 %over% GR1_2
+  stopifnot(length(q2_s1_2) == length(GR2))
   
   # query %over% subject
   # `%over%` <- function(query, subject) overlapsAny(query, subject) => finds the ranges in query that overlap any of the ranges in subject
+  
+  merge_ds1_ds2 <- mergeByOverlaps(query=GR1, subject=GR2)
+  merge_ds2_ds1 <- mergeByOverlaps(query=GR2, subject=GR1)
+  
+  merge_ds2_ds1 <- mergeByOverlaps(query=GR1_2, subject=GR1_2)
   
   uniqDS1 <- sum(!q1_s2)
   uniqDS2 <- sum(!q2_s1)
   commonDS1 <- sum(q1_s2)
   commonDS2 <- sum(q2_s1)
   
+  uniqDS1_over1_2 <- sum(!q1_s1_2)
+  uniqDS2_over1_2 <- sum(!q2_s1_2)
+  commonDS1_over1_2 <- sum(q1_s1_2)
+  commonDS2_over1_2 <- sum(q2_s1_2)
+  
+  
+  
   txt <- paste0("n TADs DS1 = ", length(GR1), "\n")
   cat(txt, logFile)
   txt <- paste0("n TADs DS2 = ", length(GR2), "\n")
   cat(txt, logFile)
+  txt <- paste0("n TADs DS1_2 = ", length(GR1_2), "\n")
+  cat(txt, logFile)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  subjectHits(findOverlaps(bdRange, reduce(bdRange)))
+  
+  
+  
+  range1_DT <- data.frame(set="set1", start = set1_BD-tolRad, end = set1_BD+tolRad)
+  range2_DT <- data.frame(set="set2", start = set2_BD-tolRad, end = set2_BD+tolRad)
+  rangeDT <- rbind(range1_DT, range2_DT)
+  # IRanges with all starts and ends of both callers
+  bdRange <-   IRanges(rangeDT$start, rangeDT$end)
+  # reduce first orders the ranges in x from left to right, then merges the overlapping or adjacent ones.
+  # the look for matching between reduced boundary regions of both callers with the boundary regions of each caller
+  # => because rangeDT is in the same order as bdRange, for each boundary region of rangeDT, get the matching with the merged union of boundary regions
+  rangeDT$group <- subjectHits(findOverlaps(bdRange, reduce(bdRange)))
+  # for the DT with all boundary regions -> retrieve to which merged union boundary region they have match 
+  # then for each of the merged boundary region (x$group), look if this boundary regions has match with regions in set1, set1+set2, set2
+  matchDT <- data.frame(do.call(rbind, by(rangeDT, rangeDT$group, function(x) c(unique(x$group), mean(as.numeric(unique(x$set) == "set1"))))))
+  colnames(matchDT) <- c("group", "set1_match")
+  
+  stopifnot(all(matchDT$set1_match %in% c(0,0.5,1)))
+  
+  nUniqueSet1 <- sum(matchDT$set1_match == 1)
+  nUniqueSet2 <- sum(matchDT$set1_match == 0)
+  nShared <-  sum(matchDT$set1_match == 0.5)
+  
+  if(verbose) cat(paste0("... number of unique boundaries in ", set1_name, ": ", n
+  
+                         
+                         
+                         
+   q1_s2 <- GR1 %over% GR2
+   stopifnot(length(q1_s2) == length(GR1))
+   q2_s1 <- GR2 %over% GR1
+   stopifnot(length(q2_s1) == length(GR2))
+   GR1_2 <- unique(c(GR1, GR2))
+   GR1_2_matching <- mergeByOverlaps(query=GR1_2, GR1_2)
+              
+  q1_s1_2 <- GR1 %over% GR1_2
+  stopifnot(length(q1_s1_2) == length(GR1))
+  
+  q2_s1_2 <- GR2 %over% GR1_2
+  stopifnot(length(q2_s1_2) == length(GR2))
+  
+  # query %over% subject
+  # `%over%` <- function(query, subject) overlapsAny(query, subject) => finds the ranges in query that overlap any of the ranges in subject
+  
+  merge_ds1_ds2 <- mergeByOverlaps(query=GR1, subject=GR2)
+  merge_ds2_ds1 <- mergeByOverlaps(query=GR2, subject=GR1)
+  
+  merge_ds2_ds1 <- mergeByOverlaps(query=GR1_2, subject=GR1_2)
+  
+  uniqDS1 <- sum(!q1_s2)
+  uniqDS2 <- sum(!q2_s1)
+  commonDS1 <- sum(q1_s2)
+  commonDS2 <- sum(q2_s1)
+  
+  uniqDS1_over1_2 <- sum(!q1_s1_2)
+  uniqDS2_over1_2 <- sum(!q2_s1_2)
+  commonDS1_over1_2 <- sum(q1_s1_2)
+  commonDS2_over1_2 <- sum(q2_s1_2)
+  
+  
+  
+  txt <- paste0("n TADs DS1 = ", length(GR1), "\n")
+  cat(txt, logFile)
+  txt <- paste0("n TADs DS2 = ", length(GR2), "\n")
+  cat(txt, logFile)
+  txt <- paste0("n TADs DS1_2 = ", length(GR1_2), "\n")
+  cat(txt, logFile)
+
+  
+  
   txt <- paste0("n unique TADs DS1 = ", uniqDS1, "\n")
   cat(txt, logFile)
-  txt <- paste0("n unique TADs DS2 = ", uniqDS2, "\n")
+  txt <- paste0("n common TADs DS1 = ", commonDS1, "\n")  
   cat(txt, logFile)
-  txt <- paste0("n common TADs DS1 = ", commonDS1, "\n")
+  txt <- paste0("n unique TADs DS1 = ", uniqDS1_over1_2, "\n")
+  cat(txt, logFile)
+  txt <- paste0("n common TADs DS1 over DS1_2  = ", commonDS1_over1_2, "\n")
+  cat(txt, logFile)
+  
+  txt <- paste0("n unique TADs DS2 = ", uniqDS2, "\n")
   cat(txt, logFile)
   txt <- paste0("n common TADs DS2 = ", commonDS2, "\n")  
   cat(txt, logFile)
+  txt <- paste0("n unique TADs DS2 over DS1_2 = ", uniqDS2_over1_2, "\n")
+  cat(txt, logFile)
+  txt <- paste0("n common TADs DS2 = ", commonDS2_over1_2, "\n")  
+  cat(txt, logFile)
+  
+  
+  
   
   # stopifnot(commonDS1 == commonDS2)
   

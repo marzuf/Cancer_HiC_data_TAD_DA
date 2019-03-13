@@ -1,0 +1,312 @@
+
+# Rscript tad_logFC_intraCorr_permPval0.R 
+
+startTime <- Sys.time()
+
+cat("> START tad_logFC_intraCorr_permPval0.R \n")
+
+SSHFS <- FALSE
+
+require(foreach)
+require(doMC)
+
+source("utils_fct.R")
+
+plotType <- "svg"
+myHeight <- ifelse(plotType=="png", 500, 7)
+myWidth <- myHeight
+myHeightDensity <- myHeight
+myWidthDensity <- ifelse(plotType=="png", 600, 10)
+
+plotCex <- 1.4
+
+nColBreaks <- 10
+
+registerDoMC(ifelse(SSHFS, 2, 40))
+
+build_signifTADs_allDS_data <- TRUE
+
+setDir <- ifelse(SSHFS, "~/media/electron", "")
+
+outFolder <- file.path("TAD_LOGFC_INTRACORR_DIST")
+dir.create(outFolder, recursive = TRUE)
+
+# checkFile <- file.path(outFolder, paste0("check_file_traceback_", toptad_id, "_", bottad_id, ".txt"))
+# file.remove(checkFile)
+checkFile <- file.path(outFolder, paste0("check_file_traceback", ".txt"))
+file.remove(checkFile)
+
+logFile=""
+
+# stopifnot(!is.na(signifThresh))
+# stopifnot(signifThresh > 0)
+
+#PIPELINE/OUTPUT_FOLDER/GSE105318_DLD1_40kb/TCGAcoad_msi_mss//emp_pval_combined.Rdata
+
+script3_name <- "3_runMeanTADLogFC"
+script4_name <- "4_runMeanTADCorr"
+script6_name <- "6_runPermutationsMeanLogFC"
+script7_name <- "7_runPermutationsMeanTADCorr"
+script9_name <- "9_runEmpPvalMeanTADLogFC"
+script10_name <- "10_runEmpPvalMeanTADCorr"
+script11_name <- "11_runEmpPvalCombined"
+
+tad_match_folder <- file.path("INTERSECT_topTADs_ACROSSDS", "top3")
+stopifnot(dir.exists(tad_match_folder))
+
+all_bestMatchDT_file <- file.path(tad_match_folder, "all_bestMatchDT.Rdata")
+stopifnot(file.exists(all_bestMatchDT_file))
+
+signifTADs_allDS_data_file <- file.path(tad_match_folder, "signifTADs_allDS_data.Rdata")
+stopifnot(file.exists(signifTADs_allDS_data_file))
+
+all_matchDT_file <- file.path(tad_match_folder, "all_matchDT.Rdata")
+stopifnot(file.exists(all_matchDT_file))
+
+ratio_matchingSignifTAD_DT_file <- file.path(tad_match_folder, "ratio_matchingSignifTAD_DT.Rdata")
+stopifnot(file.exists(ratio_matchingSignifTAD_DT_file))
+
+hicds_exprds_asMatch_DT_file <- file.path(tad_match_folder, "hicds_exprds_asMatch_DT.Rdata")
+stopifnot(file.exists(hicds_exprds_asMatch_DT_file))
+
+
+pipOutFolder <- file.path("PIPELINE", "OUTPUT_FOLDER")
+
+all_hicexpr_ds <- unname(unlist(sapply(list.files(pipOutFolder, full.names = TRUE), function(x) file.path(basename(x),  list.files(x)))))
+stopifnot(dir.exists(file.path(pipOutFolder, all_hicexpr_ds)))
+
+ds=all_hicexpr_ds[1]
+
+if(build_signifTADs_allDS_data){
+  
+cat("... start building allPvals_allDS_DT data \n")
+  
+allPvals_allDS_DT <- foreach(ds = all_hicexpr_ds, .combine='rbind') %dopar% {
+  
+  cat("... start: ", ds, "\n")
+  
+  hicds <- dirname(ds)
+  exprds <- basename(ds)
+  stopifnot(dir.exists(hicds))
+  dsPipOutDir <- file.path(pipOutFolder, ds)
+  stopifnot(dir.exists(dsPipOutDir))
+  
+  # RETRIEVE logFC pval
+  stopifnot(dir.exists(file.path(dsPipOutDir, script9_name)))
+  tad_pvalFCFile <- file.path(dsPipOutDir, script9_name, "emp_pval_meanLogFC.Rdata")
+  stopifnot(file.exists(tad_pvalFCFile))
+  tad_pvalFC <- eval(parse(text = load(tad_pvalFCFile))) # not adjusted
+  adj_tad_pvalFC <- sort(p.adjust(tad_pvalFC, method="BH"))
+  tad_pvalFC <- sort(tad_pvalFC)
+  # tad_pvalFC <- tad_pvalFC[tad_pvalFC <= signifThresh]
+  
+  # RETRIEVE logFC values
+  stopifnot(dir.exists(file.path(dsPipOutDir, script3_name)))
+  tad_valuesFCFile <- file.path(dsPipOutDir, script3_name, "all_meanLogFC_TAD.Rdata")
+  stopifnot(file.exists(tad_valuesFCFile))
+  tad_valuesFC <- eval(parse(text = load(tad_valuesFCFile))) # not adjusted
+  tad_valuesFC <- sort(tad_valuesFC)
+  
+  # RETRIEVE TADcorr pval
+  stopifnot(dir.exists(file.path(dsPipOutDir, script10_name)))
+  tad_pvalCorrFile <- file.path(dsPipOutDir, script10_name, "emp_pval_meanCorr.Rdata")
+  stopifnot(file.exists(tad_pvalCorrFile))
+  tad_pvalCorr <- eval(parse(text = load(tad_pvalCorrFile)))
+  adj_tad_pvalCorr <- sort(p.adjust(tad_pvalCorr, method="BH"))
+  tad_pvalCorr <- sort(tad_pvalCorr)
+  # tad_pvalCorr <- tad_pvalCorr[tad_pvalCorr <= signifThresh]
+  
+  # RETRIEVE TADcorr values
+  stopifnot(dir.exists(file.path(dsPipOutDir, script4_name)))
+  tad_valuesCorrFile <- file.path(dsPipOutDir, script4_name, "all_meanCorr_TAD.Rdata")
+  stopifnot(file.exists(tad_valuesCorrFile))
+  tad_valuesCorr <- eval(parse(text = load(tad_valuesCorrFile)))
+  tad_valuesCorr <- sort(tad_valuesCorr)
+  
+  # RETRIEVE SIGNIF. TADs 
+  stopifnot(dir.exists(file.path(dsPipOutDir, script11_name)))
+  
+  tad_pvalFile <- file.path(dsPipOutDir, script11_name, "emp_pval_combined.Rdata")
+  stopifnot(file.exists(tad_pvalFile))
+  tad_pvals <- eval(parse(text = load(tad_pvalFile)))
+  adj_tad_pvalComb <- sort(p.adjust(tad_pvals, method="BH"))
+  tad_pvalComb <- sort(tad_pvals)
+  
+  # tad_pvalComb <- tad_pvalComb[tad_pvalComb <= signifThresh]
+  
+  all_tads <- Reduce(intersect, list(names(tad_pvalFC), names(tad_pvalCorr), names(tad_pvalComb),
+                                     names(adj_tad_pvalFC), names(adj_tad_pvalCorr), names(adj_tad_pvalComb),
+                                     names(tad_valuesFC), names(tad_valuesCorr)
+                                     ))
+  stopifnot(length(all_tads) == length(tad_pvalFC))
+  stopifnot(length(all_tads) == length(tad_pvalCorr))
+  stopifnot(length(all_tads) == length(tad_pvalComb))
+  stopifnot(length(all_tads) == length(adj_tad_pvalFC))
+  stopifnot(length(all_tads) == length(adj_tad_pvalCorr))
+  stopifnot(length(all_tads) == length(adj_tad_pvalComb))
+  stopifnot(length(all_tads) == length(tad_valuesFC))
+  stopifnot(length(all_tads) == length(tad_valuesCorr))
+  
+  outDT <- data.frame(
+    hicds=hicds,
+    exprds=exprds,
+    tad=all_tads,
+    tad_id=paste(hicds, exprds, all_tads, sep="_"),
+    adj_pvalFC = as.numeric(adj_tad_pvalFC[all_tads]),
+    adj_pvalCorr = as.numeric(adj_tad_pvalCorr[all_tads]),
+    adj_pvalComb = as.numeric(adj_tad_pvalComb[all_tads]),
+    pvalFC = as.numeric(tad_pvalFC[all_tads]),
+    pvalCorr = as.numeric(tad_pvalCorr[all_tads]),
+    pvalComb = as.numeric(tad_pvalComb[all_tads]),
+    valuesFC = as.numeric(tad_valuesFC[all_tads]),
+    valuesCorr = as.numeric(tad_valuesCorr[all_tads]),
+    stringsAsFactors = FALSE
+  )
+  stopifnot(!is.na(outDT))
+  outDT
+}
+outFile <- file.path(outFolder, "allPvals_allDS_DT.Rdata")
+save(allPvals_allDS_DT, file = outFile)
+cat(paste0("... written: ", outFile, "\n"))
+
+} else { # if not to build
+  outFile <- file.path(outFolder, "allPvals_allDS_DT.Rdata")
+  allPvals_allDS_DT <- eval(parse(text = load(outFile)))
+}
+  
+head(allPvals_allDS_DT)
+# load("TAD_LOGFC_INTRACORR_DIST/allPvals_allDS_DT.Rdata")
+# hicds             exprds adj_pvalFC adj_pvalCorr adj_pvalComb
+# 1 ENCSR079VIJ_G401_40kb TCGAkich_norm_kich 0.02913459  0.002099790 2.915007e-05
+# 2 ENCSR079VIJ_G401_40kb TCGAkich_norm_kich 0.02913459  0.002950338 3.456350e-05
+
+
+#============================================================================================
+#============================================================================================ plot density for all columns
+#============================================================================================
+
+myTit <- "all TCGA datasets - all TADs"
+mySub <- paste0("(# TADs = ", length(allPvals_allDS_DT$tad_id) , ")")
+
+
+all_vars <- colnames(allPvals_allDS_DT)
+all_vars <- all_vars[!all_vars %in% c("hicds", "exprds", "tad", "tad_id")]
+
+curr_var <- all_vars[1]
+for(curr_var in all_vars) {
+  
+  var1 <- comb_vars[1,i]
+  var2 <- comb_vars[2,i]
+  
+  
+  ############################################## DENSITY
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_density.", plotType))
+  do.call(plotType, list(outFile,  height=myHeightDensity, width=myWidthDensity))
+  
+  plot(density(allPvals_allDS_DT[, curr_var]),
+       main = curr_var)
+  mtext(text = paste0(myTit, "; ", mySub), side=3)
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
+  
+  
+}
+
+comb_vars <- combn(all_vars, 2)
+
+i=1
+for(i in 1:ncol(comb_vars)){
+  var1 <- comb_vars[1,i]
+  var2 <- comb_vars[2,i]
+  
+  myx <- allPvals_allDS_DT[, var1]
+  myy <- allPvals_allDS_DT[, var2]
+  
+  myTit <- paste0(var2, " vs. ", var1)
+  
+  ############################################## DENSPLOT
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_densplot.", plotType))
+  do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
+  densplot(x = myx, y = myy, 
+           main = myTit,
+           xlab = var1,
+           ylab = var2,
+           cex.axis = plotCex, cex.lab=plotCex, cex.main=plotCex)
+  mtext(text=mySub, side=3)
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
+  
+  ############################################## IF PVAL -> DENSPLOT LOG10
+  if(grepl("pval", var1)) {
+    myx_log10 <- -log10(myx)
+    var1_lab <- paste0(var1, " [-log10]")
+  }
+  if(grepl("pval", var2)) {
+    myy_log10 <- -log10(myy)
+    var2_lab <- paste0(var2, " [-log10]")
+  }
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_densplot_log10.", plotType))
+  do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
+  densplot(x = myx_log10, y = myy_log10, 
+           main = myTit,
+           xlab = var1_lab,
+           ylab = var2_lab,
+           cex.axis = plotCex, cex.lab=plotCex, cex.main=plotCex)
+  mtext(text=mySub, side=3)
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
+  
+  ############################################## IF PVAL + COMB -> DENSPLOT, COLOR-CODE VALUE
+  if( xor(grepl("Comb", var1), grepl("Comb", var2)) & xor(grepl("FC|Corr", var1), grepl("FC|Corr", var2)) ) {
+    
+    valueCol <- ifelse(grepl("FC", var1) | grepl("FC", var2), "valuesFC", "valuesCorr")
+    tmpCols <- colorRampPalette(c('red','blue'))(nColBreaks)[as.numeric(cut(allPvals_allDS_DT[, valueCol],breaks = nColBreaks))]
+    
+    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_colValues.", plotType))
+    do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
+    plot(x = myx, y = myy, 
+             main = myTit,
+             xlab = var1,
+             ylab = var2,
+            col = tmpCols,
+         pch=16, cex  = 0.7,
+             cex.axis = plotCex, cex.lab=plotCex, cex.main=plotCex)
+    mtext(text=mySub, side=3)
+    legend("topright", title=paste0(valueCol),
+           legend=c(levels(cut(allPvals_allDS_DT[, valueCol],breaks = nColBreaks))),
+           col =colorRampPalette(c('red','blue'))(nColBreaks),pch=20, bty="n")
+    foo <- dev.off()
+    cat(paste0("... written: ", outFile, "\n"))
+    
+    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_colValues_log10.", plotType))
+    do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
+    plot(x = -log10(myx), y = -log10(myy), 
+         main = myTit,
+         xlab = paste0(var1, " [-log10]"),
+         ylab = paste0(var2, " [-log10]"),
+         col = tmpCols,
+         pch=16, cex  = 0.7,
+         cex.axis = plotCex, cex.lab=plotCex, cex.main=plotCex)
+    mtext(text=mySub, side=3)
+    legend("bottomright", title=paste0(valueCol),
+           legend=c(levels(cut(allPvals_allDS_DT[, valueCol],breaks = nColBreaks))),
+           col =colorRampPalette(c('red','blue'))(nColBreaks),pch=20, bty="n")
+    foo <- dev.off()
+    cat(paste0("... written: ", outFile, "\n"))
+    
+    
+  } 
+  
+  
+}
+  
+  
+
+
+
+# ######################################################################################
+# ######################################################################################
+# ######################################################################################
+cat("*** DONE\n")
+cat(paste0(startTime, "\n", Sys.time(), "\n"))
+
