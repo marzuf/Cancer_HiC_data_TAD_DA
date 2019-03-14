@@ -9,7 +9,12 @@ options(scipen=100)
 cat("> START: cmp_datasets_MoC.R\n")
 # Rscript cmp_datasets_MoC.R
 
-buildTable <- TRUE
+### changed 14.03 (output in v2 folder):
+# -> right annotation: dataset resolution and # of TADs
+# -> finer colorscale
+# -> without consensus
+
+buildTable <-  F
 
 SSHFS <- FALSE
 setDir <- ifelse(SSHFS, "/media/electron", "")
@@ -19,12 +24,43 @@ setDir <- ifelse(SSHFS, "~/media/electron", "")
 if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 
 source(file.path("utils_fct.R"))
-source("../Dixon2018_integrative_data/MoC_heatmap_fct.R")
+source("MoC_heatmap_fct.R")
 source(file.path("datasets_settings.R"))
+
+resolFile <- file.path("CMP_DATASETS_RESOL/all_chromo_DT.Rdata")
+stopifnot(file.exists(resolFile))
+resolDT <- eval(parse(text = load(resolFile)))
+resol_ratioRowSumMore1000_DT <- aggregate(rowSum ~ dataset + dataset_label, data = resolDT, 
+                                          FUN=function(x) sum(x > 1000, na.rm=TRUE)/length(x))
+rightLab_resol <- setNames(resol_ratioRowSumMore1000_DT$rowSum, resol_ratioRowSumMore1000_DT$dataset_label)
+
+
+nbrTADfile <- file.path("CMP_DATASETS_NBRTADS/all_nbr_dt.Rdata")
+stopifnot(file.exists(nbrTADfile))
+nbrTAD_DT <- eval(parse(text = load(nbrTADfile)))
+nbrTAD_tot_DT <- aggregate(nTADs~ds1, data=nbrTAD_DT, FUN=sum, na.rm=T)
+nbrTAD_tot_DT$ds1_label <- sapply(as.character(nbrTAD_tot_DT$ds1), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+  dslab <- as.character(cl_labs[x])
+  stopifnot(length(dslab) == 1)
+  if(is.na(dslab)) {
+    paste0(names(cl_names[cl_names == x]))
+  } else {
+    paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+  }
+})
+stopifnot(!is.na(nbrTAD_tot_DT$ds1_label))
+rightLab_nbrTADs <- setNames(nbrTAD_tot_DT$nTADs, nbrTAD_tot_DT$ds1_label)
+rightLab_nbrTADs <- rightLab_nbrTADs[!grepl("consensus", names(rightLab_nbrTADs), ignore.case = TRUE)]
+
+stopifnot(setequal(names(rightLab_nbrTADs), names(rightLab_resol)))
+commonDS <- intersect(names(rightLab_nbrTADs), names(rightLab_resol))
+myRightLab <- paste0("#=", rightLab_nbrTADs[commonDS], "\nr=", round(rightLab_resol[commonDS], 2))
+names(myRightLab) <- commonDS
+myRightLeg <- "# TADs\nrows>1000"
 
 registerDoMC(ifelse(SSHFS, 2, 40))
 
-outFold <- file.path("CMP_DATASETS_MOC")
+outFold <- file.path("CMP_DATASETS_MOC_v2")
 dir.create(outFold)
 
 logFile <- file.path(outFold, "cmp_datasets_MoC_logFile.txt")
@@ -218,6 +254,8 @@ all_MoC_dt <- foreach(i = seq_len(ncol(all_cmps)), .combine="rbind") %dopar% {
     data.frame(
       ds1 = ds1,
       ds2 = ds2,
+      nTAD_ds1 = nrow(dt1),
+      nTAD_ds2 = nrow(dt2),
       chromo = chromo,
       MoC = moc,
       stringsAsFactors = FALSE
@@ -234,7 +272,15 @@ cat(paste0("... written: ", outFile, "\n"))
   all_MoC_dt <- eval(parse(text = load(outFile)))
 }
 
-# 
+nbrTAD_tot_DT_v2a <- aggregate(nTAD_ds1 ~ ds1, data = unique(all_MoC_dt[, c("nTAD_ds1", "ds1", "chromo")]), FUN=sum, na.rm=T)
+nbrTAD_tot_DT_v2b <- aggregate(nTAD_ds2 ~ ds2, data = unique(all_MoC_dt[, c("nTAD_ds2", "ds2", "chromo")]), FUN=sum, na.rm=T)
+v0 <- setNames(nbrTAD_tot_DT$nTADs, nbrTAD_tot_DT$ds1)
+v2a <- setNames(nbrTAD_tot_DT_v2a$nTAD_ds1, nbrTAD_tot_DT_v2a$ds1)
+v2b <- setNames(nbrTAD_tot_DT_v2b$nTAD_ds2, nbrTAD_tot_DT_v2b$ds2)
+commonDS <- Reduce(intersect, list(names(v0), names(v2a), names(v2b)))
+stopifnot(v0[commonDS] == v2a[commonDS])
+stopifnot(v0[commonDS] == v2b[commonDS])
+
 # all_MoC_dt <- eval(parse(text = load(outFile)))
 # stopifnot(nrow(all_MoC_dt) == (length(intersectChromos) * ncol(all_cmps)))
 # load("CMP_DATASETS_MOC/all_MoC_dt.Rdata")
@@ -272,6 +318,13 @@ all_MoC_dt$ds2_label <- sapply(as.character(all_MoC_dt$ds2), function(x) {   # !
 stopifnot(nrow(all_MoC_dt) == (length(intersectChromos) * ncol(all_cmps)))
 all_MoC_dt_save <- all_MoC_dt
 
+### v2: do not take consensus - 14.03
+all_MoC_dt <- all_MoC_dt[!grepl("consensus", all_MoC_dt$ds1_label, ignore.case = TRUE) & 
+                           !grepl("consensus", all_MoC_dt$ds2_label, ignore.case = TRUE),
+                           ]
+
+
+
 #******************************************************************************************************************************************** DRAW SYMMETRIC MATRIX
 
 mean_MoC_dt <- aggregate(as.formula(paste0("MoC ~ ds1", xlabType, " + ds2", xlabType)), FUN=mean, data = all_MoC_dt)
@@ -305,8 +358,10 @@ tit <- paste0("MoC between tissues (with consensus)\n")
 gplot_dendro <- plot_ggheatmap_with_left_rowdendro(x=as.matrix(corMat),
                                                    ranked_branches =T,
                                                    plotMap = "square", 
-                                                   low_limit_col = 0,
-                                                   high_limit_col = 1,
+                                                   # low_limit_col = 0,
+                                                   # high_limit_col = 1,
+                                                   low_limit_col = NULL,
+                                                   high_limit_col = NULL,
                                                    fill_legName = "MoC", 
                                                    dendroLabSize = 4,
                                                    addClusterDot = F,
@@ -314,8 +369,15 @@ gplot_dendro <- plot_ggheatmap_with_left_rowdendro(x=as.matrix(corMat),
                                                    annotateMean = TRUE,
                                                    comparisonName = "tissues",
                                                    legCategoryCols = NULL,
-                                                   lab_color_vect = NULL)
+                                                   lab_color_vect = NULL,
+                                                   perso_rightLab = myRightLab,
+                                                   perso_rightLeg = myRightLeg)
 
+# added 14.03
+# # low_limit_col = NULL
+# high_limit_col = NULL
+# perso_rightLab = NULL,
+# perso_rightLeg = NULL
 
 outFile <- file.path(outFold, paste0("tissues_consensus_MoC_heatmap.", plotType))
 ggsave(plot=gplot_dendro, file = outFile, width = widthMoCmat, height = heightMoCmat)

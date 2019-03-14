@@ -1,5 +1,9 @@
 startTime <- Sys.time()
 
+### changed 14.03:
+# -> right annotation: dataset resolution and # of TADs
+# -> finer colorscale
+
 library(foreach)
 library(doMC)
 library(ggplot2)
@@ -16,15 +20,47 @@ setDir <- ifelse(SSHFS, "/media/electron", "")
 setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 source(file.path("utils_fct.R"))
-source("../Dixon2018_integrative_data/MoC_heatmap_fct.R")
+source("MoC_heatmap_fct.R")
 source(file.path("datasets_settings.R"))
+
+resolFile <- file.path("CMP_DATASETS_RESOL/all_chromo_DT.Rdata")
+stopifnot(file.exists(resolFile))
+resolDT <- eval(parse(text = load(resolFile)))
+resol_ratioRowSumMore1000_DT <- aggregate(rowSum ~ dataset + dataset_label, data = resolDT, 
+                                          FUN=function(x) sum(x > 1000, na.rm=TRUE)/length(x))
+rightLab_resol <- setNames(resol_ratioRowSumMore1000_DT$rowSum, resol_ratioRowSumMore1000_DT$dataset_label)
+
+
+nbrTADfile <- file.path("CMP_DATASETS_NBRTADS/all_nbr_dt.Rdata")
+stopifnot(file.exists(nbrTADfile))
+nbrTAD_DT <- eval(parse(text = load(nbrTADfile)))
+nbrTAD_tot_DT <- aggregate(nTADs~ds1, data=nbrTAD_DT, FUN=sum, na.rm=T)
+nbrTAD_tot_DT$ds1_label <- sapply(as.character(nbrTAD_tot_DT$ds1), function(x) {   # !!! NEED THE AS.CHARACTER HERE !!!
+  dslab <- as.character(cl_labs[x])
+  stopifnot(length(dslab) == 1)
+  if(is.na(dslab)) {
+    paste0(names(cl_names[cl_names == x]))
+  } else {
+    paste0(names(cl_names[cl_names == x]), "\n(", dslab, ")")
+  }
+})
+stopifnot(!is.na(nbrTAD_tot_DT$ds1_label))
+rightLab_nbrTADs <- setNames(nbrTAD_tot_DT$nTADs, nbrTAD_tot_DT$ds1_label)
+rightLab_nbrTADs <- rightLab_nbrTADs[!grepl("consensus", names(rightLab_nbrTADs), ignore.case = TRUE)]
+
+stopifnot(setequal(names(rightLab_nbrTADs), names(rightLab_resol)))
+commonDS <- intersect(names(rightLab_nbrTADs), names(rightLab_resol))
+myRightLab <- paste0("#=", rightLab_nbrTADs[commonDS], "\nr=", round(rightLab_resol[commonDS], 2))
+names(myRightLab) <- commonDS
+myRightLeg <- "# TADs\nrows>1000"
+
 
 # if(SSHFS) setwd("/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 if(SSHFS) setwd("~/media/electron/mnt/etemp/marie/Cancer_HiC_data_TAD_DA")
 
 registerDoMC(ifelse(SSHFS, 2, 40))
 
-outFold <- file.path("CMP_DATASETS_MATCHING")
+outFold <- file.path("CMP_DATASETS_MATCHING_v2")
 system(paste0("mkdir -p ", outFold))
 
 logFile <- file.path(outFold, "cmp_datasets_matching_logFile.txt")
@@ -338,6 +374,12 @@ all_match_dt$ds2_label <- sapply(as.character(all_match_dt$ds2), function(x) {  
 })
 #******************************************************************************************************************************************** DRAW SYMMETRIC MATRIX
 
+### v2: do not take consensus - 14.03
+all_match_dt <- all_match_dt[!grepl("consensus", all_match_dt$ds1_label, ignore.case = TRUE) & 
+                           !grepl("consensus", all_match_dt$ds2_label, ignore.case = TRUE),
+                         ]
+
+
 var_to_plot <- colnames(all_match_dt)[!colnames(all_match_dt) %in% c("ds1", "ds2", "chromo", "ds1_label", "ds2_label")]
 
 curr_var <- "strictMatchRatio"
@@ -391,8 +433,10 @@ for(curr_var in var_to_plot) {
   gplot_dendro <- plot_ggheatmap_with_left_rowdendro(x=as.matrix(corMat),
                                                      ranked_branches =T,
                                                      plotMap = "square", 
-                                                     low_limit_col = 0,
-                                                     high_limit_col = 1,
+                                                     low_limit_col = NULL,
+                                                     high_limit_col = NULL,
+                                                     # low_limit_col = 0,
+                                                     # high_limit_col = 1,
                                                      fill_legName = paste0(curr_var), 
                                                      dendroLabSize = 4,
                                                      addClusterDot = F,
@@ -400,8 +444,16 @@ for(curr_var in var_to_plot) {
                                                      annotateMean = TRUE,
                                                      comparisonName = "caller",
                                                      legCategoryCols = NULL,
-                                                     lab_color_vect = NULL)
+                                                     lab_color_vect = NULL,
+                                                     perso_rightLab = myRightLab,
+                                                     perso_rightLeg = myRightLeg)
   
+  # added 14.03
+  # # low_limit_col = NULL
+  # high_limit_col = NULL
+  # perso_rightLab = NULL,
+  # perso_rightLeg = NULL
+  # => 
   
   ggsave(plot=gplot_dendro, file = outFile, width = widthMat, height = heightMat)
   cat(paste0("... written: ", outFile, "\n"))

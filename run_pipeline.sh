@@ -166,8 +166,8 @@ step2=1    # run the pipeline
 #TAD_DE_pipSteps=( "4" "5" "6" "7" "8c")
 
 # new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 10v2, 11v2
-TAD_DE_pipSteps=( "6v2" "9v2" )
-
+#TAD_DE_pipSteps=( "6v2" "9v2" )
+TAD_DE_pipSteps=( "4v3" )
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 
 
