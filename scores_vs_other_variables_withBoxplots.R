@@ -12,6 +12,8 @@ setDir <- ifelse(SSHFS, "~/media/electron", "")
 
 buildTable <- TRUE
 
+labAnnot <- FALSE
+
 rangeOffset <- 0.15
 source(file.path(setDir, paste0("/mnt/ed4/marie/scripts/TAD_DE_pipeline_v2_11_18/analysis_utils.R")))
 source(file.path(setDir, "/mnt/ed4/marie/scripts/EZH2_final_MAPQ/ezh2_utils_fct.R"))
@@ -397,7 +399,11 @@ my_colors <- cancer_subColors
 for(ref_var in c("coexprDistAUC", "fccAUC")) {
   for(curr_var in other_vars ) {
     
-    outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, ".", plotType))
+    if(labAnnot) {
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, ".", plotType))
+    }else {
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_noLab.", plotType))
+    }
     
     myx <- datasets_variables_DT[,curr_var]
     myy <- datasets_variables_DT[,ref_var]
@@ -409,6 +415,7 @@ for(ref_var in c("coexprDistAUC", "fccAUC")) {
     my_plot_function(varX = myx, varY=myy, 
                      mylabels = as.character(rownames(datasets_variables_DT)), 
                      withLab=F,
+                     col = curr_colors,
                      main = paste0(titNames[ref_var], " vs. ", titNames[curr_var]),
                      xlab = paste0(titNames[curr_var]),
                      ylab = paste0(titNames[ref_var]),
@@ -416,12 +423,13 @@ for(ref_var in c("coexprDistAUC", "fccAUC")) {
                      ylim = range(myy) + c(-offSets[ref_var], offSets[ref_var]),
                      cex.lab = plotAxisCex, cex.axis = plotAxisCex
                      )
-    text(x = myx, y = myy,
-         labels =  as.character(rownames(datasets_variables_DT)), 
-         pch=16,
-         col = curr_colors,
-         bty="n",
-         cex=0.7)
+    if(labAnnot) 
+            text(x = myx, y = myy,
+               labels =  as.character(rownames(datasets_variables_DT)), 
+               pch=16,
+               col = curr_colors,
+               bty="n",
+               cex=0.7)
     mtext(side=3, text = mySub)
     legend("bottomright",
            legend=names(my_colors),
@@ -446,12 +454,17 @@ for(ref_var in c("coexprDistAUC", "fccAUC")) {
         xoffset <- ifelse(curr_var == "nTADs", 0.05,
                           ifelse(curr_var == "nSignifTADs", 0.35, stop("")))
       } else {stop("")}
-      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10.", plotType))
       
+      if(labAnnot) {
+        outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10.", plotType))
+      } else {
+        outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10_noLab.", plotType))
+      }
       do.call(plotType, list(outFile, height = myHeight, width = myWidth))
       my_plot_function(varX = myx, varY=myy, 
                        mylabels = as.character(rownames(datasets_variables_DT)), 
                        withLab=F,
+                       col = curr_colors,
                        main = paste0(titNames[ref_var], " vs. ", titNames[curr_var]),
                        xlab = paste0(titNames[curr_var], "(log10[#+1])" ),
                        ylab = paste0(titNames[ref_var]),
@@ -459,12 +472,13 @@ for(ref_var in c("coexprDistAUC", "fccAUC")) {
                        ylim = range(myy) + c(-offSets[ref_var], offSets[ref_var]),
                        cex.lab = plotAxisCex, cex.axis = plotAxisCex
       )
-      text(x = myx, y = myy,
-           labels =  as.character(rownames(datasets_variables_DT)), 
-           pch=16,
-           col = curr_colors,
-           bty="n",
-           cex=0.7)
+      if(labAnnot) 
+        text(x = myx, y = myy,
+             labels =  as.character(rownames(datasets_variables_DT)), 
+             pch=16,
+             col = curr_colors,
+             bty="n",
+             cex=0.7)
       mtext(side=3, text = mySub)
       legend("bottomright",
              legend=names(my_colors),
@@ -497,11 +511,16 @@ for(i in seq_along(all_cmps)){
     myx <- log10(datasets_variables_DT[, curr_var]+1)
     myy <- datasets_variables_DT[, ref_var]
 
-    outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10.", plotType))
+    if(labAnnot){
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10.", plotType))
+    } else {
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_log10_noLab.", plotType))
+    }
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     my_plot_function(varX = myx, varY=myy, 
                      mylabels = as.character(rownames(datasets_variables_DT)), 
                      withLab=F,
+                     col = curr_colors,
                      main = paste0(titNames[ref_var], " vs. ", titNames[curr_var]),
                      xlab = paste0(titNames[curr_var], "(log10[#+1])" ),
                      ylab = paste0(titNames[ref_var]),
@@ -509,12 +528,13 @@ for(i in seq_along(all_cmps)){
                      ylim = range(myy) + c(-offSets[ref_var], offSets[ref_var]),
                      cex.lab = plotAxisCex, cex.axis = plotAxisCex
     )
-    text(x = myx, y = myy,
-         labels =  as.character(rownames(datasets_variables_DT)), 
-         pch=16,
-         col = curr_colors,
-         bty="n",
-         cex=0.7)
+    if(labAnnot)
+      text(x = myx, y = myy,
+           labels =  as.character(rownames(datasets_variables_DT)), 
+           pch=16,
+           col = curr_colors,
+           bty="n",
+           cex=0.7)
     mtext(side=3, text = mySub)
     legend("bottomright",
            legend=names(my_colors),
@@ -528,12 +548,16 @@ for(i in seq_along(all_cmps)){
 
     myx <- datasets_variables_DT[, curr_var]
     myy <- datasets_variables_DT[, ref_var]
-
-    outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, ".", plotType))
+    if(labAnnot){
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, ".", plotType))
+    }else{
+      outFile <- file.path(outFold, paste0(ref_var, "_", curr_var, "_noLab.", plotType))
+    }
     do.call(plotType, list(outFile, height = myHeight, width = myWidth))
     my_plot_function(varX = myx, varY=myy, 
                      mylabels = as.character(rownames(datasets_variables_DT)), 
                      withLab=F,
+                     col = curr_colors,
                      main = paste0(titNames[ref_var], " vs. ", titNames[curr_var]),
                      xlab = paste0(titNames[curr_var], "" ),
                      ylab = paste0(titNames[ref_var]),
@@ -541,12 +565,13 @@ for(i in seq_along(all_cmps)){
                      ylim = range(myy) + c(-offSets[ref_var], offSets[ref_var]),
                      cex.lab = plotAxisCex, cex.axis = plotAxisCex
     )
-    text(x = myx, y = myy,
-         labels =  as.character(rownames(datasets_variables_DT)), 
-         pch=16,
-         col = curr_colors,
-         bty="n",
-         cex=0.7)
+    if(labAnnot)
+      text(x = myx, y = myy,
+           labels =  as.character(rownames(datasets_variables_DT)), 
+           pch=16,
+           col = curr_colors,
+           bty="n",
+           cex=0.7)
     mtext(side=3, text = mySub)
     legend("bottomright",
            legend=names(my_colors),

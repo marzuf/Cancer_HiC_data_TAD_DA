@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
-#./run_pipeline_allDS.sh 6v2onlyW
+#./run_pipeline_allDS.sh 4v2
+#./run_pipeline_allDS.sh 4vAll
 
 # 5v2: all_hic_dataset running
 
@@ -157,7 +158,7 @@ for hic_dataset in "${all_hic_dataset[@]}"; do
 		old_inputFolder="/mnt/ed4/marie/scripts/TAD_DE_pipeline/SETTING_FILES_cleanInput"
 		nPermut="10000"
 		#nPermut="10"
-		ncpu="20"
+		ncpu="50"
 
 		Rexec=`which Rscript`
 
