@@ -2,6 +2,7 @@
 
 #./run_pipeline_allDS.sh 4v2
 #./run_pipeline_allDS.sh 4vAll
+#./run_pipeline_allDS.sh 6v2onlyW
 
 # 5v2: all_hic_dataset running
 
