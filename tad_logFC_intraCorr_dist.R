@@ -12,7 +12,7 @@ require(doMC)
 
 source("utils_fct.R")
 
-plotType <- "svg"
+plotType <- "png"
 myHeight <- ifelse(plotType=="png", 500, 7)
 myWidth <- myHeight
 myHeightDensity <- myHeight
@@ -272,7 +272,7 @@ for(i in 1:ncol(comb_vars)){
   myTit <- paste0(var2, " vs. ", var1)
   
   ############################################## DENSPLOT
-  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_densplot.", plotType))
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "densplot.", plotType))
   do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
   densplot(x = myx, y = myy, 
            main = myTit,
@@ -292,7 +292,7 @@ for(i in 1:ncol(comb_vars)){
     myy_log10 <- -log10(myy)
     var2_lab <- paste0(var2, " [-log10]")
   }
-  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_densplot_log10.", plotType))
+  outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "densplot_log10.", plotType))
   do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
   densplot(x = myx_log10, y = myy_log10, 
            main = myTit,
@@ -309,7 +309,7 @@ for(i in 1:ncol(comb_vars)){
     valueCol <- ifelse(grepl("FC", var1) | grepl("FC", var2), "valuesFC", "valuesCorr")
     tmpCols <- colorRampPalette(c('red','blue'))(nColBreaks)[as.numeric(cut(allPvals_allDS_DT[, valueCol],breaks = nColBreaks))]
     
-    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_colValues.", plotType))
+    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "colValues.", plotType))
     do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
     plot(x = myx, y = myy, 
              main = myTit,
@@ -325,7 +325,7 @@ for(i in 1:ncol(comb_vars)){
     foo <- dev.off()
     cat(paste0("... written: ", outFile, "\n"))
     
-    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "_colValues_log10.", plotType))
+    outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "colValues_log10.", plotType))
     do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
     plot(x = -log10(myx), y = -log10(myy), 
          main = myTit,
