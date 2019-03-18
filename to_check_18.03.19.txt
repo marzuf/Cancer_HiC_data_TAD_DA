@@ -1,0 +1,63 @@
+
+
+######### DEFAULT
+
+./exists_rdata.sh 0_prepGeneData/pipeline_geneList.Rdata
+#ok
+
+######### OBS VALUES
+
+./exists_rdata.sh 2v2_runWilcoxonTAD/wilcox_pairedTAD_meanExpr_wilcoxStat.Rdata
+#ok
+
+./exists_rdata.sh 3_runMeanTADLogFC/all_meanLogFC_TAD.Rdata
+#ok
+
+./exists_rdata.sh 4_runMeanTADCorr/all_meanCorr_TAD.Rdata
+#ok
+
+./exists_rdata.sh 4v2_runConcordTADCorr/all_concordCorr_TAD.Rdata
+#ok
+
+./exists_rdata.sh 4v3_runConcordTADCorr/all_concordCorr_TAD.Rdata
+# ok
+./exists_rdata.sh 8c_runAllDown/all_obs_prodSignedRatio.Rdata
+#ok
+
+######### PERMUTATIONS
+
+./exists_rdata.sh 8c_runAllDown/all_obs_prodSignedRatio.Rdata
+#ok
+
+./exists_rdata.sh 7v2_runPermutationsMeanTADCorr/meanCorr_permDT.Rdata
+# 53 missing
+
+######### EMP PVALS
+
+
+./exists_rdata.sh 9_runEmpPvalMeanTADLogFC/emp_pval_meanLogFC.Rdata
+#ok
+
+./exists_rdata.sh 9v2_runEmpPvalWilcoxStat/emp_pval_wilcoxStat.Rdata
+            > START hic_dataset = ENCSR079VIJ_G401_40kb - expr_dataset = TCGAkich_norm_kich (i=16)
+            ... PIPELINE/OUTPUT_FOLDER/ENCSR079VIJ_G401_40kb/TCGAkich_norm_kich/9v2_runEmpPvalWilcoxStat/emp_pval_wilcoxStat.Rdata does not exist !
+
+            ... !!! 34 missing            
+
+./exists_rdata.sh 10_runEmpPvalMeanTADCorr/emp_pval_meanCorr.Rdata
+#ok
+
+./exists_rdata.sh 10b_runEmpPvalProdSignedRatio/emp_pval_prodSignedRatio.Rdata
+#ok
+
+./exists_rdata.sh 10v2_runEmpPvalMeanTADCorr/emp_pval_meanCorr.Rdata
+            > START hic_dataset = ENCSR444WCZ_A549_40kb - expr_dataset = TCGAluad_norm_luad (i=1)
+            ... PIPELINE/OUTPUT_FOLDER/ENCSR444WCZ_A549_40kb/TCGAluad_norm_luad/10v2_runEmpPvalMeanTADCorr/emp_pval_meanCorr.Rdata does not exist !
+
+
+            !!! NBR MISSING FILES: 53
+
+
+./exists_rdata.sh 11_runEmpPvalCombined/emp_pval_combined.Rdata
+#ok
+

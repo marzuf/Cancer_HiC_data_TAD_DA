@@ -3,7 +3,10 @@
 #./run_pipeline_allDS.sh 4v2
 #./run_pipeline_allDS.sh 4vAll
 #./run_pipeline_allDS.sh 6v2onlyW
-
+#./run_pipeline_allDS.sh 10b
+#./run_pipeline_allDS.sh 9v2
+#./run_pipeline_allDS.sh 10v2
+#./run_pipeline_allDS.sh 7v2
 # 5v2: all_hic_dataset running
 
 all_hic_dataset=(
@@ -136,7 +139,7 @@ for hic_dataset in "${all_hic_dataset[@]}"; do
 
 			
 		start_time=$(date -R)    
-		set -e
+		#set -e
 
 		if [[ $# != 1 ]]; then
 		    echo "invalid # of arguments"
