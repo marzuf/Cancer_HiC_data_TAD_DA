@@ -40,6 +40,8 @@ myWidthV <- ifelse(plotType=="png", 300, 7)
 dsCol1 <- "dodgerblue4"
 dsCol2 <- "darkorange2" 
 
+cexVennArea <- 2
+
 binSize <- 40000
 binSizeKb <- binSize/1000
 tolRad <- 2*binSize
@@ -270,7 +272,9 @@ for(i in seq_along(allCl_allChr_GRs)) {
                        category = c(ds1, ds2), 
                        lty = "blank", 
                        alpha = rep(0.5, 2),
-                       fill = c(dsCol1, dsCol2))
+                       fill = c(dsCol1, dsCol2),
+                       cex = cexVennArea
+                       )
     grid.text(y = 0.9, paste0(tissue_name, ": strict TAD matching"), 
               just=c("centre", "top"), gp=gpar(fontsize=16,font=2))
     foo <- dev.off()
@@ -373,7 +377,8 @@ for(i in seq_along(allCl_allChr_GRs)) {
                        category = c(ds1, ds2), 
                        lty = "blank", 
                        alpha = rep(0.5, 2),
-                       fill = c(dsCol1, dsCol2))
+                       fill = c(dsCol1, dsCol2),
+                       cex = cexVennArea)
     grid.text(y = 0.9, paste0(tissue_name, ": boundary matching"), 
               just=c("centre", "top"), gp=gpar(fontsize=16,font=2))
     foo <- dev.off()

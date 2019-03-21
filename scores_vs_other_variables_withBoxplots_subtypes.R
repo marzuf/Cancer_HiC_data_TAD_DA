@@ -341,16 +341,25 @@ for(var_plot in auc_vars) {
   
   manyTypes_DT$hicds <- factor(as.character(manyTypes_DT$hicds), levels = as.character(meanhicds_DT$hicds))
   
+  manyTypes_DT <- manyTypes_DT[order(manyTypes_DT$hicds, manyTypes_DT[, var_plot]),]
+  
+  
+  manyTypes_DT$dataset <- factor(as.character(manyTypes_DT$dataset), levels = as.character(manyTypes_DT$dataset))
+  
+  
   mycols <- setNames(manyTypes_DT$color[!duplicated(manyTypes_DT$color)], manyTypes_DT$dsType[!duplicated(manyTypes_DT$color)])
   
-  pSubtype <-  ggplot(manyTypes_DT, aes_string(x="dsType", y=var_plot, fill = "dsType"))+
-    geom_bar(stat="identity", position="stack") + 
-    facet_grid(~hicds, switch="x") +
+  mycols_all <- sapply(manyTypes_DT$dsType, function(x) manyTypes_DT$color[]) 
+  
+  
+  pSubtype <-  ggplot(manyTypes_DT, aes_string(x="dataset", y=var_plot, fill = "dsType"))+
+    geom_bar(stat="identity", position="dodge")+###, fill = datasets_variables_DT$color) + 
+    facet_grid(~hicds, switch="x", scales="free_x") +
     coord_cartesian(expand = FALSE) +
     ggtitle(paste0(var_name))+
-    scale_x_discrete(name="") +
+    scale_x_discrete(name="", labels=manyTypes_DT$exprds, breaks=manyTypes_DT$dataset) +
     scale_y_continuous(name=paste0(var_name), breaks = scales::pretty_breaks(n = 5))+
-    scale_fill_manual(values = mycols, labels=names(mycols), name="comparison") +
+    scale_fill_manual(values = mycols, labels=names(mycols), breaks=names(mycols), name="comparison") +
     labs(fill  = "") +
     theme( # Increase size of axis lines
       strip.text = element_text(size = 7),
@@ -368,8 +377,8 @@ for(var_plot in auc_vars) {
       panel.background = element_rect(fill = "transparent"),
               legend.background =  element_rect(),
               legend.key = element_blank(),
-      # axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1)
-      axis.text.x=element_blank(),
+       axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
+      #axis.text.x=element_blank(),
       axis.ticks = element_blank()
       )
   

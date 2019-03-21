@@ -1,9 +1,9 @@
 
-# Rscript cmp_empPvals.R 
+# Rscript cmp_empPvals_tmp.R 
 
 startTime <- Sys.time()
 
-cat("> START cmp_empPvals.R \n")
+cat("> START cmp_empPvals_tmp.R \n")
 
 SSHFS <- FALSE
 
@@ -31,7 +31,7 @@ build_signifTADs_allDS_data <- TRUE
 
 setDir <- ifelse(SSHFS, "/media/electron", "")
 
-outFolder <- file.path("CMP_EMPPVALS")
+outFolder <- file.path("CMP_EMPPVALS_TMP")
 dir.create(outFolder, recursive = TRUE)
 
 # checkFile <- file.path(outFolder, paste0("check_file_traceback_", toptad_id, "_", bottad_id, ".txt"))
@@ -59,7 +59,7 @@ script9v2_name <- "9v2_runEmpPvalWilcoxStat"
 script10_name <- "10_runEmpPvalMeanTADCorr"
 script10v2_name <- "10v2_runEmpPvalMeanTADCorr"
 script10b_name <- "10b_runEmpPvalProdSignedRatio"
-                     script11_name <- "11_runEmpPvalCombined"
+                    # script11_name <- "11_runEmpPvalCombined"
 
 tad_match_folder <- file.path("INTERSECT_topTADs_ACROSSDS", "top3")
 stopifnot(dir.exists(tad_match_folder))
@@ -203,60 +203,46 @@ if(build_signifTADs_allDS_data){
     
     
                         # # RETRIEVE SIGNIF. TADs 
-                        stopifnot(dir.exists(file.path(dsPipOutDir, script11_name)))
-                        tad_pvalFile <- file.path(dsPipOutDir, script11_name, "emp_pval_combined.Rdata")
-                        stopifnot(file.exists(tad_pvalFile))
-                        tad_pvals <- eval(parse(text = load(tad_pvalFile)))
-                        adj_tad_pvalComb <- sort(p.adjust(tad_pvals, method="BH"))
-                        tad_pvalComb <- sort(tad_pvals)
+                        # stopifnot(dir.exists(file.path(dsPipOutDir, script11_name)))
+                        # tad_pvalFile <- file.path(dsPipOutDir, script11_name, "emp_pval_combined.Rdata")
+                        # stopifnot(file.exists(tad_pvalFile))
+                        # tad_pvals <- eval(parse(text = load(tad_pvalFile)))
+                        # adj_tad_pvalComb <- sort(p.adjust(tad_pvals, method="BH"))
+                        # tad_pvalComb <- sort(tad_pvals)
     
     
-                        all_tads <- Reduce(union, list(names(tad_pvalFC), names(tad_pvalCorr), 
-                                                           names(adj_tad_pvalFC), names(adj_tad_pvalCorr),
-                                                           # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-                                                           names(tad_pvalFCC), names(adj_tad_pvalFCC),
-                                                           names(tad_valuesFCC),
-                                                           names(tad_pvalComb),
-                                                           names(adj_tad_pvalComb),
-                                                           names(tad_valuesFC), names(tad_valuesCorr),
-                                                           
-                                                           #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-                                                           names(tad_pvalCorrV2), names(tad_pvalWilcox),
-                                                           names(adj_tad_pvalCorrV2), names(adj_tad_pvalWilcox)
-                        ))                        
-                        
-    # all_tads <- Reduce(intersect, list(names(tad_pvalFC), names(tad_pvalCorr), 
-    #                                    names(adj_tad_pvalFC), names(adj_tad_pvalCorr),
-    #                                                                  # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    #                                                                  names(tad_pvalFCC), names(adj_tad_pvalFCC),
-    #                                    names(tad_valuesFCC),
-    #                                                                    names(tad_pvalComb),
-    #                                                                    names(adj_tad_pvalComb),
-    #                                    names(tad_valuesFC), names(tad_valuesCorr),
-    #                                    
-    #                                    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    #                                     names(tad_pvalCorrV2), names(tad_pvalWilcox),
-    #                                     names(adj_tad_pvalCorrV2), names(adj_tad_pvalWilcox)
-    # ))
-    # 
-    # stopifnot(all_tads %in% names(tad_nGenes))
-    # 
-    # stopifnot(length(all_tads) == length(tad_pvalFC))
-    # stopifnot(length(all_tads) == length(tad_pvalCorr))
-    #                                                                   stopifnot(length(all_tads) == length(tad_pvalComb))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalFC))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalCorr))
-    #                                                                                 stopifnot(length(all_tads) == length(adj_tad_pvalComb))
-    # stopifnot(length(all_tads) == length(tad_valuesFC))
-    # stopifnot(length(all_tads) == length(tad_valuesCorr))
-    # 
-    # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+    all_tads <- Reduce(intersect, list(names(tad_pvalFC), names(tad_pvalCorr), 
+                                       names(adj_tad_pvalFC), names(adj_tad_pvalCorr),
+                                                                     # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+                                                                     # names(tad_pvalFCC), names(adj_tad_pvalFCC),
+                                       names(tad_valuesFCC),
+                                                                       #names(tad_pvalComb),
+                                                                       # names(adj_tad_pvalComb),
+                                       names(tad_valuesFC), names(tad_valuesCorr)
+                                       
+                                       #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+                                       # names(tad_valuesCorrV2), names(tad_valuesWilcox),
+                                       # names(adj_tad_valuesCorrV2), names(adj_tad_valuesWilcox),
+    ))
+    
+    stopifnot(all_tads %in% names(tad_nGenes))
+    
+    stopifnot(length(all_tads) == length(tad_pvalFC))
+    stopifnot(length(all_tads) == length(tad_pvalCorr))
+                                                                      # stopifnot(length(all_tads) == length(tad_pvalComb))
+    stopifnot(length(all_tads) == length(adj_tad_pvalFC))
+    stopifnot(length(all_tads) == length(adj_tad_pvalCorr))
+                                                                                    # stopifnot(length(all_tads) == length(adj_tad_pvalComb))
+    stopifnot(length(all_tads) == length(tad_valuesFC))
+    stopifnot(length(all_tads) == length(tad_valuesCorr))
+    
+    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
     # stopifnot(length(all_tads) == length(tad_valuesFCC))
     # stopifnot(length(all_tads) == length(adj_tad_pvalFCC))
-    # 
-    # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    # stopifnot(length(all_tads) == length(tad_pvalCorrV2))
-    # stopifnot(length(all_tads) == length(tad_pvalWilcox))
+    
+    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+    # stopifnot(length(all_tads) == length(tad_valuesCorrV2))
+    # stopifnot(length(all_tads) == length(tad_valuesWilcox))
     
     
     outDT <- data.frame(
@@ -273,14 +259,14 @@ if(build_signifTADs_allDS_data){
       adj_pvalCorrV2 = as.numeric(adj_tad_pvalCorrV2[all_tads]),
       adj_pvalFCC = as.numeric(adj_tad_pvalFCC[all_tads]),
       
-                                                      adj_pvalComb = as.numeric(adj_tad_pvalComb[all_tads]),
+                                                      # adj_pvalComb = as.numeric(adj_tad_pvalComb[all_tads]),
       pvalFC = as.numeric(tad_pvalFC[all_tads]),
       pvalWilcox = as.numeric(tad_pvalWilcox[all_tads]),
       pvalCorr = as.numeric(tad_pvalCorr[all_tads]),
       pvalCorrV2 = as.numeric(tad_pvalCorrV2[all_tads]),
       pvalFCC = as.numeric(tad_pvalFCC[all_tads]),
       
-                                                          pvalComb = as.numeric(tad_pvalComb[all_tads]),
+                                                          # pvalComb = as.numeric(tad_pvalComb[all_tads]),
       valuesFC = as.numeric(tad_valuesFC[all_tads]),
       valuesCorr = as.numeric(tad_valuesCorr[all_tads]),
       valuesFCC = as.numeric(tad_valuesFCC[all_tads]),
