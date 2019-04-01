@@ -1,5 +1,23 @@
 #!/usr/bin/bash
 
+# forgot 1.4.19
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutCTNNB1
+
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_lowInf_highInf # 5v2 6v2onlyW
+# ./run_pipeline.sh ENCSR862OGI_RPMI-7951_40kb TCGAskcm_wt_mutBRAF # 5v2 6v2onlyW
+
+### TO RUN V2 23.03.2019 - STEP 5v2 7v2
+# ./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAgbm_classical_neural
+# ./run_pipeline.sh GSE105194_spinal_cord_40kb TCGAlgg_IDHwt_IDHmutnc 
+# ./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_mesenchymal 
+# ./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_proneural 
+# ./run_pipeline.sh /GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAgbm_classical_neural 
+# ./run_pipeline.sh GSE105194_spinal_cordGSE105194_cerebellum_40kb TCGAlgg_IDHwt_IDHmutnc 
+# ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc 
+# ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_wt_mutCTNNB1  
+# ./run_pipeline.sh GSE105318_DLD1_40kb TCGAcoad_msi_mss  
+# ./run_pipeline.sh Panc1_rep12_40kb TCGApaad_wt_mutKRAS 
+# ./run_pipeline.sh K562_40kb TCGAlaml_wt_mutFLT3 
 
 ### TO RUN V2 05.03.2019
 # ./run_pipeline.sh ENCSR444WCZ_A549_40kb TCGAluad_norm_luad   # running
@@ -167,7 +185,12 @@ step2=1    # run the pipeline
 
 # new steps 03.03.2019 à refaire: 2v2, 5v2, 6v2, 7v2, 9v2, 10v2, 11v2
 #TAD_DE_pipSteps=( "6v2" "9v2" )
-TAD_DE_pipSteps=( "9v2" )
+#TAD_DE_pipSteps=( "5v2" )
+#TAD_DE_pipSteps=( "6v2onlyW" )
+TAD_DE_pipSteps=( "7v2" )
+#TAD_DE_pipSteps=( "9v2" )
+#TAD_DE_pipSteps=( "10v2" "10b" )
+
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 
 
