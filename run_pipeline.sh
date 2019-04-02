@@ -187,9 +187,9 @@ step2=1    # run the pipeline
 #TAD_DE_pipSteps=( "6v2" "9v2" )
 #TAD_DE_pipSteps=( "5v2" )
 #TAD_DE_pipSteps=( "6v2onlyW" )
-TAD_DE_pipSteps=( "7v2" )
+#TAD_DE_pipSteps=( "7v2" )
 #TAD_DE_pipSteps=( "9v2" )
-#TAD_DE_pipSteps=( "10v2" "10b" )
+TAD_DE_pipSteps=( "10v2" "10b" )
 
 # ./run_pipeline.sh GSE105381_HepG2_40kb TCGAlihc_norm_lihc   # 01.03.2018
 

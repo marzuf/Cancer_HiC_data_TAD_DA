@@ -261,6 +261,12 @@ for(curr_var in all_vars) {
 
 comb_vars <- combn(all_vars, 2)
 
+
+mySub <- paste0("(tot. DS: ", nrow(unique(allPvals_allDS_DT[,c("hicds", "exprds")])) , 
+                "; tot. TADs: ",  nrow(allPvals_allDS_DT), ")")
+
+
+
 i=1
 for(i in 1:ncol(comb_vars)){
   var1 <- comb_vars[1,i]
@@ -284,14 +290,19 @@ for(i in 1:ncol(comb_vars)){
   cat(paste0("... written: ", outFile, "\n"))
   
   ############################################## IF PVAL -> DENSPLOT LOG10
-  if(grepl("pval", var1)) {
-    myx_log10 <- -log10(myx)
-    var1_lab <- paste0(var1, " [-log10]")
-  }
-  if(grepl("pval", var2)) {
-    myy_log10 <- -log10(myy)
-    var2_lab <- paste0(var2, " [-log10]")
-  }
+  # if(grepl("pval", var1)) {
+  #   myx_log10 <- -log10(myx)
+  #   var1_lab <- paste0(var1, " [-log10]")
+  # }
+  # if(grepl("pval", var2)) {
+  #   myy_log10 <- -log10(myy)
+  #   var2_lab <- paste0(var2, " [-log10]")
+  # }
+  myx_log10 <- -log10(myx)
+  var1_lab <- paste0(var1, " [-log10]")
+  myy_log10 <- -log10(myy)
+  var2_lab <- paste0(var2, " [-log10]")
+  
   outFile <- file.path(outFolder, paste0(var2, "_", var1, "_", "densplot_log10.", plotType))
   do.call(plotType, list(outFile,  height=myHeight, width=myWidth))
   densplot(x = myx_log10, y = myy_log10, 

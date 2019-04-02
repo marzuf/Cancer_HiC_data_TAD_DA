@@ -227,38 +227,38 @@ if(build_signifTADs_allDS_data){
                                                            names(adj_tad_pvalCorrV2), names(adj_tad_pvalWilcox)
                         ))                        
                         
-    # all_tads <- Reduce(intersect, list(names(tad_pvalFC), names(tad_pvalCorr), 
-    #                                    names(adj_tad_pvalFC), names(adj_tad_pvalCorr),
-    #                                                                  # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    #                                                                  names(tad_pvalFCC), names(adj_tad_pvalFCC),
-    #                                    names(tad_valuesFCC),
-    #                                                                    names(tad_pvalComb),
-    #                                                                    names(adj_tad_pvalComb),
-    #                                    names(tad_valuesFC), names(tad_valuesCorr),
-    #                                    
-    #                                    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    #                                     names(tad_pvalCorrV2), names(tad_pvalWilcox),
-    #                                     names(adj_tad_pvalCorrV2), names(adj_tad_pvalWilcox)
-    # ))
-    # 
-    # stopifnot(all_tads %in% names(tad_nGenes))
-    # 
-    # stopifnot(length(all_tads) == length(tad_pvalFC))
-    # stopifnot(length(all_tads) == length(tad_pvalCorr))
-    # stopifnot(length(all_tads) == length(tad_pvalComb))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalFC))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalCorr))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalComb))
-    # stopifnot(length(all_tads) == length(tad_valuesFC))
-    # stopifnot(length(all_tads) == length(tad_valuesCorr))
-    # 
-    # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    # stopifnot(length(all_tads) == length(tad_valuesFCC))
-    # stopifnot(length(all_tads) == length(adj_tad_pvalFCC))
-    # 
-    # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    # stopifnot(length(all_tads) == length(tad_pvalCorrV2))
-    # stopifnot(length(all_tads) == length(tad_pvalWilcox))
+    all_tads <- Reduce(intersect, list(names(tad_pvalFC), names(tad_pvalCorr),
+                                       names(adj_tad_pvalFC), names(adj_tad_pvalCorr),
+                                                                     # #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+                                                                     names(tad_pvalFCC), names(adj_tad_pvalFCC),
+                                       names(tad_valuesFCC),
+                                                                       names(tad_pvalComb),
+                                                                       names(adj_tad_pvalComb),
+                                       names(tad_valuesFC), names(tad_valuesCorr),
+
+                                       #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+                                        names(tad_pvalCorrV2), names(tad_pvalWilcox),
+                                        names(adj_tad_pvalCorrV2), names(adj_tad_pvalWilcox)
+    ))
+
+    stopifnot(all_tads %in% names(tad_nGenes))
+
+    stopifnot(length(all_tads) == length(tad_pvalFC))
+    stopifnot(length(all_tads) == length(tad_pvalCorr))
+    stopifnot(length(all_tads) == length(tad_pvalComb))
+    stopifnot(length(all_tads) == length(adj_tad_pvalFC))
+    stopifnot(length(all_tads) == length(adj_tad_pvalCorr))
+    stopifnot(length(all_tads) == length(adj_tad_pvalComb))
+    stopifnot(length(all_tads) == length(tad_valuesFC))
+    stopifnot(length(all_tads) == length(tad_valuesCorr))
+
+    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+    stopifnot(length(all_tads) == length(tad_valuesFCC))
+    stopifnot(length(all_tads) == length(adj_tad_pvalFCC))
+
+    #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
+    stopifnot(length(all_tads) == length(tad_pvalCorrV2))
+    stopifnot(length(all_tads) == length(tad_pvalWilcox))
     
     
     outDT <- data.frame(
@@ -290,7 +290,7 @@ if(build_signifTADs_allDS_data){
       stringsAsFactors = FALSE
     )
     #>>>>>>>>>>>> AT THE END; WILL NEED TO ADD
-    # stopifnot(!is.na(outDT))
+    stopifnot(!is.na(outDT))
     outDT
   }
   outFile <- file.path(outFolder, "allPvals_allDS_DT.Rdata")
@@ -305,7 +305,7 @@ if(build_signifTADs_allDS_data){
 
 
 
-stop("--ok\n")
+# stop("--ok\n")
 
 
 
