@@ -200,6 +200,10 @@ barplotCol <- "skyblue"
 
 all_vars <- c("FC", "Corr")
 
+xaxiscols <- c("red")
+
+
+
 var <- all_vars[1]
 for(var in all_vars){
   full_var <- paste0("pval", var)
@@ -214,8 +218,21 @@ for(var in all_vars){
   aggDT$dataset <- paste0(aggDT$hicds, "\n", aggDT$exprds)
   aggDT <- aggDT[order(aggDT[,new_var]),]
   
-  outFile <- file.path(outFolder, paste0(full_var, "_nbrTAD_minPval_barplot.", plotType))
-  do.call(plotType, list(outFile,  height=myHeightBarplot, width=myWidthBarplot))
+  
+  source("colors_utils.R")
+  col_labs <- aggDT$dataset
+  col_labs <- gsub(".+\n(.+)", "\\1", col_labs)
+  col_labs_types <- sapply(col_labs, function(x) as.character(cancer_subAnnot[x]))
+  col_labs_types_colors <- sapply(col_labs_types, function(x) as.character(cancer_subColors[x]))
+  
+  # outFile <- file.path(outFolder, paste0(full_var, "_nbrTAD_minPval_barplot.", plotType))
+  outFile <- file.path(outFolder, paste0(full_var, "_nbrTAD_minPval_barplot.", "svg"))
+  
+  # do.call(plotType, list(outFile,  height=myHeightBarplot, width=myWidthBarplot*1.2))
+  do.call("svg", list(outFile,  height=8, width=13))
+  
+  
+  par(oma=c(5,2,2,2))
   
   x <- barplot(aggDT[, new_var],
           # names = aggDT$dataset, 
@@ -228,7 +245,18 @@ for(var in all_vars){
           cex.axis = plotCex)
           
     mtext(text = mySub, side=3)
-   axis(1, at=x, las=2, labels = aggDT$dataset,cex.axis=0.7 ) # for the text label: change cex.axis
+   # axis(1, at=x, las=2, labels = aggDT$dataset,cex.axis=0.6,  
+   #      col.lab = col_labs_types_colors
+   #      ) # for the text label: change cex.axis
+   
+   allcols <- unique(col_labs_types_colors)
+   
+   for(i in allcols){
+     idx <- which(col_labs_types_colors == i)
+     axis(1, at=x[idx,], las=2, labels = aggDT$dataset[idx],cex.axis=0.6,  
+          col.axis = i
+     )
+   }
    
    foo <- dev.off()
    cat(paste0("... written: ", outFile, "\n"))
@@ -258,6 +286,36 @@ for(curr_var in all_vars) {
   
   
 }
+for(curr_var in all_vars) {
+  
+  ############################################## DENSITY
+  outFile <- file.path(outFolder, paste0(curr_var, "_hist.", plotType))
+  do.call(plotType, list(outFile,  height=myHeightDensity, width=myWidthDensity))
+  
+  hist(allPvals_allDS_DT[, curr_var],
+       main = curr_var)
+  mtext(text = paste0(myTit, "; ", mySub), side=3)
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
+  
+  
+}
+
+for(curr_var in all_vars) {
+  
+  ############################################## DENSITY
+  outFile <- file.path(outFolder, paste0(curr_var, "_hist_log10.", plotType))
+  do.call(plotType, list(outFile,  height=myHeightDensity, width=myWidthDensity))
+  
+  hist(log10(allPvals_allDS_DT[, curr_var]),
+       main = curr_var)
+  mtext(text = paste0(myTit, "; ", mySub), side=3)
+  foo <- dev.off()
+  cat(paste0("... written: ", outFile, "\n"))
+  
+  
+}
+
 
 comb_vars <- combn(all_vars, 2)
 
