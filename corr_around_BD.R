@@ -8,6 +8,8 @@
 
 script_name <- "corr_around_BD.R"
 
+cat("... start ", script_name, "\n")
+
 startTime <- Sys.time()
 
 SSHFS <- FALSE
