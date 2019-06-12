@@ -1,5 +1,9 @@
 source("utils_fct.R")
-# plot_multiDens_argList <- function(size_list, plotTit="", legTxt=NULL, legPos="topright", my_ylab="density", my_xlab="", ...) 
+
+
+script_name <- "cmp_corr_withinTAD_vs_acrossBD.R"
+cat("... start ", script_name, "\n")
+startTime <- Sys.time()
 
 
 acrossFile <- "CORR_AROUND_BD/all_ds_corrData.Rdata"
@@ -171,6 +175,13 @@ for(nGenes in minTADnGenes:(2*max(all_ngenes))) {
   
   
 }
+
+
+
+
+txt <- paste0(startTime, "\n", Sys.time(), "\n")
+cat(paste0(txt))
+cat(paste0("*** DONE: ", script_name, "\n"))
 
 
 
