@@ -278,6 +278,8 @@ if(buildCorrAroundBD) {
   all_ds_corrData <- eval(parse(text = load(outFile)))
 }
 
+across_nDS <- length(all_ds_corrData)
+
 ######### INVESTIGATE ACROSS BD DATA
 
 # look at the result:
@@ -362,6 +364,8 @@ if(buildObsCorr) {
   obs_corrData <- eval(parse(text = load(outFile)))
 }
 
+obs_nDS <- length(obs_corrData)
+
 ########################################################
 ######################################################## PLOT INTRA TAD VS ACROSS DATA 
 ########################################################
@@ -395,8 +399,9 @@ for(geneTot in all_genesTot) {
     list(obs_values=obs_values, 
          across_values = across_values),
     plotTit = paste0("nTotGenes = ", nTotGenes, " (", paste0(nAcrossGenes, collapse="-"), " across)"),
-    my_xlab = paste0("intra-TAD mean corr. (", corMet,")")
+    my_xlab = paste0("intra-TAD/across BD mean corr. (", corMet,")")
   )
+  mtext(side=3, text = paste0("(obs_nDS=", obs_nDS, "; across_nDS=", across_nDS, ")"))
   foo <- dev.off()
   cat(paste0("... written: ", outFile, "\n"))
   
@@ -423,8 +428,9 @@ do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_multiDens(
   dist_across_meanCorr[1:5],
   plotTit = paste0("across BD corr. - all data"),
-  my_xlab = paste0("intra-TAD mean corr. (", corMet,")")
+  my_xlab = paste0("across BD mean corr. (", corMet,")")
 )
+mtext(side=3, text = paste0("(across_nDS=", across_nDS, ")"))
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 
@@ -433,8 +439,9 @@ do.call(plotType, list(outFile, height=myHeight, width=myWidth))
 plot_multiDens(
   dist_across_meanCorr[6:10],
   plotTit = paste0("across BD corr. - all data"),
-  my_xlab = paste0("intra-TAD mean corr. (", corMet,")")
+  my_xlab = paste0("across BD mean corr. (", corMet,")")
 )
+mtext(side=3, text = paste0("(across_nDS=", across_nDS, ")"))
 foo <- dev.off()
 cat(paste0("... written: ", outFile, "\n"))
 

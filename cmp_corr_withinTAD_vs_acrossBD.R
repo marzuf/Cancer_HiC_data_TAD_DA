@@ -1,3 +1,6 @@
+
+# Rscript cmp_corr_withinTAD_vs_acrossBD.R
+
 source("utils_fct.R")
 
 
